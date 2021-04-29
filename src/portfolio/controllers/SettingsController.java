@@ -81,7 +81,7 @@ public class SettingsController {
     //All relevant paths and files
     public String strTransactionData = "transactionData.portfolio";
     public String strCoinPriceData = "coinPriceData.portfolio";
-    public String[] languages = new String[]{"English", "Deutsch","Espa\u00F1ol"};
+    public String[] languages = new String[]{"English", "Deutsch","Espa\u00F1ol","Norwegian (Bokm\u00E5l)"};
     public String[] currencies = new String[]{"EUR", "USD", "CHF"};
     public String[] decSeperators = new String[]{".", ","};
     public String[] csvSeperators = new String[]{",", ";"};
