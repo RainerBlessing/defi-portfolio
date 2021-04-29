@@ -134,6 +134,9 @@ public class SettingsController {
             case "Espa\u00F1ol":
                 fileName += "es.json";
                 break;
+            case "Norwegian (Bokm\u00E5l)":
+                fileName += "nb.json";
+                break;
             default:
                 fileName += "en.json";
                 break;
