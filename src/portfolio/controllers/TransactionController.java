@@ -97,7 +97,21 @@ public class TransactionController {
                         defidProcess = Runtime.getRuntime().exec(commands);
                         break;
                     case "linux":
-                        defidProcess = Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                        int notfound = 0;
+                        try{
+                            defidProcess = Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                        }catch(Exception e){
+                            notfound++;
+                        }
+                        try{
+                            defidProcess = Runtime.getRuntime().exec("/usr/bin/konsole -e " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                        }catch(Exception e){
+                            notfound++;
+                        }
+                        if(notfound==2){
+                            JOptionPane.showMessageDialog(null,"Could not found /usr/bin/x-terminal-emulator or\n /usr/bin/konsole","Terminal not found", JOptionPane.ERROR_MESSAGE);
+                        }
+
                         break;
                 }
             }

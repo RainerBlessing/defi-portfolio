@@ -91,9 +91,9 @@ public class MainViewController {
                             this.transactionController.addToPortfolioModel(transactionModel);
                         }
                     }
-                    for(BalanceModel balanceModel : this.transactionController.getBalanceList()){
-                        balanceModel.setFiat1(balanceModel.getCrypto1Value()*CoinPriceController.getInstance().getPriceFromTimeStamp(balanceModel.getToken1NameValue()+SettingsController.getInstance().selectedFiatCurrency.getValue(),System.currentTimeMillis()));
-                        balanceModel.setFiat2(balanceModel.getCrypto2Value()*CoinPriceController.getInstance().getPriceFromTimeStamp(balanceModel.getToken2NameValue()+SettingsController.getInstance().selectedFiatCurrency.getValue(),System.currentTimeMillis()));
+                    for (BalanceModel balanceModel : this.transactionController.getBalanceList()) {
+                        balanceModel.setFiat1(balanceModel.getCrypto1Value() * CoinPriceController.getInstance().getPriceFromTimeStamp(balanceModel.getToken1NameValue() + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()));
+                        balanceModel.setFiat2(balanceModel.getCrypto2Value() * CoinPriceController.getInstance().getPriceFromTimeStamp(balanceModel.getToken2NameValue() + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()));
                     }
                 }
         );
@@ -363,12 +363,12 @@ public class MainViewController {
         } else if (SettingsController.getInstance().selectedFiatCurrency.getValue().equals("CHF")) {
             currency = "CHF";
         }
-        this.settingsController.tokenYield.set(this.settingsController.translationList.getValue().get("TotalYield")+":\n"+String.format(localeDecimal, "%,.2f", totalYield)+currency);
-        this.settingsController.tokenYieldRewards.set(this.settingsController.translationList.getValue().get("TotalYieldRewards")+":\n"+String.format(localeDecimal, "%,.2f", totalYieldRewards)+currency);
-        this.settingsController.tokenYieldCommissions.set(this.settingsController.translationList.getValue().get("TotalYieldCommissions")+":\n"+String.format(localeDecimal, "%,.2f", totalYieldCommissions)+currency);
-        this.settingsController.tokenAmount.set(this.settingsController.translationList.getValue().get("TotalAmount")+":\n"+String.format(localeDecimal, "%,.2f", calculatedPortfolio+calculatedPortfolio2)+currency);
-        this.settingsController.tokenBalance.set("Token:\n" + String.format(localeDecimal, "%,.2f", calculatedPortfolio)+currency);
-        this.settingsController.tokenBalanceLM.set("LM Token:\n" + String.format(localeDecimal, "%,.2f", calculatedPortfolio2)+currency);
+        this.settingsController.tokenYield.set(this.settingsController.translationList.getValue().get("TotalYield") + ":\n" + String.format(localeDecimal, "%,.2f", totalYield) + currency);
+        this.settingsController.tokenYieldRewards.set(this.settingsController.translationList.getValue().get("TotalYieldRewards") + ":\n" + String.format(localeDecimal, "%,.2f", totalYieldRewards) + currency);
+        this.settingsController.tokenYieldCommissions.set(this.settingsController.translationList.getValue().get("TotalYieldCommissions") + ":\n" + String.format(localeDecimal, "%,.2f", totalYieldCommissions) + currency);
+        this.settingsController.tokenAmount.set(this.settingsController.translationList.getValue().get("TotalAmount") + ":\n" + String.format(localeDecimal, "%,.2f", calculatedPortfolio + calculatedPortfolio2) + currency);
+        this.settingsController.tokenBalance.set("Token:\n" + String.format(localeDecimal, "%,.2f", calculatedPortfolio) + currency);
+        this.settingsController.tokenBalanceLM.set("LM Token:\n" + String.format(localeDecimal, "%,.2f", calculatedPortfolio2) + currency);
         this.mainView.plotPortfolio1.setData(pieChartData);
         this.mainView.plotPortfolio11.setData(pieChartData2);
 
@@ -511,28 +511,32 @@ public class MainViewController {
                             rewardsSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getCoinRewards1Value() * currentDFIPrice));
                         }
 
-                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), 1, entry.getValue().getCoinRewards1Value(), 1, this.settingsController.selectedCoin.getValue(), entry.getValue().getFiatRewards1Value(), 1, 1.0, 1, ""));
+                        if (this.settingsController.selectedPlotCurrency.getValue().equals("Current Fiat")) {
+                            double currentDFIPrice = CoinPriceController.getInstance().getPriceFromTimeStamp("DFI" + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
+                            this.poolPairModelList.add(new PoolPairModel(entry.getKey(), 1, entry.getValue().getCoinRewards1Value(), 1, this.settingsController.selectedCoin.getValue(), entry.getValue().getCoinRewards1Value()*currentDFIPrice, 1, 1.0, 1, ""));
+                        } else {
+                            this.poolPairModelList.add(new PoolPairModel(entry.getKey(), 1, entry.getValue().getCoinRewards1Value(), 1, this.settingsController.selectedCoin.getValue(), entry.getValue().getFiatRewards1Value(), 1, 1.0, 1, ""));
+                        }
                     }
                 }
 
 
+                if (this.mainView.plotRewards.getData().size() == 1) {
+                    this.mainView.plotRewards.getData().remove(0);
+                }
 
+                this.mainView.plotRewards.getData().add(rewardsSeries);
 
-            if (this.mainView.plotRewards.getData().size() == 1) {
-                this.mainView.plotRewards.getData().remove(0);
-            }
+                for (XYChart.Series<Number, Number> s : this.mainView.plotRewards.getData()) {
+                    for (XYChart.Data d : s.getData()) {
+                        Tooltip t = new Tooltip(d.getYValue().toString());
+                        Tooltip.install(d.getNode(), t);
+                        d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
+                        d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
+                    }
+                }
 
-            this.mainView.plotRewards.getData().add(rewardsSeries);
-
-            for (XYChart.Series<Number, Number> s : this.mainView.plotRewards.getData()) {
-                for (XYChart.Data d : s.getData()) {
-                    Tooltip t = new Tooltip(d.getYValue().toString());
-                    Tooltip.install(d.getNode(), t);
-                    d.getNode().setOnMouseEntered(event -> d.getNode().getStyleClass().add("onHover"));
-                    d.getNode().setOnMouseExited(event -> d.getNode().getStyleClass().remove("onHover"));
-                }}
-
-        } else {
+            } else {
 
                 XYChart.Series<Number, Number> rewardsCumulated = new XYChart.Series();
 
@@ -554,8 +558,12 @@ public class MainViewController {
                             cumulatedFiatValue = cumulatedFiatValue + (entry.getValue().getCoinRewards1Value() * currentDFIPrice);
                             rewardsCumulated.getData().add(new XYChart.Data(entry.getKey(), cumulatedFiatValue));
                         }
-
-                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), 1, entry.getValue().getCoinRewards1Value(), 1, this.settingsController.selectedCoin.getValue(), entry.getValue().getFiatRewards1Value(), 1, 1.0, 1, ""));
+                        if (this.settingsController.selectedPlotCurrency.getValue().equals("Current Fiat")) {
+                            double currentDFIPrice = CoinPriceController.getInstance().getPriceFromTimeStamp("DFI" + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
+                            this.poolPairModelList.add(new PoolPairModel(entry.getKey(), 1, entry.getValue().getCoinRewards1Value(), 1, this.settingsController.selectedCoin.getValue(), entry.getValue().getCoinRewards1Value()*currentDFIPrice, 1, 1.0, 1, ""));
+                        } else {
+                            this.poolPairModelList.add(new PoolPairModel(entry.getKey(), 1, entry.getValue().getCoinRewards1Value(), 1, this.settingsController.selectedCoin.getValue(), entry.getValue().getFiatRewards1Value(), 1, 1.0, 1, ""));
+                        }
                     }
                 }
                 if (this.mainView.plotRewards.getData().size() == 1) {
@@ -581,7 +589,6 @@ public class MainViewController {
     }
 
 
-
     public void updateCommissions() {
 
         XYChart.Series<Number, Number> commissionsSeries1 = new XYChart.Series();
@@ -596,7 +603,7 @@ public class MainViewController {
         if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
             this.mainView.plotCommissions1.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1]);
             this.mainView.plotCommissions2.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[0]);
-        } else if(this.settingsController.selectedPlotCurrency.getValue().equals("Daily Fiat")|| this.settingsController.selectedPlotCurrency.getValue().equals("Current Fiat")){
+        } else if (this.settingsController.selectedPlotCurrency.getValue().equals("Daily Fiat") || this.settingsController.selectedPlotCurrency.getValue().equals("Current Fiat")) {
             this.mainView.plotCommissions1.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1] + " (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
             this.mainView.plotCommissions2.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[0] + " (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
         }
@@ -612,18 +619,24 @@ public class MainViewController {
                         if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
                             commissionsSeries1.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getCoinCommissions1Value()));
                             commissionsSeries2.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getCoinCommissions2Value()));
-                        } else if(this.settingsController.selectedPlotCurrency.getValue().equals("Daily Fiat")) {
+                        } else if (this.settingsController.selectedPlotCurrency.getValue().equals("Daily Fiat")) {
                             commissionsSeries1.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getFiatCommissions1Value()));
                             commissionsSeries2.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getFiatCommissions2Value()));
-                        }else if(this.settingsController.selectedPlotCurrency.getValue().equals("Current Fiat")) {
-                            double poolPair1CurrentPrice = CoinPriceController.getInstance().getPriceFromTimeStamp(this.settingsController.selectedCoin.getValue().split("-")[1]  + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
-                            double poolPair2CurrentPrice = CoinPriceController.getInstance().getPriceFromTimeStamp(this.settingsController.selectedCoin.getValue().split("-")[0]  + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
+                        } else if (this.settingsController.selectedPlotCurrency.getValue().equals("Current Fiat")) {
+                            double poolPair1CurrentPrice = CoinPriceController.getInstance().getPriceFromTimeStamp(this.settingsController.selectedCoin.getValue().split("-")[1] + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
+                            double poolPair2CurrentPrice = CoinPriceController.getInstance().getPriceFromTimeStamp(this.settingsController.selectedCoin.getValue().split("-")[0] + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
 
-                            commissionsSeries1.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getCoinCommissions1Value()*poolPair1CurrentPrice));
-                            commissionsSeries2.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getCoinCommissions2Value()*poolPair2CurrentPrice));
+                            commissionsSeries1.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getCoinCommissions1Value() * poolPair1CurrentPrice));
+                            commissionsSeries2.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getCoinCommissions2Value() * poolPair2CurrentPrice));
                         }
+                        if (this.settingsController.selectedPlotCurrency.getValue().equals("Current Fiat")) {
+                            double currentDFIPrice = CoinPriceController.getInstance().getPriceFromTimeStamp("DFI" + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
+                            double currentPairPrice = CoinPriceController.getInstance().getPriceFromTimeStamp(this.settingsController.selectedCoin.getValue().split("-")[0] + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
 
-                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue(), entry.getValue().getFiatCommissions1Value(), entry.getValue().getFiatCommissions2Value(), 1.0, 1, ""));
+                            this.poolPairModelList.add(new PoolPairModel(entry.getKey(), (entry.getValue().getCoinCommissions1Value()*currentDFIPrice) + (entry.getValue().getCoinCommissions2Value()*currentPairPrice), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue(), entry.getValue().getCoinCommissions1Value()*currentDFIPrice, entry.getValue().getCoinCommissions2Value()*currentPairPrice, 1.0, 1, ""));
+                        } else {
+                            this.poolPairModelList.add(new PoolPairModel(entry.getKey(), entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue(), entry.getValue().getFiatCommissions1Value(), entry.getValue().getFiatCommissions2Value(), 1.0, 1, ""));
+                        }
                     }
                 }
 
@@ -665,22 +678,28 @@ public class MainViewController {
                             cumulatedCommissions2CoinValue = cumulatedCommissions2CoinValue + entry.getValue().getCoinCommissions2Value();
                             rewardsCumulated1.getData().add(new XYChart.Data(entry.getKey(), cumulatedCommissions1CoinValue));
                             rewardsCumulated2.getData().add(new XYChart.Data(entry.getKey(), cumulatedCommissions2CoinValue));
-                        } else if(this.settingsController.selectedPlotCurrency.getValue().equals("Daily Fiat")) {
+                        } else if (this.settingsController.selectedPlotCurrency.getValue().equals("Daily Fiat")) {
                             cumulatedCommissions1FiatValue = cumulatedCommissions1FiatValue + entry.getValue().getFiatCommissions1Value();
                             cumulatedCommissions2FiatValue = cumulatedCommissions2FiatValue + entry.getValue().getFiatCommissions2Value();
                             rewardsCumulated1.getData().add(new XYChart.Data(entry.getKey(), cumulatedCommissions1FiatValue));
                             rewardsCumulated2.getData().add(new XYChart.Data(entry.getKey(), cumulatedCommissions2FiatValue));
-                        }else if(this.settingsController.selectedPlotCurrency.getValue().equals("Current Fiat")) {
-                            double poolPair1CurrentPrice = CoinPriceController.getInstance().getPriceFromTimeStamp(this.settingsController.selectedCoin.getValue().split("-")[1]  + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
-                            double poolPair2CurrentPrice = CoinPriceController.getInstance().getPriceFromTimeStamp(this.settingsController.selectedCoin.getValue().split("-")[0]  + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
+                        } else if (this.settingsController.selectedPlotCurrency.getValue().equals("Current Fiat")) {
+                            double poolPair1CurrentPrice = CoinPriceController.getInstance().getPriceFromTimeStamp(this.settingsController.selectedCoin.getValue().split("-")[1] + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
+                            double poolPair2CurrentPrice = CoinPriceController.getInstance().getPriceFromTimeStamp(this.settingsController.selectedCoin.getValue().split("-")[0] + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
 
-                            cumulatedCommissions1FiatValue = cumulatedCommissions1FiatValue + (entry.getValue().getCoinCommissions1Value()*poolPair1CurrentPrice);
-                            cumulatedCommissions2FiatValue = cumulatedCommissions2FiatValue + (entry.getValue().getCoinCommissions2Value()*poolPair2CurrentPrice);
+                            cumulatedCommissions1FiatValue = cumulatedCommissions1FiatValue + (entry.getValue().getCoinCommissions1Value() * poolPair1CurrentPrice);
+                            cumulatedCommissions2FiatValue = cumulatedCommissions2FiatValue + (entry.getValue().getCoinCommissions2Value() * poolPair2CurrentPrice);
                             rewardsCumulated1.getData().add(new XYChart.Data(entry.getKey(), cumulatedCommissions1FiatValue));
                             rewardsCumulated2.getData().add(new XYChart.Data(entry.getKey(), cumulatedCommissions2FiatValue));
                         }
+                        if (this.settingsController.selectedPlotCurrency.getValue().equals("Current Fiat")) {
+                            double currentDFIPrice = CoinPriceController.getInstance().getPriceFromTimeStamp("DFI" + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
+                            double currentPairPrice = CoinPriceController.getInstance().getPriceFromTimeStamp(this.settingsController.selectedCoin.getValue().split("-")[0] + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
 
-                        this.poolPairModelList.add(new PoolPairModel(entry.getKey(), entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue(), entry.getValue().getFiatCommissions1Value(), entry.getValue().getFiatCommissions2Value(), 1.0, 1, ""));
+                            this.poolPairModelList.add(new PoolPairModel(entry.getKey(), (entry.getValue().getFiatCommissions1Value()*currentDFIPrice) + (entry.getValue().getFiatCommissions2Value()*currentPairPrice), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue(), entry.getValue().getCoinCommissions1Value()*currentDFIPrice, entry.getValue().getCoinCommissions2Value()*currentPairPrice, 1.0, 1, ""));
+                        } else {
+                            this.poolPairModelList.add(new PoolPairModel(entry.getKey(), entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue(), entry.getValue().getFiatCommissions1Value(), entry.getValue().getFiatCommissions2Value(), 1.0, 1, ""));
+                        }
                     }
                 }
 
@@ -753,10 +772,10 @@ public class MainViewController {
             boolean success;
             if (filter.equals("DAILY")) {
                 success = this.expService.exportTransactionToExcelDaily(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeperator.getValue());
-            } else if(filter.equals("")) {
+            } else if (filter.equals("")) {
                 success = this.expService.exportTransactionToExcel(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeperator.getValue());
-            }else{
-                success = this.expService.exportTransactionToCointracking(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeperator.getValue(),filter);
+            } else {
+                success = this.expService.exportTransactionToCointracking(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeperator.getValue(), filter);
             }
 
             if (success) {
