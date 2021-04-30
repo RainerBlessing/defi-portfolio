@@ -1,4 +1,5 @@
 package portfolio.controllers;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -11,10 +12,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import portfolio.Main;
-import portfolio.models.AddressModel;
-import portfolio.models.BalanceModel;
-import portfolio.models.PortfolioModel;
-import portfolio.models.TransactionModel;
+import portfolio.models.*;
 import portfolio.views.MainView;
 
 import javax.swing.*;
@@ -55,6 +53,7 @@ public class TransactionController {
     public JLabel jl;
     public Process defidProcess;
     private Boolean classSingleton = true;
+    private final TreeMap<String,  ImpermanentLossModel> impermanentLossList = new TreeMap<>();
 
     public TransactionController() {
         if (classSingleton) {
@@ -94,8 +93,8 @@ public class TransactionController {
                         defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir") + "/PortfolioData/./" + "defi.sh");
                         break;
                     case "win":
-                        String[] commands = {"cmd", "/c", "start", "\"Synchronizing blockchain\"",this.settingsController.BINARY_FILE_PATH,"-conf="+ this.settingsController.PORTFOLIO_CONFIG_FILE_PATH};
-                        defidProcess=Runtime.getRuntime().exec(commands);
+                        String[] commands = {"cmd", "/c", "start", "\"Synchronizing blockchain\"", this.settingsController.BINARY_FILE_PATH, "-conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH};
+                        defidProcess = Runtime.getRuntime().exec(commands);
                         break;
                     case "linux":
                         defidProcess = Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
@@ -389,7 +388,7 @@ public class TransactionController {
 
     }
 
-    public  void getLocalBalanceList() {
+    public void getLocalBalanceList() {
 
         File strPortfolioData = new File(this.settingsController.PORTFOLIO_FILE_PATH);
 
@@ -439,6 +438,16 @@ public class TransactionController {
                         addToPortfolioModel(transAction);
                     }
 
+                    if ((transAction.typeProperty.getValue().equals("AddPoolLiquidity") | transAction.typeProperty.getValue().equals("RemovePoolLiquidity")) && !transAction.cryptoCurrencyProperty.getValue().contains("-")) {
+
+                        if (impermanentLossList.containsKey(transAction.poolIDProperty.getValue())) {
+
+                        } else {
+
+                        }
+                    }
+
+
                     line = reader.readLine();
                 }
 
@@ -447,7 +456,8 @@ public class TransactionController {
             } catch (IOException e) {
                 this.settingsController.logger.warning("Exception occured: " + e.toString());
             }
-        }        return FXCollections.observableArrayList(transactionList);
+        }
+        return FXCollections.observableArrayList(transactionList);
     }
 
     public String getTokenFromID(String id) {
@@ -529,7 +539,7 @@ public class TransactionController {
         int day = cal.get(Calendar.DAY_OF_MONTH);
         String date = "";
 
-        if(SettingsController.getInstance().translationList.getValue().get("Daily").equals(intervall)|intervall.equals("Daily")){
+        if (SettingsController.getInstance().translationList.getValue().get("Daily").equals(intervall) | intervall.equals("Daily")) {
             String monthAdapted = Integer.toString(month);
             if (month < 10) {
                 monthAdapted = "0" + month;
@@ -541,7 +551,7 @@ public class TransactionController {
             }
         }
 
-        if(SettingsController.getInstance().translationList.getValue().get("Weekly").equals(intervall)|intervall.equals("Weekly")){
+        if (SettingsController.getInstance().translationList.getValue().get("Weekly").equals(intervall) | intervall.equals("Weekly")) {
             int correct = 0;
             if (month == 1 && (day == 1 || day == 2 || day == 3)) {
                 correct = 1;
@@ -553,7 +563,7 @@ public class TransactionController {
             }
         }
 
-        if(SettingsController.getInstance().translationList.getValue().get("Monthly").equals(intervall)|intervall.equals("Monthly")){
+        if (SettingsController.getInstance().translationList.getValue().get("Monthly").equals(intervall) | intervall.equals("Monthly")) {
             if (month < 10) {
                 date = year + "-0" + month;
             } else {
@@ -561,7 +571,7 @@ public class TransactionController {
             }
         }
 
-        if(SettingsController.getInstance().translationList.getValue().get("Yearly").equals(intervall)|intervall.equals("Yearly")){
+        if (SettingsController.getInstance().translationList.getValue().get("Yearly").equals(intervall) | intervall.equals("Yearly")) {
 
             date = Integer.toString(year);
         }
@@ -675,7 +685,7 @@ public class TransactionController {
             } catch (IOException e) {
                 this.settingsController.logger.warning("Exception occured: " + e.toString());
             }
-        }else{
+        } else {
             MainView.getInstance().showNoDataWindow();
         }
         if (!this.settingsController.getPlatform().equals("mac")) this.frameUpdate.dispose();
@@ -785,7 +795,7 @@ public class TransactionController {
     public void getCoinAndTokenBalances() {
         List<BalanceModel> balanceModelList = new ArrayList<>();
         JSONArray jsonArray = getTokenBalances();
-        try{
+        try {
 
             Double dfiCoin = Double.parseDouble(getBalance());
             for (int i = 0; i < jsonArray.size(); i++) {
@@ -799,8 +809,8 @@ public class TransactionController {
                     Double token1 = Math.sqrt(poolRatio * Double.parseDouble(jsonArray.get(i).toString().split("@")[0]) * Double.parseDouble(jsonArray.get(i).toString().split("@")[0]));
                     Double token2 = Math.sqrt(Double.parseDouble(jsonArray.get(i).toString().split("@")[0]) * Double.parseDouble(jsonArray.get(i).toString().split("@")[0]) / poolRatio);
                     try {
-                        balanceModelList.add(new BalanceModel(tokenName.split("-")[0],coinPriceController.getPriceFromTimeStamp( tokenName.split("-")[0] + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis())* token1, token1,                                tokenName.split("-")[1], coinPriceController.getPriceFromTimeStamp(tokenName.split("-")[1] + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * token2, token2, Double.parseDouble(jsonArray.get(i).toString().split("@")[0])));
-                           } catch (Exception e) {
+                        balanceModelList.add(new BalanceModel(tokenName.split("-")[0], coinPriceController.getPriceFromTimeStamp(tokenName.split("-")[0] + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * token1, token1, tokenName.split("-")[1], coinPriceController.getPriceFromTimeStamp(tokenName.split("-")[1] + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * token2, token2, Double.parseDouble(jsonArray.get(i).toString().split("@")[0])));
+                    } catch (Exception e) {
                         this.settingsController.logger.warning("Exception occured: " + e.toString());
                     }
                 } else {
@@ -838,8 +848,8 @@ public class TransactionController {
                 this.balanceList = balanceModelList;
             }
 
-        }catch(Exception e){
-            this.settingsController.logger.warning("Exception occured: " +e.toString());
+        } catch (Exception e) {
+            this.settingsController.logger.warning("Exception occured: " + e.toString());
         }
     }
 
@@ -889,9 +899,27 @@ public class TransactionController {
         return dateFormat.format(date);
     }
 
+    public String convertTimeStampYesterdayToString(long timeStamp) {
+        Date date = new Date(timeStamp * 1000L);
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
+        return dateFormat.format(date);
+    }
+
     public String convertTimeStampWithoutTimeToString(long timeStamp) {
         Date date = new Date(timeStamp * 1000L);
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T23:59:59'");
+        return dateFormat.format(date);
+    }
+
+    public String convertTimeStampToCointracking(long timeStamp) {
+        Date date = new Date(timeStamp * 1000L);
+        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy 23:59:59");
+        return dateFormat.format(date);
+    }
+
+    public String convertTimeStampToCointrackingReal(long timeStamp) {
+        Date date = new Date(timeStamp * 1000L);
+        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         return dateFormat.format(date);
     }
 
@@ -917,7 +945,7 @@ public class TransactionController {
         return amountAndCoin.split("@");
     }
 
-    public void showNoDataWindow(){
+    public void showNoDataWindow() {
         Parent root = null;
         try {
 
@@ -954,5 +982,8 @@ public class TransactionController {
 
         infoView.show();
     }
-    static class Delta { double x, y; }
+
+    static class Delta {
+        double x, y;
+    }
 }
