@@ -53,7 +53,7 @@ public class TransactionController {
     public JLabel jl;
     public Process defidProcess;
     private Boolean classSingleton = true;
-    private final TreeMap<String,  ImpermanentLossModel> impermanentLossList = new TreeMap<>();
+    public  TreeMap<String,  ImpermanentLossModel> impermanentLossList = new TreeMap<>();
 
     public TransactionController() {
         if (classSingleton) {
@@ -61,9 +61,43 @@ public class TransactionController {
             this.transactionList = getLocalTransactionList();
             this.localBlockCount = getLocalBlockCount();
             getLocalBalanceList();
+            calcImpermanentLoss();
         }
     }
 
+    public void calcImpermanentLoss(){
+        for (TransactionModel transaction : transactionList) {
+            if ((transaction.typeProperty.getValue().equals("AddPoolLiquidity") | transaction.typeProperty.getValue().equals("RemovePoolLiquidity")) && transaction.cryptoCurrencyProperty.getValue().contains("-")) {
+                TransactionModel coin1 = null;
+                TransactionModel coin2 = null;
+                for (int i = 0; i < transactionList.size(); i++) {
+                    if(transactionList.get(i).blockHeightProperty.getValue() >transaction.blockHeightProperty.getValue()) break;
+
+                    if (transactionList.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue()) && !transactionList.get(i).cryptoCurrencyProperty.getValue().contains("-")) {
+
+                        if(coin1 == null && transactionList.get(i).cryptoCurrencyProperty.getValue().equals("DFI")){
+                            coin1 = transactionList.get(i);
+                        }
+                        else if(coin2 == null){
+                            coin2 = transactionList.get(i);
+                        }
+                        if(coin1 != null && coin2 != null) {
+                            if (!impermanentLossList.containsKey(transaction.cryptoCurrencyProperty.getValue())) {
+                                impermanentLossList.put(transaction.cryptoCurrencyProperty.getValue(), new ImpermanentLossModel(coin1.cryptoValueProperty.getValue() * -1, coin2.cryptoValueProperty.getValue() * -1));
+                            }
+                            else if (transaction.typeProperty.getValue().equals("AddPoolLiquidity")) {
+                                impermanentLossList.get(transaction.cryptoCurrencyProperty.getValue()).addPooCoins(coin1.cryptoValueProperty.getValue() * -1, coin2.cryptoValueProperty.getValue() * -1);
+
+                            } else if (transaction.typeProperty.getValue().equals("RemovePoolLiquidity")) {
+                                impermanentLossList.get(transaction.cryptoCurrencyProperty.getValue()).removePooCoins(coin1.cryptoValueProperty.getValue() * -1, coin2.cryptoValueProperty.getValue() * -1);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
     public void clearTransactionList() {
         transactionList.clear();
     }
@@ -451,16 +485,6 @@ public class TransactionController {
                     if (transAction.typeProperty.getValue().equals("Rewards") | transAction.typeProperty.getValue().equals("Commission")) {
                         addToPortfolioModel(transAction);
                     }
-
-                    if ((transAction.typeProperty.getValue().equals("AddPoolLiquidity") | transAction.typeProperty.getValue().equals("RemovePoolLiquidity")) && !transAction.cryptoCurrencyProperty.getValue().contains("-")) {
-
-                        if (impermanentLossList.containsKey(transAction.poolIDProperty.getValue())) {
-
-                        } else {
-
-                        }
-                    }
-
 
                     line = reader.readLine();
                 }
