@@ -176,10 +176,12 @@ public class SettingsController {
             }
 
             try {
-                if(configProps.getProperty("SelectedLanguage").contains("Espa")){
+                if(configProps.getProperty("SelectedLanguage").contains("Espa")) {
                     this.selectedLanguage.setValue("Espa\u00F1ol");
+                }
+                else if(configProps.getProperty("SelectedLanguage").contains("Norwegian")){
+                    this.selectedLanguage.setValue("Norwegian (Bokm\u00E5l)");
                 }else{
-
                     this.selectedLanguage.setValue(configProps.getProperty("SelectedLanguage"));
                 }
                 this.selectedFiatCurrency.setValue(configProps.getProperty("SelectedFiatCurrency"));
