@@ -13,10 +13,7 @@ import javafx.scene.control.Tooltip;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import portfolio.models.BalanceModel;
-import portfolio.models.PoolPairModel;
-import portfolio.models.PortfolioModel;
-import portfolio.models.TransactionModel;
+import portfolio.models.*;
 import portfolio.services.ExportService;
 import portfolio.views.MainView;
 
@@ -416,6 +413,30 @@ public class MainViewController {
 
         this.poolPairModelList.sort(Comparator.comparing(PoolPairModel::getBlockTimeValue));
         this.poolPairList.clear();
+
+
+        // add Impermanent Loss
+        this.poolPairModelList.add(new PoolPairModel("", 0.0, 0.0, 0.0, "", 0.0, 0.0, 0.0, 0.0, ""));
+        this.poolPairModelList.add(new PoolPairModel("Impermanent Loss", 0.0, 0.0, 0.0, "Value input coins", 0.0, 0.0, 0.0, 0.0, "Value current coins"));
+
+        double currentDFIPrice = CoinPriceController.getInstance().getPriceFromTimeStamp("DFI" + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
+        TreeMap<String, ImpermanentLossModel> ilList = TransactionController.getInstance().impermanentLossList;
+        for(String key: ilList.keySet()){
+            double currentCoin2Price = CoinPriceController.getInstance().getPriceFromTimeStamp(key.split("-")[0] + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
+
+            double valueInputCoins = currentDFIPrice*ilList.get(key).PoolCoin1+currentCoin2Price*ilList.get(key).PoolCoin2;
+            double valuePool = 1.0;
+            for (BalanceModel balanceModel : this.transactionController.getBalanceList()) {
+                if (!balanceModel.getToken2NameValue().equals("-")) {
+                    if(key.split("-")[0].equals(balanceModel.getToken1Name().getValue())){
+                        valuePool = balanceModel.getFiat1Value() + balanceModel.getFiat1Value();
+                    }
+                }
+            }
+            double lossValue = -1* valueInputCoins/valuePool;
+            this.poolPairModelList.add(new PoolPairModel(key + " (" +  String.format(localeDecimal, "%,.2f", lossValue) + "%)", 0.0, 0.0, 0.0,  String.format(localeDecimal, "%,1.8f", valueInputCoins), 0.0, 0.0, 0.0, 0.0, String.format(localeDecimal, "%,1.8f", valuePool)));
+        }
+
         this.poolPairList.addAll(this.poolPairModelList);
     }
 
