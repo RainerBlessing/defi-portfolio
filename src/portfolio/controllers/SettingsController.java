@@ -57,6 +57,8 @@ public class SettingsController {
     public boolean showDisclaim = true;
     public boolean selectedLaunchDefid = false;
     public boolean selectedLaunchSync = true;
+    public boolean checkCointracking = false;
+
 
     public StringProperty lastUpdate = new SimpleStringProperty("-");
     //Combo box filling
@@ -81,7 +83,7 @@ public class SettingsController {
     //All relevant paths and files
     public String strTransactionData = "transactionData.portfolio";
     public String strCoinPriceData = "coinPriceData.portfolio";
-    public String[] languages = new String[]{"English", "Deutsch","Espa\u00F1ol","Norwegian (Bokm\u00E5l)"};
+    public String[] languages = new String[]{"English", "Deutsch","Espa\u00F1ol","Bokm\u00E5l"};
     public String[] currencies = new String[]{"EUR", "USD", "CHF"};
     public String[] decSeperators = new String[]{".", ","};
     public String[] csvSeperators = new String[]{",", ";"};
@@ -134,7 +136,7 @@ public class SettingsController {
             case "Espa\u00F1ol":
                 fileName += "es.json";
                 break;
-            case "Norwegian (Bokm\u00E5l)":
+            case "Bokm\u00E5l":
                 fileName += "nb.json";
                 break;
             default:
@@ -179,8 +181,8 @@ public class SettingsController {
                 if(configProps.getProperty("SelectedLanguage").contains("Espa")) {
                     this.selectedLanguage.setValue("Espa\u00F1ol");
                 }
-                else if(configProps.getProperty("SelectedLanguage").contains("Norwegian")){
-                    this.selectedLanguage.setValue("Norwegian (Bokm\u00E5l)");
+                else if(configProps.getProperty("SelectedLanguage").contains("Bokm")){
+                    this.selectedLanguage.setValue("Bokm\u00E5l");
                 }else{
                     this.selectedLanguage.setValue(configProps.getProperty("SelectedLanguage"));
                 }
