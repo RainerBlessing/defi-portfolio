@@ -433,7 +433,7 @@ public class MainViewController {
                     }
                 }
             }
-            double lossValue = -1* valueInputCoins/valuePool;
+            double lossValue = ((valuePool/valueInputCoins)-1)*100;
             this.poolPairModelList.add(new PoolPairModel(key + " (" +  String.format(localeDecimal, "%,.2f", lossValue) + "%)", 0.0, 0.0, 0.0,  String.format(localeDecimal, "%,1.8f", valueInputCoins), 0.0, 0.0, 0.0, 0.0, String.format(localeDecimal, "%,1.8f", valuePool)));
         }
 

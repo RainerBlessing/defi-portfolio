@@ -89,7 +89,7 @@ public class TransactionController {
                                 impermanentLossList.get(transaction.cryptoCurrencyProperty.getValue()).addPooCoins(coin1.cryptoValueProperty.getValue() * -1, coin2.cryptoValueProperty.getValue() * -1);
 
                             } else if (transaction.typeProperty.getValue().equals("RemovePoolLiquidity")) {
-                                impermanentLossList.get(transaction.cryptoCurrencyProperty.getValue()).removePooCoins(coin1.cryptoValueProperty.getValue() * -1, coin2.cryptoValueProperty.getValue() * -1);
+                                impermanentLossList.get(transaction.cryptoCurrencyProperty.getValue()).removePooCoins(coin1.cryptoValueProperty.getValue(), coin2.cryptoValueProperty.getValue());
                             }
                             break;
                         }
