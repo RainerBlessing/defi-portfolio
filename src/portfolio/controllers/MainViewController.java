@@ -417,7 +417,7 @@ public class MainViewController {
 
         if (checkValues & TransactionController.getInstance().impermanentLossList.size()>0) {
 
-            // add Impermanent Loss
+            // add Impermanent Loss 
             this.poolPairModelList.add(new PoolPairModel("", 0.0, 0.0, 0.0, "", 0.0, 0.0, 0.0, 0.0, ""));
             this.poolPairModelList.add(new PoolPairModel("Impermanent Loss", 0.0, 0.0, 0.0, "Value input coins" + " (" + SettingsController.getInstance().selectedFiatCurrency.getValue() + ")", 0.0, 0.0, 0.0, 0.0, "Value current coins" + " (" + SettingsController.getInstance().selectedFiatCurrency.getValue() + ")"));
 
