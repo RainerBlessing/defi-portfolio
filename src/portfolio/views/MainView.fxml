@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="697.0" minWidth="1000.0" prefHeight="701.0" prefWidth="1270.0" stylesheets="@../styles/darkMode.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.MainView">
+<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="697.0" minWidth="1000.0" prefHeight="701.0" prefWidth="1270.0" stylesheets="@../styles/darkMode.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.MainView">
     <AnchorPane fx:id="leftAnchorPane" layoutX="2.0" layoutY="2.0" prefHeight="699.0" prefWidth="197.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.topAnchor="1.0">
         <GridPane alignment="CENTER" layoutX="3.0" layoutY="6.0" prefHeight="632.0" prefWidth="191.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <columnConstraints>

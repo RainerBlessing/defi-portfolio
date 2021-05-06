@@ -53,7 +53,7 @@ public class TransactionController {
     public JLabel jl;
     public Process defidProcess;
     private Boolean classSingleton = true;
-    public  TreeMap<String,  ImpermanentLossModel> impermanentLossList = new TreeMap<>();
+    public TreeMap<String, ImpermanentLossModel> impermanentLossList = new TreeMap<>();
 
     public TransactionController() {
         if (classSingleton) {
@@ -65,27 +65,28 @@ public class TransactionController {
         }
     }
 
-    public void calcImpermanentLoss(){
+    public void calcImpermanentLoss() {
+
+        impermanentLossList.clear();
         for (TransactionModel transaction : transactionList) {
             if ((transaction.typeProperty.getValue().equals("AddPoolLiquidity") | transaction.typeProperty.getValue().equals("RemovePoolLiquidity")) && transaction.cryptoCurrencyProperty.getValue().contains("-")) {
                 TransactionModel coin1 = null;
                 TransactionModel coin2 = null;
                 for (int i = 0; i < transactionList.size(); i++) {
-                    if(transactionList.get(i).blockHeightProperty.getValue() >transaction.blockHeightProperty.getValue()) break;
+                    if (transactionList.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
+                        break;
 
                     if (transactionList.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue()) && !transactionList.get(i).cryptoCurrencyProperty.getValue().contains("-")) {
 
-                        if(coin1 == null && transactionList.get(i).cryptoCurrencyProperty.getValue().equals("DFI")){
+                        if (coin1 == null && transactionList.get(i).cryptoCurrencyProperty.getValue().equals("DFI")) {
                             coin1 = transactionList.get(i);
-                        }
-                        else if(coin2 == null){
+                        } else if (coin2 == null) {
                             coin2 = transactionList.get(i);
                         }
-                        if(coin1 != null && coin2 != null) {
+                        if (coin1 != null && coin2 != null) {
                             if (!impermanentLossList.containsKey(transaction.cryptoCurrencyProperty.getValue())) {
                                 impermanentLossList.put(transaction.cryptoCurrencyProperty.getValue(), new ImpermanentLossModel(coin1.cryptoValueProperty.getValue() * -1, coin2.cryptoValueProperty.getValue() * -1));
-                            }
-                            else if (transaction.typeProperty.getValue().equals("AddPoolLiquidity")) {
+                            } else if (transaction.typeProperty.getValue().equals("AddPoolLiquidity")) {
                                 impermanentLossList.get(transaction.cryptoCurrencyProperty.getValue()).addPooCoins(coin1.cryptoValueProperty.getValue() * -1, coin2.cryptoValueProperty.getValue() * -1);
 
                             } else if (transaction.typeProperty.getValue().equals("RemovePoolLiquidity")) {
@@ -98,6 +99,7 @@ public class TransactionController {
             }
         }
     }
+
     public void clearTransactionList() {
         transactionList.clear();
     }
@@ -132,18 +134,18 @@ public class TransactionController {
                         break;
                     case "linux":
                         int notfound = 0;
-                        try{
+                        try {
                             defidProcess = Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
-                        }catch(Exception e){
+                        } catch (Exception e) {
                             notfound++;
                         }
-                        try{
+                        try {
                             defidProcess = Runtime.getRuntime().exec("/usr/bin/konsole -e " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
-                        }catch(Exception e){
+                        } catch (Exception e) {
                             notfound++;
                         }
-                        if(notfound==2){
-                            JOptionPane.showMessageDialog(null,"Could not found /usr/bin/x-terminal-emulator or\n /usr/bin/konsole","Terminal not found", JOptionPane.ERROR_MESSAGE);
+                        if (notfound == 2) {
+                            JOptionPane.showMessageDialog(null, "Could not found /usr/bin/x-terminal-emulator or\n /usr/bin/konsole", "Terminal not found", JOptionPane.ERROR_MESSAGE);
                         }
 
                         break;
@@ -311,14 +313,13 @@ public class TransactionController {
                 JSONArray transactionJson = (JSONArray) jsonObject.get("result");
                 for (Object transaction : transactionJson) {
                     JSONObject transactionJ = (JSONObject) transaction;
-                    if(((transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", "")).split(",")).length >1){
                     for (String amount : (transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", "")).split(",")) {
                         if (transactionJ.get("poolID") != null) {
                             transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), amount, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), transactionJ.get("poolID").toString(), "", this));
                         } else {
                             transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), amount, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), "", transactionJ.get("txid").toString(), this));
                         }
-                    }}
+                    }
                 }
                 restBlockCount = blockCount - i * blockDepth;
             }
@@ -332,7 +333,6 @@ public class TransactionController {
             JSONArray transactionJson = (JSONArray) jsonObject.get("result");
             for (Object transaction : transactionJson) {
                 JSONObject transactionJ = (JSONObject) transaction;
-                if(((transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", "")).split(",")).length >1){
                 for (String amount : (transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", "")).split(",")) {
 
                     if (transactionJ.get("poolID") != null) {
@@ -340,8 +340,6 @@ public class TransactionController {
                     } else {
                         transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), amount, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), "", transactionJ.get("txid").toString(), this));
                     }
-                }
-
                 }
             }
         } catch (Exception e) {
@@ -718,6 +716,7 @@ public class TransactionController {
                     sb = null;
                 }
                 writer.close();
+                calcImpermanentLoss();
                 if (!this.settingsController.getPlatform().equals("mac")) this.frameUpdate.dispose();
                 this.localBlockCount = this.transactionList.get(this.transactionList.size() - 1).blockHeightProperty.getValue();
                 stopServer();
