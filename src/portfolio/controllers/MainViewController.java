@@ -423,8 +423,6 @@ public class MainViewController {
 
             double currentDFIPrice = CoinPriceController.getInstance().getPriceFromTimeStamp("DFI" + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
             TreeMap<String, ImpermanentLossModel> ilList = TransactionController.getInstance().impermanentLossList;
-            int counter = 0;
-            double percentageTotal = 0.0;
             double inputTotal = 0.0;
             double currentTotal = 0.0;
             for (String key : ilList.keySet()) {
@@ -440,14 +438,12 @@ public class MainViewController {
                     }
                 }
                 double lossValue = ((valuePool / valueInputCoins) - 1) * 100;
-                percentageTotal += lossValue;
                 inputTotal += valueInputCoins;
                 currentTotal += valuePool;
                 this.poolPairModelList.add(new PoolPairModel(String.format(localeDecimal, "%,.2f", lossValue) + "%" + " (" + key + ")", 0.0, 0.0, 0.0, String.format(localeDecimal, "%,1.2f", valueInputCoins), 0.0, 0.0, 0.0, 0.0, String.format(localeDecimal, "%,1.2f", valuePool)));
-                counter++;
             }
 
-            this.poolPairModelList.add(new PoolPairModel(String.format(localeDecimal, "%,.2f", percentageTotal / counter) + "%" + " (Total)", 0.0, 0.0, 0.0, String.format(localeDecimal, "%,1.2f", inputTotal), 0.0, 0.0, 0.0, 0.0, String.format(localeDecimal, "%,1.2f", currentTotal)));
+            this.poolPairModelList.add(new PoolPairModel(String.format(localeDecimal, "%,.2f", ((currentTotal / inputTotal) - 1) * 100) + "%" + " (Total)", 0.0, 0.0, 0.0, String.format(localeDecimal, "%,1.2f", inputTotal), 0.0, 0.0, 0.0, 0.0, String.format(localeDecimal, "%,1.2f", currentTotal)));
             this.poolPairList.addAll(this.poolPairModelList);
 
         }
