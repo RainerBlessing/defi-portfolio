@@ -54,6 +54,7 @@ public class SettingsController {
     public ObjectProperty<JSONObject> translationList = new SimpleObjectProperty();
     public String selectedIntervallInt = "Daily";
     public StringProperty selectedSource = new SimpleStringProperty("Active Wallet");
+    public StringProperty exportCointracingVariante = new SimpleStringProperty();
     public boolean showDisclaim = true;
     public boolean selectedLaunchDefid = false;
     public boolean selectedLaunchSync = true;
@@ -66,17 +67,18 @@ public class SettingsController {
     public String[] plotCurrency = new String[]{"Coin", "Daily Fiat", "Current Fiat"};
     public String[] styleModes = new String[]{"Light Mode", "Dark Mode"};
     public String[] datasources = new String[]{"Active Wallet", "All Wallets"};
+    public String[] cointrackingExportVariants = new String[]{"Cumulate All", "Cumulate None","Cumulate Pool Pair","Cumulate Rewards and Commisions"};
 
-    public String USER_HOME_PATH = System.getProperty("user.home");
+    public String USER_HOME_PATH = System.getProperty("user.home").replace("\\","/");
     public String BINARY_FILE_NAME = getPlatform().equals("win") ? "defid.exe" : "defid";
-    public String BINARY_FILE_PATH = System.getProperty("user.dir") + "/PortfolioData/" + BINARY_FILE_NAME;
-    public String CONFIG_FILE_PATH = System.getProperty("user.home") + "/.defi/defi.conf";
+    public String BINARY_FILE_PATH = System.getProperty("user.dir").replace("\\","/") + "/PortfolioData/" + BINARY_FILE_NAME;
+    public String CONFIG_FILE_PATH = System.getProperty("user.home").replace("\\","/") + "/.defi/defi.conf";
     public String DEFI_PORTFOLIO_HOME = getPlatform().equals("win") ?
-            System.getenv("APPDATA") + "/defi-portfolio/" : //WIN PATH
-            getPlatform().equals("mac") ? System.getProperty("user.dir") + "/PortfolioData/" : //MAC PATH
-                    getPlatform().equals("linux") ? System.getProperty("user.dir") + "/PortfolioData/" : //LINUX PATH;
+            System.getenv("APPDATA").replace("\\","/") + "/defi-portfolio/" : //WIN PATH
+            getPlatform().equals("mac") ? System.getProperty("user.dir").replace("\\","/") + "/PortfolioData/" : //MAC PATH
+                    getPlatform().equals("linux") ? System.getProperty("user.dir").replace("\\","/") + "/PortfolioData/" : //LINUX PATH;
                             "";
-    public String PORTFOLIO_CONFIG_FILE_PATH = System.getProperty("user.dir") + "/PortfolioData/defi.conf";
+    public String PORTFOLIO_CONFIG_FILE_PATH = System.getProperty("user.dir").replace("\\","/") + "/PortfolioData/defi.conf";
 
     public String SETTING_FILE_PATH = DEFI_PORTFOLIO_HOME + "settings.csv";
     public String PORTFOLIO_FILE_PATH = DEFI_PORTFOLIO_HOME + "portfolioData.portfolio";
@@ -125,7 +127,7 @@ public class SettingsController {
 
         JSONParser jsonParser = new JSONParser();
 
-        String fileName = System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/translations/";
+        String fileName = System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/portfolio/translations/";
         switch (selectedLanguage.getValue()) {
             case "English":
                 fileName += "en.json";
@@ -192,6 +194,7 @@ public class SettingsController {
                 this.selectedCoin.setValue(configProps.getProperty("SelectedCoin"));
                 this.selectedPlotCurrency.setValue(configProps.getProperty("SelectedPlotCurrency"));
                 this.selectedStyleMode.setValue(configProps.getProperty("SelectedStyleMode"));
+                this.exportCointracingVariante.setValue(configProps.getProperty("ExportCointrackinVariante"));
                 this.dateFrom.setValue(LocalDate.parse(configProps.getProperty("SelectedDate")));
                 if (!configProps.getProperty("LastUsedExportPath").equals(""))
                     this.lastExportPath = configProps.getProperty("LastUsedExportPath");
@@ -235,12 +238,13 @@ public class SettingsController {
             csvWriter.append("SelectedPlotCurrency=" + this.selectedPlotCurrency.getValue()).append("\n");
             csvWriter.append("SelectedStyleMode=" + this.selectedStyleMode.getValue()).append("\n");
             csvWriter.append("SelectedDate=" + this.dateFrom.getValue()).append("\n");
-            csvWriter.append("LastUsedExportPath=" + this.lastExportPath).append("\n");
+            csvWriter.append("LastUsedExportPath=" + this.lastExportPath.replace("\\","/")).append("\n");
             csvWriter.append("ShowDisclaim=" + this.showDisclaim).append("\n");
             csvWriter.append("SelectedLaunchDefid=" + this.selectedLaunchDefid).append("\n");
             csvWriter.append("SelectedLaunchSync=" + this.selectedLaunchSync).append("\n");
             csvWriter.append("SelectedSource=" + this.selectedSource.getValue()).append("\n");
             csvWriter.append("LastUpdate=" + this.lastUpdate.getValue()).append("\n");
+            csvWriter.append("ExportCointrackinVariante=" + this.exportCointracingVariante.getValue()).append("\n");
             csvWriter.flush();
             csvWriter.close();
         } catch (IOException e) {

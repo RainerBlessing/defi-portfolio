@@ -44,6 +44,7 @@ public class SettingsView implements Initializable {
     public Label lblCloseDefid;
     public Label lblOpenProjectFolder;
     public Label lblOpenInstallationFolder;
+    public Label labelCointrackingExport;
     public Button btnCloseDefid;
     public Button btnOpenProjectFolder;
     public Button btnOpenInstallationFolder;
@@ -54,7 +55,7 @@ public class SettingsView implements Initializable {
     @FXML
     public Button btnDeleteData;
     @FXML
-    private ComboBox<String> cmbLanguage, cmbPrefCurrency, cmbDecSeperator, cmbCSVSeperator, cmbPrefferedStyle, dataSourceCmb,cmbDefaultDataSource;
+    private ComboBox<String> cmbLanguage, cmbPrefCurrency, cmbDecSeperator, cmbCSVSeperator, cmbPrefferedStyle, dataSourceCmb,cmbDefaultDataSource,cointrackingExportCmb;
     SettingsController settingsController = SettingsController.getInstance();
 
     public void btnSaveAndApplyPressed() {
@@ -94,12 +95,15 @@ public class SettingsView implements Initializable {
         this.lblLaunchDefid.setText(this.settingsController.translationList.getValue().get("LaunchDefid").toString());
         this.cmbLanguage.getItems().addAll(this.settingsController.languages);
         this.cmbLanguage.valueProperty().bindBidirectional(this.settingsController.selectedLanguage);
+        this.cointrackingExportCmb.valueProperty().bindBidirectional(this.settingsController.exportCointracingVariante);
+        this.cointrackingExportCmb.getItems().addAll(this.settingsController.cointrackingExportVariants);
+
         this.lblDeleteData.setText(this.settingsController.translationList.getValue().get("DeleteLabel").toString());
         this.btnDeleteData.setText(this.settingsController.translationList.getValue().get("DeleteButton").toString());
+        this.labelCointrackingExport.setText(this.settingsController.translationList.getValue().get("CointrackingLabel").toString());
 
         this.cmbPrefCurrency.getItems().addAll(this.settingsController.currencies);
         this.cmbPrefCurrency.valueProperty().bindBidirectional(this.settingsController.selectedFiatCurrency);
-
 //        this.cmbDecSeperator.getItems().addAll(this.settingsController.decSeperators);
 //        this.cmbDecSeperator.valueProperty().bindBidirectional(this.settingsController.selectedDecimal);
 //
@@ -136,6 +140,7 @@ public class SettingsView implements Initializable {
         this.btnCloseDefid.setText(this.settingsController.translationList.getValue().get("CloseButton").toString());
         this.btnOpenProjectFolder.setText(this.settingsController.translationList.getValue().get("Open").toString());
         this.btnOpenInstallationFolder.setText(this.settingsController.translationList.getValue().get("Open").toString());
+        this.labelCointrackingExport.setText(this.settingsController.translationList.getValue().get("CointrackingLabel").toString());
     }
 
     private final Rectangle back = new Rectangle(35, 15, Color.RED);
@@ -226,7 +231,7 @@ public class SettingsView implements Initializable {
 
         if (SettingsController.getInstance().getPlatform().equals("linux")) {
             // Workaround for Linux because "Desktop.getDesktop().browse()" doesn't work on some Linux implementations
-            File file = new File(System.getProperty("user.dir"));
+            File file = new File(System.getProperty("user.dir").replace("\\","/"));
             try {
                 Runtime.getRuntime().exec(new String[]{"xdg-open", file.getAbsolutePath()});
             } catch (IOException e) {
@@ -234,7 +239,7 @@ public class SettingsView implements Initializable {
             }
         } else {
             try {
-                Desktop.getDesktop().open(new File(System.getProperty("user.dir")));
+                Desktop.getDesktop().open(new File(System.getProperty("user.dir").replace("\\","/")));
             } catch (IOException e) {
                 SettingsController.getInstance().logger.warning(e.toString());
             }

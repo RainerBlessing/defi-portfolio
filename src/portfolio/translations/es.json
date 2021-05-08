@@ -75,5 +75,6 @@
   "CloseButton": "cerrar",
   "Open": "Abrir",
   "OpenInstallFolder": "Abrir la carpeta de instalaci\u00F3n",
-  "OpenProjectFolder": "Abrir la carpeta del proyecto"
+  "OpenProjectFolder": "Abrir la carpeta del proyecto",
+  "CointrackingLabel": "Cointracking exportar"
 }

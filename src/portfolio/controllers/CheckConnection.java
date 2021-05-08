@@ -25,7 +25,7 @@ public class CheckConnection extends TimerTask {
                             } else {
                                 SettingsController.getInstance().runCheckTimer = false;
                                 SettingsController.getInstance().errorBouncer = 0;
-                                File file = new File(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
+                                File file = new File(System.getProperty("user.dir".replace("\\","/")) + "/PortfolioData/" + "update.portfolio");
                                 if (file.exists()) file.delete();
                             }
                         } else {
@@ -34,7 +34,7 @@ public class CheckConnection extends TimerTask {
                                 SettingsController.getInstance().errorBouncer = 0;
                                 this.mainViewController.btnUpdateDatabasePressed();
                                 this.mainViewController.plotUpdate(this.mainViewController.mainView.tabPane.getSelectionModel().getSelectedItem().getId());
-                                File file = new File(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
+                                File file = new File(System.getProperty("user.dir").replace("\\","/") + "/PortfolioData/" + "update.portfolio");
                                 if (file.exists()) file.delete();
                             }else{
                                 int currentBlockCount = Integer.parseInt(this.mainViewController.transactionController.getBlockCountRpc());
@@ -43,7 +43,7 @@ public class CheckConnection extends TimerTask {
                                 if(currentBlockCount>maxBlockCount)currentBlockCount=maxBlockCount;
                                 if(SettingsController.getInstance().getPlatform().equals("mac")){
                                     try {
-                                        FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio");
+                                        FileWriter myWriter = new FileWriter(System.getProperty("user.dir").replace("\\","/") + "/PortfolioData/"+"update.portfolio");
                                         myWriter.write("<html><body>"+SettingsController.getInstance().translationList.getValue().get("SyncData").toString() + progress+ "% <br>("+currentBlockCount+"/"+maxBlockCount+")</body></html>");
                                         myWriter.close();
                                     } catch (IOException e) {
@@ -59,7 +59,7 @@ public class CheckConnection extends TimerTask {
                                     SettingsController.getInstance().errorBouncer = 0;
                                     this.mainViewController.btnUpdateDatabasePressed();
                                     this.mainViewController.plotUpdate(this.mainViewController.mainView.tabPane.getSelectionModel().getSelectedItem().getId());
-                                    File file = new File(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
+                                    File file = new File(System.getProperty("user.dir").replace("\\","/") + "/PortfolioData/" + "update.portfolio");
                                     if (file.exists()) file.delete();
                                 }
 
