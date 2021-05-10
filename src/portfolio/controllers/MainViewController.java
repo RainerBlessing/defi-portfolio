@@ -9,6 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -780,6 +781,64 @@ public class MainViewController {
     }
 
     public void exportTransactionToExcel(List<TransactionModel> list, String filter) {
+
+        Locale localeDecimal = Locale.GERMAN;
+        if (settingsController.selectedDecimal.getValue().equals(".")) {
+            localeDecimal = Locale.US;
+        }
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("CSV files", "*.csv")
+        );
+        if (new File(this.settingsController.lastExportPath).isDirectory()) {
+            fileChooser.setInitialDirectory(new File(this.settingsController.lastExportPath));
+        }
+
+        Date date = new Date(System.currentTimeMillis());
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        fileChooser.setInitialFileName(dateFormat.format(date) + "_Portfolio_Export_RawData");
+        File selectedFile = fileChooser.showSaveDialog(new Stage());
+
+        if (selectedFile != null) {
+            boolean success;
+            if (filter.equals("DAILY")) {
+                success = this.expService.exportTransactionToExcelDaily(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeperator.getValue());
+            } else if (filter.equals("")) {
+                success = this.expService.exportTransactionToExcel(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeperator.getValue());
+            } else {
+                success = this.expService.exportTransactionToCointracking(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeperator.getValue(), SettingsController.getInstance().exportCointracingVariante.getValue());
+            }
+
+            if (success) {
+                this.settingsController.lastExportPath = selectedFile.getParent().toString();
+                this.settingsController.saveSettings();
+                this.strProgressbar.setValue("Excel successfully exported!");
+                PauseTransition pause = new PauseTransition(Duration.seconds(10));
+                pause.setOnFinished(e -> this.strProgressbar.setValue(null));
+                pause.play();
+            } else {
+                this.strProgressbar.setValue("Error while exporting excel!");
+                PauseTransition pause = new PauseTransition(Duration.seconds(10));
+                pause.setOnFinished(e -> this.strProgressbar.setValue(null));
+                pause.play();
+            }
+        }
+    }
+
+    public void exportTransactionToExcel(TableView<TransactionModel> rawDataTable) {
+        List<TransactionModel> list;
+        String filter;
+        if(SettingsController.getInstance().exportCSVCariante.getValue().equals("Export selected to CSV")){
+            list = rawDataTable.selectionModelProperty().get().getSelectedItems();
+            filter = "";
+        }else if(SettingsController.getInstance().exportCSVCariante.getValue().equals("Export all to CSV"))
+        {
+            list = rawDataTable.getItems();
+            filter = "";
+        }else{
+            list = rawDataTable.getItems();
+            filter = "DAILY";
+        }
 
         Locale localeDecimal = Locale.GERMAN;
         if (settingsController.selectedDecimal.getValue().equals(".")) {

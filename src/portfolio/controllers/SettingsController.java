@@ -51,10 +51,13 @@ public class SettingsController {
     public StringProperty tokenYieldCommissions = new SimpleStringProperty();
     public ObjectProperty<LocalDate> dateFrom = new SimpleObjectProperty("2020-11-30");
     public ObjectProperty<LocalDate> dateTo = new SimpleObjectProperty();
+    public ObjectProperty<LocalDate> exportFrom = new SimpleObjectProperty();
+    public ObjectProperty<LocalDate> exportTo = new SimpleObjectProperty();
     public ObjectProperty<JSONObject> translationList = new SimpleObjectProperty();
     public String selectedIntervallInt = "Daily";
     public StringProperty selectedSource = new SimpleStringProperty("Active Wallet");
     public StringProperty exportCointracingVariante = new SimpleStringProperty();
+    public StringProperty exportCSVCariante = new SimpleStringProperty();
     public boolean showDisclaim = true;
     public boolean selectedLaunchDefid = false;
     public boolean selectedLaunchSync = true;
@@ -68,6 +71,7 @@ public class SettingsController {
     public String[] styleModes = new String[]{"Light Mode", "Dark Mode"};
     public String[] datasources = new String[]{"Active Wallet", "All Wallets"};
     public String[] cointrackingExportVariants = new String[]{"Cumulate All", "Cumulate None","Cumulate Pool Pair","Cumulate Rewards and Commisions"};
+    public String[] csvExportVariants = new String[]{"Export selected to CSV","Export all to CSV","Export all to CSV (Daily cumulated)"};
 
     public String USER_HOME_PATH = System.getProperty("user.home").replace("\\","/");
     public String BINARY_FILE_NAME = getPlatform().equals("win") ? "defid.exe" : "defid";
@@ -195,6 +199,9 @@ public class SettingsController {
                 this.selectedPlotCurrency.setValue(configProps.getProperty("SelectedPlotCurrency"));
                 this.selectedStyleMode.setValue(configProps.getProperty("SelectedStyleMode"));
                 this.exportCointracingVariante.setValue(configProps.getProperty("ExportCointrackinVariante"));
+                this.exportCSVCariante.setValue(configProps.getProperty("ExportCSVVariante"));
+                this.exportFrom.setValue(LocalDate.parse(configProps.getProperty("ExportFrom")));
+                this.exportTo.setValue(LocalDate.parse(configProps.getProperty("ExportTo")));
                 this.dateFrom.setValue(LocalDate.parse(configProps.getProperty("SelectedDate")));
                 if (!configProps.getProperty("LastUsedExportPath").equals(""))
                     this.lastExportPath = configProps.getProperty("LastUsedExportPath");
@@ -245,6 +252,9 @@ public class SettingsController {
             csvWriter.append("SelectedSource=" + this.selectedSource.getValue()).append("\n");
             csvWriter.append("LastUpdate=" + this.lastUpdate.getValue()).append("\n");
             csvWriter.append("ExportCointrackinVariante=" + this.exportCointracingVariante.getValue()).append("\n");
+            csvWriter.append("ExportCSVVariante=" + this.exportCSVCariante.getValue()).append("\n");
+            csvWriter.append("ExportFrom=" + this.exportFrom.getValue()).append("\n");
+            csvWriter.append("ExportTo=" + this.exportTo.getValue()).append("\n");
             csvWriter.flush();
             csvWriter.close();
         } catch (IOException e) {
