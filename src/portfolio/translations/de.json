@@ -76,5 +76,6 @@
   "Open": "\u00D6ffnen",
   "OpenInstallFolder": "\u00D6ffne Installationsordner",
   "OpenProjectFolder": "\u00D6ffne Projektordner",
-  "CointrackingLabel": "Cointracking export"
+  "CointrackingLabel": "Cointracking export",
+  "ExportCointracking": "Exportieren nach Cointracking"
 }

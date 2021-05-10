@@ -76,5 +76,6 @@
   "Open": "Abrir",
   "OpenInstallFolder": "Abrir la carpeta de instalaci\u00F3n",
   "OpenProjectFolder": "Abrir la carpeta del proyecto",
-  "CointrackingLabel": "Cointracking exportar"
+  "CointrackingLabel": "Cointracking exportar",
+  "ExportCointracking": "Exportar a Cointracking"
 }
