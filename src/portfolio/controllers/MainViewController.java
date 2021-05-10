@@ -805,7 +805,7 @@ public class MainViewController {
             } else if (filter.equals("")) {
                 success = this.expService.exportTransactionToExcel(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeperator.getValue());
             } else {
-                success = this.expService.exportTransactionToCointracking(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeperator.getValue(), filter);
+                success = this.expService.exportTransactionToCointracking(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeperator.getValue(), SettingsController.getInstance().exportCointracingVariante.getValue());
             }
 
             if (success) {

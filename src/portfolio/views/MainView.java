@@ -147,12 +147,7 @@ public class MainView implements Initializable {
     public MenuItem menuItemExportSelected = new MenuItem("Export selected to CSV");
     public MenuItem menuItemExportAllSelected = new MenuItem("Export all to CSV");
     public MenuItem menuItemExportAllDailySelected = new MenuItem("Export all to CSV (Daily cumulated)");
-
-    public MenuItem menuItemExportPoolPairAllSelected = new MenuItem("Cumulated Poolpair, Rewards/Commissions and Daily");
-    public MenuItem menuItemExportPoolPairSelected = new MenuItem("Cumulated Poolpair and Daily");
-    public MenuItem menuItemExportAllRewardsSelected = new MenuItem("Cumulated Rewards/Commissions and Daily");
-    public MenuItem menuItemExportDailySelected = new MenuItem("Cumulated Daily");
-
+    public MenuItem menuItemExportCointracking = new MenuItem("Export to Cointracking");
 
     public MenuItem menuItemCopySelectedPlot = new MenuItem("Copy");
     public MenuItem menuItemCopyHeaderSelectedPlot = new MenuItem("Copy with header");
@@ -394,8 +389,8 @@ public class MainView implements Initializable {
 
         settingsStage.show();
 
-        java.io.File darkMode = new File(System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
-        java.io.File lightMode = new File(System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
+        java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
+        java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
         if (this.mainViewController.settingsController.selectedStyleMode.getValue().equals("Dark Mode")) {
             settingsStage.getScene().getStylesheets().add(darkMode.toURI().toString());
         } else {
@@ -420,8 +415,8 @@ public class MainView implements Initializable {
         this.mainViewController.mainView = this;
         updateLanguage();
 
-        coinImageRewards.setImage(new Image(new File(System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
-        coinImageCommissions.setImage(new Image(new File(System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
+        coinImageRewards.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
+        coinImageCommissions.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
         updateStylesheet();
 
         this.mainViewController.settingsController.selectedStyleMode.addListener(style -> updateStylesheet());
@@ -445,7 +440,7 @@ public class MainView implements Initializable {
             Timer checkTimer = new Timer("");
             if (SettingsController.getInstance().getPlatform().equals("mac")) {
                 try {
-                    FileWriter myWriter = new FileWriter(System.getProperty("user.dir").replace("\\","/") + "/PortfolioData/" + "update.portfolio");
+                    FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
                     myWriter.write(this.mainViewController.settingsController.translationList.getValue().get("ConnectNode").toString());
                     myWriter.close();
                     try {
@@ -516,8 +511,8 @@ public class MainView implements Initializable {
 
             this.updateHeader();
             this.mainViewController.settingsController.saveSettings();
-            coinImageRewards.setImage(new Image(new File(System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
-            coinImageCommissions.setImage(new Image(new File(System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
+            coinImageRewards.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
+            coinImageCommissions.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
         });
 
         this.cmbCoinsCom.getItems().addAll(this.mainViewController.settingsController.cryptoCurrencies);
@@ -1138,25 +1133,14 @@ public class MainView implements Initializable {
         menuItemExportSelected.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.selectionModelProperty().get().getSelectedItems(), ""));
         menuItemExportAllSelected.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.getItems(), ""));
         menuItemExportAllDailySelected.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.getItems(), "DAILY"));
-          menuItemExportPoolPairAllSelected.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.getItems(), "POOLPAIR+ALL"));
-          menuItemExportPoolPairSelected.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.getItems(), "POOLPAIR"));
-          menuItemExportAllRewardsSelected.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.getItems(), "ALL"));
-          menuItemExportDailySelected.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.getItems(), "DAY"));
-
+        menuItemExportCointracking.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.getItems(), "COIN"));
 
         contextMenuRawData.getItems().add(menuItemCopySelected);
         contextMenuRawData.getItems().add(menuItemCopyHeaderSelected);
         contextMenuRawData.getItems().add(menuItemExportSelected);
         contextMenuRawData.getItems().add(menuItemExportAllSelected);
         contextMenuRawData.getItems().add(menuItemExportAllDailySelected);
-
-        Menu cointracking = new Menu("Export to Cointracking");
-        cointracking.getItems().add(menuItemExportPoolPairAllSelected);
-        cointracking.getItems().add(menuItemExportPoolPairSelected);
-        cointracking.getItems().add(menuItemExportAllRewardsSelected);
-        cointracking.getItems().add(menuItemExportDailySelected);
-
-        contextMenuRawData.getItems().add(cointracking);
+        contextMenuRawData.getItems().add(menuItemExportCointracking);
 
         this.rawDataTable.contextMenuProperty().set(contextMenuRawData);
     }
@@ -1181,8 +1165,8 @@ public class MainView implements Initializable {
 
     private void updateStylesheet() {
 
-        java.io.File darkMode = new File(System.getProperty("user.dir".replace("\\","/")) + "/defi-portfolio/src/portfolio/styles/darkMode.css");
-        java.io.File lightMode = new File(System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
+        java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
+        java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
         this.mainAnchorPane.getStylesheets().clear();
         if (this.helpStage != null) this.helpStage.getScene().getStylesheets().clear();
         if (this.settingsStage != null) this.settingsStage.getScene().getStylesheets().clear();
@@ -1319,15 +1303,15 @@ public class MainView implements Initializable {
             infoView.setX(mouseEvent.getScreenX() + dragDelta.x);
             infoView.setY(mouseEvent.getScreenY() + dragDelta.y);
         });
-        infoView.getIcons().add(new Image(new File(System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/icons/settings.png").toURI().toString()));
+        infoView.getIcons().add(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/settings.png").toURI().toString()));
         infoView.setTitle(SettingsController.getInstance().translationList.getValue().get("Settings").toString());
         infoView.setScene(scene);
 
         if (SettingsController.getInstance().selectedStyleMode.getValue().equals("Dark Mode")) {
-            java.io.File darkMode = new File(System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
+            java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
             infoView.getScene().getStylesheets().add(darkMode.toURI().toString());
         } else {
-            java.io.File lightMode = new File(System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
+            java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
             infoView.getScene().getStylesheets().add(lightMode.toURI().toString());
         }
 

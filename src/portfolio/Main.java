@@ -31,13 +31,13 @@ public class Main extends Application {
 
         final Delta dragDelta = new Delta();
         stage.setTitle("DeFi-Portfolio " + SettingsController.getInstance().Version);
-        stage.getIcons().add(new Image(new File( System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/icons/DefiIcon.png").toURI().toString()));
+        stage.getIcons().add(new Image(new File( System.getProperty("user.dir") + "/defi-portfolio/src/icons/DefiIcon.png").toURI().toString()));
         stage.setScene(scene);
         stage.setMinHeight(700);
         stage.setMinWidth(1200);
         stage.show();
         // Stop Splashsccreen
-        File file = new File(System.getProperty("user.dir").replace("\\","/")+"/PortfolioData/" +"splash.portfolio");
+        File file = new File(System.getProperty("user.dir")+"/PortfolioData/" +"splash.portfolio");
         if(file.exists())file.delete();
 
         stage.setOnCloseRequest(we -> {
@@ -67,10 +67,10 @@ public class Main extends Application {
             stageDisclaimer.setAlwaysOnTop(true);
 
             if (SettingsController.getInstance().selectedStyleMode.getValue().equals("Dark Mode")) {
-                java.io.File darkMode = new File(System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
+                java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
                 stageDisclaimer.getScene().getStylesheets().add(darkMode.toURI().toString());
             } else {
-                java.io.File lightMode = new File(System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
+                java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
                 stageDisclaimer.getScene().getStylesheets().add(lightMode.toURI().toString());
             }
         }

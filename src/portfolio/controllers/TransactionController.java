@@ -700,7 +700,7 @@ public class TransactionController {
                     if (this.settingsController.getPlatform().equals("mac")) {
                         try {
                             if (counter > 1000) {
-                                FileWriter myWriter = new FileWriter(System.getProperty("user.dir").replace("\\","/") + "/PortfolioData/" + "update.portfolio");
+                                FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
                                 myWriter.write(this.settingsController.translationList.getValue().get("SaveData").toString() + Math.ceil(((double) i / updateTransactionList.size()) * 100) + "%");
                                 myWriter.close();
                                 counter = 0;
@@ -846,7 +846,6 @@ public class TransactionController {
                 }
                 if (tokenName.contains("-")) {
                     Double poolRatio = Double.parseDouble(getPoolRatio(jsonArray.get(i).toString().split("@")[1]));
-
                     Double token1 = Math.sqrt(poolRatio * Double.parseDouble(jsonArray.get(i).toString().split("@")[0]) * Double.parseDouble(jsonArray.get(i).toString().split("@")[0]));
                     Double token2 = Math.sqrt(Double.parseDouble(jsonArray.get(i).toString().split("@")[0]) * Double.parseDouble(jsonArray.get(i).toString().split("@")[0]) / poolRatio);
                     try {
@@ -1009,15 +1008,15 @@ public class TransactionController {
             infoView.setX(mouseEvent.getScreenX() + dragDelta.x);
             infoView.setY(mouseEvent.getScreenY() + dragDelta.y);
         });
-        infoView.getIcons().add(new Image(new File(System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/icons/settings.png").toURI().toString()));
+        infoView.getIcons().add(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/settings.png").toURI().toString()));
         infoView.setTitle(SettingsController.getInstance().translationList.getValue().get("Settings").toString());
         infoView.setScene(scene);
 
         if (SettingsController.getInstance().selectedStyleMode.getValue().equals("Dark Mode")) {
-            java.io.File darkMode = new File(System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
+            java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
             infoView.getScene().getStylesheets().add(darkMode.toURI().toString());
         } else {
-            java.io.File lightMode = new File(System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
+            java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
             infoView.getScene().getStylesheets().add(lightMode.toURI().toString());
         }
 

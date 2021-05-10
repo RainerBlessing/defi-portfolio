@@ -231,7 +231,7 @@ public class SettingsView implements Initializable {
 
         if (SettingsController.getInstance().getPlatform().equals("linux")) {
             // Workaround for Linux because "Desktop.getDesktop().browse()" doesn't work on some Linux implementations
-            File file = new File(System.getProperty("user.dir").replace("\\","/"));
+            File file = new File(System.getProperty("user.dir"));
             try {
                 Runtime.getRuntime().exec(new String[]{"xdg-open", file.getAbsolutePath()});
             } catch (IOException e) {
@@ -239,7 +239,7 @@ public class SettingsView implements Initializable {
             }
         } else {
             try {
-                Desktop.getDesktop().open(new File(System.getProperty("user.dir").replace("\\","/")));
+                Desktop.getDesktop().open(new File(System.getProperty("user.dir")));
             } catch (IOException e) {
                 SettingsController.getInstance().logger.warning(e.toString());
             }
