@@ -61,7 +61,7 @@ public class ExportService {
 
 
         for (TransactionModel transaction : transactions) {
-            if ((dateFrom.getTime()/1000)<transaction.blockTimeProperty.getValue() && (dateTo.getTime()/1000)>transaction.blockTimeProperty.getValue()) {
+            if(SettingsController.getInstance().exportCSVCariante.getValue().equals("Export selected to CSV")){
                 sb = new StringBuilder();
                 sb.append(this.mainViewController.transactionController.convertTimeStampToString(transaction.blockTimeProperty.getValue())).append(exportSplitter);
                 sb.append(transaction.typeProperty.getValue()).append(exportSplitter);
@@ -77,7 +77,26 @@ public class ExportService {
                 sb.append("\n");
                 writer.write(sb.toString());
                 sb = null;
+            }else{
+                if ((dateFrom.getTime()/1000)<transaction.blockTimeProperty.getValue() && (dateTo.getTime()/1000)>transaction.blockTimeProperty.getValue()) {
+                    sb = new StringBuilder();
+                    sb.append(this.mainViewController.transactionController.convertTimeStampToString(transaction.blockTimeProperty.getValue())).append(exportSplitter);
+                    sb.append(transaction.typeProperty.getValue()).append(exportSplitter);
+                    sb.append(String.format(localeDecimal, "%.8f", transaction.cryptoValueProperty.getValue())).append(exportSplitter);
+                    sb.append(transaction.cryptoCurrencyProperty.getValue()).append(exportSplitter);
+                    sb.append(String.format(localeDecimal, "%.8f", transaction.fiatValueProperty.getValue())).append(exportSplitter);
+                    sb.append(transaction.fiatCurrencyProperty.getValue()).append(exportSplitter);
+                    sb.append(transaction.poolIDProperty.getValue()).append(exportSplitter);
+                    sb.append(transaction.blockHeightProperty.getValue()).append(exportSplitter);
+                    sb.append(transaction.blockHashProperty.getValue()).append(exportSplitter);
+                    sb.append(transaction.ownerProperty.getValue()).append(exportSplitter);
+                    sb.append(transaction.txIDProperty.getValue());
+                    sb.append("\n");
+                    writer.write(sb.toString());
+                    sb = null;
+                }
             }
+
         }
         writer.close();
         return true;
