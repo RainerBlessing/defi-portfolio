@@ -63,7 +63,7 @@
   "DataSourceLabel": "Datakilde",
   "DataSourceActiveWallet": "Aktive lommebøker",
   "DataSourceAllWallets": "Alle lommebøker",
-  "Token": "Token",
+  "Token": "Token (Daglig sats)",
   "InfoNoData": "Ingen data kunne bli lastet. \nMer informasjon kan bli funnet på wikien.",
   "TotalYield": "Total avkastning",
   "TotalYieldRewards": "Belønningsavkastning",

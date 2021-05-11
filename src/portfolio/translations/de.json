@@ -63,7 +63,7 @@
   "DataSourceLabel": "Daten Quelle",
   "DataSourceActiveWallet": "Aktive wallets",
   "DataSourceAllWallets": "Alle wallets",
-  "Token": "Token",
+  "Token": "Token (Tageskurs)",
   "InfoNoData": "Daten konnten nicht geladen werden. \nWeitere Informationen im Wiki",
   "TotalYield": "Gesamtrendite",
   "TotalYieldRewards": "Belohnungsrendite",

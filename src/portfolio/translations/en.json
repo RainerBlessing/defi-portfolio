@@ -63,7 +63,7 @@
   "DataSourceLabel": "Data source",
   "DataSourceActiveWallet": "Active wallets",
   "DataSourceAllWallets": "All wallets",
-  "Token": "Token",
+  "Token": "Token (Daily price)",
   "InfoNoData": "No data could be loaded. \nMore information can be found in the wiki.",
   "TotalYield": "Total yield",
   "TotalYieldRewards": "Rewards yield",
