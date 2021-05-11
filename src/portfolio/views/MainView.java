@@ -148,6 +148,7 @@ public class MainView implements Initializable {
     public MenuItem menuItemExportAllSelected = new MenuItem("Export all to CSV");
     public MenuItem menuItemExportAllDailySelected = new MenuItem("Export all to CSV (Daily cumulated)");
     public MenuItem menuItemExportCointracking = new MenuItem("Export to Cointracking");
+    public MenuItem menuItemExportToCSV = new MenuItem("Export to CSV");
 
     public MenuItem menuItemCopySelectedPlot = new MenuItem("Copy");
     public MenuItem menuItemCopyHeaderSelectedPlot = new MenuItem("Copy with header");
@@ -1130,17 +1131,17 @@ public class MainView implements Initializable {
         //Init context menu of raw data table
         menuItemCopySelected.setOnAction(event -> mainViewController.copySelectedRawDataToClipboard(rawDataTable.selectionModelProperty().get().getSelectedItems(), false));
         menuItemCopyHeaderSelected.setOnAction(event -> mainViewController.copySelectedRawDataToClipboard(rawDataTable.selectionModelProperty().get().getSelectedItems(), true));
-        menuItemExportSelected.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.selectionModelProperty().get().getSelectedItems(), ""));
-        menuItemExportAllSelected.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.getItems(), ""));
-        menuItemExportAllDailySelected.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.getItems(), "DAILY"));
         menuItemExportCointracking.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable.getItems(), "COIN"));
+        menuItemExportToCSV.setOnAction(event -> mainViewController.exportTransactionToExcel(rawDataTable));
+
 
         contextMenuRawData.getItems().add(menuItemCopySelected);
         contextMenuRawData.getItems().add(menuItemCopyHeaderSelected);
-        contextMenuRawData.getItems().add(menuItemExportSelected);
-        contextMenuRawData.getItems().add(menuItemExportAllSelected);
-        contextMenuRawData.getItems().add(menuItemExportAllDailySelected);
+      //  contextMenuRawData.getItems().add(menuItemExportSelected);
+     //   contextMenuRawData.getItems().add(menuItemExportAllSelected);
+      //  contextMenuRawData.getItems().add(menuItemExportAllDailySelected);
         contextMenuRawData.getItems().add(menuItemExportCointracking);
+        contextMenuRawData.getItems().add(menuItemExportToCSV);
 
         this.rawDataTable.contextMenuProperty().set(contextMenuRawData);
     }
@@ -1154,11 +1155,14 @@ public class MainView implements Initializable {
         menuItemCopyHeaderSelectedPlot.setOnAction(event -> mainViewController.copySelectedDataToClipboard(plotTable.selectionModelProperty().get().getSelectedItems(), true));
         menuItemExportSelectedPlot.setOnAction(event -> mainViewController.exportPoolPairToExcel(plotTable.selectionModelProperty().get().getSelectedItems(), this.tabPane.getSelectionModel().getSelectedItem().getId()));
         menuItemExportAllSelectedPlot.setOnAction(event -> mainViewController.exportPoolPairToExcel(plotTable.getItems(), this.tabPane.getSelectionModel().getSelectedItem().getId()));
+       // menuItemExportToCSV.setOnAction(event -> mainViewController.exportPoolPairToExcel(plotTable.getItems(), this.tabPane.getSelectionModel().getSelectedItem().getId()));
+
 
         contextMenuPlotData.getItems().add(menuItemCopySelectedPlot);
         contextMenuPlotData.getItems().add(menuItemCopyHeaderSelectedPlot);
         contextMenuPlotData.getItems().add(menuItemExportSelectedPlot);
         contextMenuPlotData.getItems().add(menuItemExportAllSelectedPlot);
+     //   contextMenuPlotData.getItems().add(menuItemExportToCSV);
 
         this.plotTable.contextMenuProperty().set(contextMenuPlotData);
     }
@@ -1203,6 +1207,8 @@ public class MainView implements Initializable {
         this.menuItemCopyHeaderSelectedPlot.setText(this.mainViewController.settingsController.translationList.getValue().get("CopyHeader").toString());
         this.menuItemExportSelectedPlot.setText(this.mainViewController.settingsController.translationList.getValue().get("ExportSelected").toString());
         this.menuItemExportAllSelectedPlot.setText(this.mainViewController.settingsController.translationList.getValue().get("ExportAll").toString());
+        this.menuItemExportCointracking.setText(this.mainViewController.settingsController.translationList.getValue().get("ExportCointracking").toString());
+        this.menuItemExportToCSV.setText(this.mainViewController.settingsController.translationList.getValue().get("ExportCSV").toString());
         this.CurrentBlock.setText(this.mainViewController.settingsController.translationList.getValue().get("CurrentBlock").toString());
         this.CurrentBlockChain.setText(this.mainViewController.settingsController.translationList.getValue().get("CurrentBlockBC").toString());
         this.LastUpdate.setText(this.mainViewController.settingsController.translationList.getValue().get("LastUpdate").toString());

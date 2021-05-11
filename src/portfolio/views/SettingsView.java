@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -45,9 +46,14 @@ public class SettingsView implements Initializable {
     public Label lblOpenProjectFolder;
     public Label lblOpenInstallationFolder;
     public Label labelCointrackingExport;
+    public Label labelCSVExport;
     public Button btnCloseDefid;
     public Button btnOpenProjectFolder;
     public Button btnOpenInstallationFolder;
+    public Label lblFrom;
+    public Label lblTo;
+    public DatePicker exportFrom;
+    public DatePicker exportTo;
     @FXML
     public StackPane stack;
     @FXML
@@ -55,7 +61,7 @@ public class SettingsView implements Initializable {
     @FXML
     public Button btnDeleteData;
     @FXML
-    private ComboBox<String> cmbLanguage, cmbPrefCurrency, cmbDecSeperator, cmbCSVSeperator, cmbPrefferedStyle, dataSourceCmb,cmbDefaultDataSource,cointrackingExportCmb;
+    private ComboBox<String> cmbLanguage, cmbPrefCurrency, cmbDecSeperator, cmbCSVSeperator, cmbPrefferedStyle, dataSourceCmb,cmbDefaultDataSource,cointrackingExportCmb, CSVExportcmb;
     SettingsController settingsController = SettingsController.getInstance();
 
     public void btnSaveAndApplyPressed() {
@@ -97,10 +103,18 @@ public class SettingsView implements Initializable {
         this.cmbLanguage.valueProperty().bindBidirectional(this.settingsController.selectedLanguage);
         this.cointrackingExportCmb.valueProperty().bindBidirectional(this.settingsController.exportCointracingVariante);
         this.cointrackingExportCmb.getItems().addAll(this.settingsController.cointrackingExportVariants);
+        this.CSVExportcmb.valueProperty().bindBidirectional(this.settingsController.exportCSVCariante);
+        this.CSVExportcmb.getItems().addAll(this.settingsController.csvExportVariants);
 
         this.lblDeleteData.setText(this.settingsController.translationList.getValue().get("DeleteLabel").toString());
         this.btnDeleteData.setText(this.settingsController.translationList.getValue().get("DeleteButton").toString());
         this.labelCointrackingExport.setText(this.settingsController.translationList.getValue().get("CointrackingLabel").toString());
+        this.labelCSVExport.setText(this.settingsController.translationList.getValue().get("CSVLabel").toString());
+        this.lblFrom.setText(this.settingsController.translationList.getValue().get("ToLabel").toString());
+        this.lblTo.setText(this.settingsController.translationList.getValue().get("FromLabel").toString());
+
+        this.exportFrom.valueProperty().bindBidirectional(this.settingsController.exportFrom);
+        this.exportTo.valueProperty().bindBidirectional(this.settingsController.exportTo);
 
         this.cmbPrefCurrency.getItems().addAll(this.settingsController.currencies);
         this.cmbPrefCurrency.valueProperty().bindBidirectional(this.settingsController.selectedFiatCurrency);
@@ -141,6 +155,9 @@ public class SettingsView implements Initializable {
         this.btnOpenProjectFolder.setText(this.settingsController.translationList.getValue().get("Open").toString());
         this.btnOpenInstallationFolder.setText(this.settingsController.translationList.getValue().get("Open").toString());
         this.labelCointrackingExport.setText(this.settingsController.translationList.getValue().get("CointrackingLabel").toString());
+        this.labelCSVExport.setText(this.settingsController.translationList.getValue().get("CSVLabel").toString());
+        this.lblFrom.setText(this.settingsController.translationList.getValue().get("ToLabel").toString());
+        this.lblTo.setText(this.settingsController.translationList.getValue().get("FromLabel").toString());
     }
 
     private final Rectangle back = new Rectangle(35, 15, Color.RED);
