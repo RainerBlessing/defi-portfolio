@@ -69,6 +69,8 @@ public class SettingsController {
     public String[] datasources = new String[]{"Active Wallet", "All Wallets"};
     public String[] cointrackingExportVariants = new String[]{"Cumulate All", "Cumulate None","Cumulate Pool Pair","Cumulate Rewards and Commisions"};
 
+
+    //All relevant paths and files
     public String USER_HOME_PATH = System.getProperty("user.home").replace("\\","/");
     public String BINARY_FILE_NAME = getPlatform().equals("win") ? "defid.exe" : "defid";
     public String BINARY_FILE_PATH = System.getProperty("user.dir").replace("\\","/") + "/PortfolioData/" + BINARY_FILE_NAME;
@@ -79,10 +81,9 @@ public class SettingsController {
                     getPlatform().equals("linux") ? System.getProperty("user.dir").replace("\\","/") + "/PortfolioData/" : //LINUX PATH;
                             "";
     public String PORTFOLIO_CONFIG_FILE_PATH = System.getProperty("user.dir").replace("\\","/") + "/PortfolioData/defi.conf";
-
     public String SETTING_FILE_PATH = DEFI_PORTFOLIO_HOME + "settings.csv";
     public String PORTFOLIO_FILE_PATH = DEFI_PORTFOLIO_HOME + "portfolioData.portfolio";
-    //All relevant paths and files
+    public String INCOMPLETE_FILE_PATH = DEFI_PORTFOLIO_HOME + "incompleteList.portfolio";
     public String strTransactionData = "transactionData.portfolio";
     public String strCoinPriceData = "coinPriceData.portfolio";
     public String[] languages = new String[]{"English", "Deutsch","Espa\u00F1ol","Bokm\u00E5l"};
