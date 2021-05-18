@@ -1,6 +1,12 @@
 package portfolio.services;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import portfolio.Main;
 import portfolio.controllers.MainViewController;
 import portfolio.controllers.SettingsController;
 import portfolio.controllers.TransactionController;
@@ -17,6 +23,7 @@ import java.util.*;
 public class ExportService {
 
     MainViewController mainViewController;
+    final Delta dragDelta = new Delta();
 
     public ExportService(MainViewController mainViewController) {
         this.mainViewController = mainViewController;
@@ -726,52 +733,56 @@ public class ExportService {
                     transCounter++;
                 }
             }
-    }
+        }
 
 
-            for (
-                    HashMap.Entry<String, TransactionModel> entry : exportList.entrySet()) {
+        for (
+                HashMap.Entry<String, TransactionModel> entry : exportList.entrySet()) {
 
-                sb = new StringBuilder();
+            sb = new StringBuilder();
 
-                sb.append("\n");
-                sb.append("\"" + Type2CointrackingType(entry.getValue().typeProperty.getValue()) + "\"").append(exportSplitter);
-                sb.append("\"" + String.format(localeDecimal, "%.8f", entry.getValue().cryptoValueProperty.getValue()) + "\"").append(exportSplitter);
-                sb.append("\"" + entry.getValue().cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
-                sb.append("\"\"").append(exportSplitter);
-                sb.append("\"\"").append(exportSplitter);
-                sb.append("\"\"").append(exportSplitter);
-                sb.append("\"\"").append(exportSplitter);
-                sb.append("\"DeFiChain-Wallet\"").append(exportSplitter);
-                sb.append("\"\"").append(exportSplitter);
+            sb.append("\n");
+            sb.append("\"" + Type2CointrackingType(entry.getValue().typeProperty.getValue()) + "\"").append(exportSplitter);
+            sb.append("\"" + String.format(localeDecimal, "%.8f", entry.getValue().cryptoValueProperty.getValue()) + "\"").append(exportSplitter);
+            sb.append("\"" + entry.getValue().cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
+            sb.append("\"\"").append(exportSplitter);
+            sb.append("\"\"").append(exportSplitter);
+            sb.append("\"\"").append(exportSplitter);
+            sb.append("\"\"").append(exportSplitter);
+            sb.append("\"DeFiChain-Wallet\"").append(exportSplitter);
+            sb.append("\"\"").append(exportSplitter);
 
-                switch (filter) {
-                    case "Cumulate All":
-                        sb.append("\"" + "LM Interest Income" + "\"").append(exportSplitter);
-                        break;
-                    case "Cumulate Rewards and Commisions":
-                        sb.append("\"" + "LM Interest Income (" + this.mainViewController.transactionController.getPoolPairFromId(entry.getValue().poolIDProperty.getValue())).append(")" + "\"").append(exportSplitter);
-                        break;
-                    case "Cumulate Pool Pair":
-                        sb.append("\"" + "LM " + entry.getValue().typeProperty.getValue() + "\"").append(exportSplitter);
-                        break;
-                    case "Cumulate None":
-                        sb.append("\"" + "LM " + entry.getValue().typeProperty.getValue() + " (" + this.mainViewController.transactionController.getPoolPairFromId(entry.getValue().poolIDProperty.getValue())).append(")" + "\"").append(exportSplitter);
-                        break;
-                }
-
-                sb.append("\"" + TransactionController.getInstance().convertTimeStampToCointracking(entry.getValue().blockTimeProperty.getValue()) + "\"").append(exportSplitter);
-                sb.append("\"" + entry.getValue().cryptoCurrencyProperty.getValue() + TransactionController.getInstance().convertTimeStampWithoutTimeToString(entry.getValue().blockTimeProperty.getValue()) + "\"").append(exportSplitter);
-                sb.append("\"\"").append(exportSplitter);
-                sb.append("\"\"");
-
-                writer.write(sb.toString());
-                sb = null;
-
+            switch (filter) {
+                case "Cumulate All":
+                    sb.append("\"" + "LM Interest Income" + "\"").append(exportSplitter);
+                    break;
+                case "Cumulate Rewards and Commisions":
+                    sb.append("\"" + "LM Interest Income (" + this.mainViewController.transactionController.getPoolPairFromId(entry.getValue().poolIDProperty.getValue())).append(")" + "\"").append(exportSplitter);
+                    break;
+                case "Cumulate Pool Pair":
+                    sb.append("\"" + "LM " + entry.getValue().typeProperty.getValue() + "\"").append(exportSplitter);
+                    break;
+                case "Cumulate None":
+                    sb.append("\"" + "LM " + entry.getValue().typeProperty.getValue() + " (" + this.mainViewController.transactionController.getPoolPairFromId(entry.getValue().poolIDProperty.getValue())).append(")" + "\"").append(exportSplitter);
+                    break;
             }
 
-            writer.close();
-            exportList.clear();
+            sb.append("\"" + TransactionController.getInstance().convertTimeStampToCointracking(entry.getValue().blockTimeProperty.getValue()) + "\"").append(exportSplitter);
+            sb.append("\"" + entry.getValue().cryptoCurrencyProperty.getValue() + TransactionController.getInstance().convertTimeStampWithoutTimeToString(entry.getValue().blockTimeProperty.getValue()) + "\"").append(exportSplitter);
+            sb.append("\"\"").append(exportSplitter);
+            sb.append("\"\"");
+
+            writer.write(sb.toString());
+            sb = null;
+
+        }
+
+        writer.close();
+        exportList.clear();
+
+        if (incompleteTransactions.size() > 0) {
+            File incompleteFile = new File(SettingsController.getInstance().INCOMPLETE_FILE_PATH);
+            if (incompleteFile.exists()) incompleteFile.delete();
 
             PrintWriter writerIncomplete = null;
             try {
@@ -810,10 +821,14 @@ public class ExportService {
             }
             writer.close();
 
+            // Disclaimer anzeigen
+            if (SettingsController.getInstance().showMissingTransaction) {
+                MainView.getInstance().showMissingTransactionWindow();
+            }
+        }
 
-            SettingsController.getInstance().checkCointracking = true;
-            return true;
-
+        SettingsController.getInstance().checkCointracking = true;
+        return true;
     }
 
 
@@ -953,6 +968,10 @@ public class ExportService {
                 break;
         }
         return pool;
+    }
+
+    static class Delta {
+        double x, y;
     }
 
 

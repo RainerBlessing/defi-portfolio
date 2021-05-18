@@ -1,7 +1,6 @@
 package portfolio.controllers;
 
 import javafx.application.Platform;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;

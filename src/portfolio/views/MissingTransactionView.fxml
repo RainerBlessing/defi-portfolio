@@ -4,16 +4,16 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="195.0" prefWidth="469.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="portfolio.views.DisclaimerView">
+<AnchorPane prefHeight="195.0" prefWidth="469.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.MissingTransactionView">
    <children>
-      <ImageView fitHeight="95.0" fitWidth="99.0" layoutX="25.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="95.0" fitWidth="99.0" layoutX="14.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../icons/disclaimer.png" />
          </image>
       </ImageView>
-      <Label fx:id="lblDisclaimer" layoutX="132.0" layoutY="25.0" prefHeight="95.0" prefWidth="330.0" text="The content provided is for informational purposes only." wrapText="true" />
-      <Button fx:id="btnClose" layoutX="275.0" layoutY="125.0" mnemonicParsing="false" onAction="#btnClose" prefHeight="25.0" prefWidth="74.0" text="Close" />
-      <CheckBox fx:id="hCheckBox" layoutX="133.0" layoutY="129.0" mnemonicParsing="false" text="Do not show again" />
-      <Button fx:id="btnOpen" layoutX="356.0" layoutY="125.0" mnemonicParsing="false" onAction="#btnClose" prefHeight="25.0" prefWidth="74.0" text="Open" />
+      <Label fx:id="lblTransaction" layoutX="132.0" layoutY="25.0" prefHeight="95.0" prefWidth="330.0" text="The content provided is for informational purposes only." wrapText="true" />
+      <Button fx:id="btnClose" layoutX="260.0" layoutY="125.0" mnemonicParsing="false" onAction="#btnClose" prefHeight="25.0" prefWidth="74.0" text="Close" />
+      <CheckBox fx:id="hCheckBox" layoutX="97.0" layoutY="129.0" mnemonicParsing="false" text="Do not show again" />
+      <Button fx:id="btnOpen" layoutX="344.0" layoutY="125.0" mnemonicParsing="false" onAction="#btnOpen" prefHeight="25.0" prefWidth="74.0" text="Open" />
    </children>
 </AnchorPane>

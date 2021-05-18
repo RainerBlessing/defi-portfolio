@@ -17,12 +17,10 @@ import javafx.util.Duration;
 import portfolio.models.*;
 import portfolio.services.ExportService;
 import portfolio.views.MainView;
-
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;

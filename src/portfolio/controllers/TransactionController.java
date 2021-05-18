@@ -2,19 +2,11 @@ package portfolio.controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
-import portfolio.Main;
 import portfolio.models.*;
 import portfolio.views.MainView;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -32,7 +24,6 @@ import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 public class TransactionController {
 
@@ -980,47 +971,8 @@ public class TransactionController {
         return amountCoin;
     }
 
-
     public String[] splitCoinsAndAmounts(String amountAndCoin) {
         return amountAndCoin.split("@");
-    }
-
-    public void showNoDataWindow() {
-        Parent root = null;
-        try {
-
-            SettingsController.getInstance().logger.warning("before No dataview");
-            root = FXMLLoader.load(getClass().getResource("../views/NoDataView.fxml"));
-            SettingsController.getInstance().logger.warning("after No dataview");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Scene scene = new Scene(root);
-        Stage infoView = new Stage();
-        infoView.initStyle(StageStyle.UNDECORATED);
-        final Delta dragDelta = new Delta();
-        scene.setOnMousePressed(mouseEvent -> {
-            // record a delta distance for the drag and drop operation.
-            dragDelta.x = infoView.getX() - mouseEvent.getScreenX();
-            dragDelta.y = infoView.getY() - mouseEvent.getScreenY();
-        });
-        scene.setOnMouseDragged(mouseEvent -> {
-            infoView.setX(mouseEvent.getScreenX() + dragDelta.x);
-            infoView.setY(mouseEvent.getScreenY() + dragDelta.y);
-        });
-        infoView.getIcons().add(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/settings.png").toURI().toString()));
-        infoView.setTitle(SettingsController.getInstance().translationList.getValue().get("Settings").toString());
-        infoView.setScene(scene);
-
-        if (SettingsController.getInstance().selectedStyleMode.getValue().equals("Dark Mode")) {
-            java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
-            infoView.getScene().getStylesheets().add(darkMode.toURI().toString());
-        } else {
-            java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
-            infoView.getScene().getStylesheets().add(lightMode.toURI().toString());
-        }
-
-        infoView.show();
     }
 
     static class Delta {

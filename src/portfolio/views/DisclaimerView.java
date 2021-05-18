@@ -1,5 +1,6 @@
 package portfolio.views;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -13,6 +14,8 @@ import java.util.ResourceBundle;
 
 public class DisclaimerView implements Initializable {
     public Button btnClose;
+    @FXML
+    public Button btnOpen;
     @FXML
     public CheckBox hCheckBox;
     @FXML
@@ -31,6 +34,8 @@ public class DisclaimerView implements Initializable {
         Stage stage = (Stage) btnClose.getScene().getWindow();
         stage.close();
     }
+
+
 }
 
 

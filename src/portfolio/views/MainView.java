@@ -1288,6 +1288,40 @@ public class MainView implements Initializable {
             this.updateHeader();
     }
 
+    public void showMissingTransactionWindow(){
+        Parent rootMissingTransaction = null;
+        try {
+            rootMissingTransaction = FXMLLoader.load(getClass().getResource("MissingTransactionView.fxml"));
+        } catch (IOException e) {
+            SettingsController.getInstance().logger.warning(e.toString());
+        }
+        final Delta dragDelta = new Delta();
+        Scene sceneMissingTransaction = new Scene(rootMissingTransaction);
+        Stage stageMissingTransaction = new Stage();
+        stageMissingTransaction.setTitle("DeFi-Portfolio Disclaimer");
+        stageMissingTransaction.setScene(sceneMissingTransaction);
+        stageMissingTransaction.initStyle(StageStyle.UNDECORATED);
+        sceneMissingTransaction.setOnMousePressed(mouseEvent -> {
+            // record a delta distance for the drag and drop operation.
+            dragDelta.x = stageMissingTransaction.getX() - mouseEvent.getScreenX();
+            dragDelta.y = stageMissingTransaction.getY() - mouseEvent.getScreenY();
+        });
+        sceneMissingTransaction.setOnMouseDragged(mouseEvent -> {
+            stageMissingTransaction.setX(mouseEvent.getScreenX() + dragDelta.x);
+            stageMissingTransaction.setY(mouseEvent.getScreenY() + dragDelta.y);
+        });
+        stageMissingTransaction.show();
+        stageMissingTransaction.setAlwaysOnTop(true);
+
+        if (SettingsController.getInstance().selectedStyleMode.getValue().equals("Dark Mode")) {
+            java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
+            stageMissingTransaction.getScene().getStylesheets().add(darkMode.toURI().toString());
+        } else {
+            java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
+            stageMissingTransaction.getScene().getStylesheets().add(lightMode.toURI().toString());
+        }
+    }
+
     public void showNoDataWindow(){
         Parent root = null;
         try {
