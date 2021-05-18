@@ -1,18 +1,15 @@
 package portfolio.services;
 
-import javafx.scene.chart.PieChart;
 import javafx.scene.control.TableColumn;
 import portfolio.controllers.MainViewController;
 import portfolio.controllers.SettingsController;
 import portfolio.controllers.TransactionController;
-import portfolio.models.PortfolioModel;
 import portfolio.views.MainView;
 import portfolio.models.PoolPairModel;
 import portfolio.models.TransactionModel;
 
 import java.io.*;
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -53,15 +50,15 @@ public class ExportService {
         Date dateFrom = null;
         Date dateTo = null;
         try {
-           dateFrom = new SimpleDateFormat("yyyy-MM-dd").parse(strFrom);
-           dateTo = new SimpleDateFormat("yyyy-MM-dd").parse(strTo);
+            dateFrom = new SimpleDateFormat("yyyy-MM-dd").parse(strFrom);
+            dateTo = new SimpleDateFormat("yyyy-MM-dd").parse(strTo);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
 
         for (TransactionModel transaction : transactions) {
-            if(SettingsController.getInstance().exportCSVCariante.getValue().equals("Export selected to CSV")){
+            if (SettingsController.getInstance().exportCSVCariante.getValue().equals("Export selected to CSV")) {
                 sb = new StringBuilder();
                 sb.append(this.mainViewController.transactionController.convertTimeStampToString(transaction.blockTimeProperty.getValue())).append(exportSplitter);
                 sb.append(transaction.typeProperty.getValue()).append(exportSplitter);
@@ -77,8 +74,8 @@ public class ExportService {
                 sb.append("\n");
                 writer.write(sb.toString());
                 sb = null;
-            }else{
-                if ((dateFrom.getTime()/1000)<transaction.blockTimeProperty.getValue() && (dateTo.getTime()/1000)>transaction.blockTimeProperty.getValue()) {
+            } else {
+                if ((dateFrom.getTime() / 1000) < transaction.blockTimeProperty.getValue() && (dateTo.getTime() / 1000) > transaction.blockTimeProperty.getValue()) {
                     sb = new StringBuilder();
                     sb.append(this.mainViewController.transactionController.convertTimeStampToString(transaction.blockTimeProperty.getValue())).append(exportSplitter);
                     sb.append(transaction.typeProperty.getValue()).append(exportSplitter);
@@ -202,33 +199,34 @@ public class ExportService {
             }
         }
 
-            for (HashMap.Entry<String, TransactionModel> entry : exportList.entrySet()) {
+        for (HashMap.Entry<String, TransactionModel> entry : exportList.entrySet()) {
 
-                sb = new StringBuilder();
-                sb.append(this.mainViewController.transactionController.convertTimeStampWithoutTimeToString(entry.getValue().blockTimeProperty.getValue())).append(exportSplitter);
-                sb.append(entry.getValue().typeProperty.getValue()).append(exportSplitter);
-                sb.append(String.format(localeDecimal, "%.8f", entry.getValue().cryptoValueProperty.getValue())).append(exportSplitter);
-                sb.append(entry.getValue().cryptoCurrencyProperty.getValue()).append(exportSplitter);
-                sb.append(String.format(localeDecimal, "%.8f", entry.getValue().fiatValueProperty.getValue())).append(exportSplitter);
-                sb.append(entry.getValue().fiatCurrencyProperty.getValue()).append(exportSplitter);
-                sb.append(entry.getValue().poolIDProperty.getValue()).append(exportSplitter);
-                sb.append(entry.getValue().blockHeightProperty.getValue()).append(exportSplitter);
-                sb.append(entry.getValue().blockHashProperty.getValue()).append(exportSplitter);
-                sb.append(entry.getValue().ownerProperty.getValue()).append(exportSplitter);
-                sb.append(entry.getValue().txIDProperty.getValue());
-                sb.append("\n");
-                writer.write(sb.toString());
-                sb = null;
+            sb = new StringBuilder();
+            sb.append(this.mainViewController.transactionController.convertTimeStampWithoutTimeToString(entry.getValue().blockTimeProperty.getValue())).append(exportSplitter);
+            sb.append(entry.getValue().typeProperty.getValue()).append(exportSplitter);
+            sb.append(String.format(localeDecimal, "%.8f", entry.getValue().cryptoValueProperty.getValue())).append(exportSplitter);
+            sb.append(entry.getValue().cryptoCurrencyProperty.getValue()).append(exportSplitter);
+            sb.append(String.format(localeDecimal, "%.8f", entry.getValue().fiatValueProperty.getValue())).append(exportSplitter);
+            sb.append(entry.getValue().fiatCurrencyProperty.getValue()).append(exportSplitter);
+            sb.append(entry.getValue().poolIDProperty.getValue()).append(exportSplitter);
+            sb.append(entry.getValue().blockHeightProperty.getValue()).append(exportSplitter);
+            sb.append(entry.getValue().blockHashProperty.getValue()).append(exportSplitter);
+            sb.append(entry.getValue().ownerProperty.getValue()).append(exportSplitter);
+            sb.append(entry.getValue().txIDProperty.getValue());
+            sb.append("\n");
+            writer.write(sb.toString());
+            sb = null;
 
-            }
-       // }
+        }
+        // }
         writer.close();
         exportList.clear();
         return true;
 
     }
 
-    public String[] cointrackingExportVariants = new String[]{"Cumulate All", "Cumulate None","Cumulate Pool Pair","Cumulate Rewards and Commisions"};
+    public String[] cointrackingExportVariants = new String[]{"Cumulate All", "Cumulate None", "Cumulate Pool Pair", "Cumulate Rewards and Commisions"};
+
     public boolean exportTransactionToCointracking(List<TransactionModel> transactions, String exportPath, Locale localeDecimal, String exportSplitter, String filter) {
         File exportFile = new File(exportPath);
         this.mainViewController.settingsController.lastExportPath = exportFile.getParent();
@@ -241,7 +239,7 @@ public class ExportService {
         } catch (IOException e) {
             SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
         }
-
+        List<TransactionModel> incompleteTransactions = new ArrayList<>();
         long currentTimeStamp = (new Timestamp(System.currentTimeMillis()).getTime() - 24 * 60 * 60 * 1000) / 1000L;
         String yesterdayDate = TransactionController.getInstance().convertTimeStampYesterdayToString(currentTimeStamp);
         Timestamp ts = Timestamp.valueOf(yesterdayDate);
@@ -277,150 +275,228 @@ public class ExportService {
 
                 if (transaction.blockTimeProperty.getValue() * 1000L < ts.getTime()) {
 
-                String newDate = this.mainViewController.transactionController.convertTimeStampWithoutTimeToString(transaction.blockTimeProperty.getValue());
+                    String newDate = this.mainViewController.transactionController.convertTimeStampWithoutTimeToString(transaction.blockTimeProperty.getValue());
 
-                if (transaction.typeProperty.getValue().equals("Commission") || transaction.typeProperty.getValue().equals("Rewards")) {
+                    if (transaction.typeProperty.getValue().equals("Commission") || transaction.typeProperty.getValue().equals("Rewards")) {
 
-                    if ((oldDate.equals("") || oldDate.equals(newDate))) {
-                        String key = "";
-
-                        switch (filter) {
-                            case "Cumulate All":
-                                key = transaction.cryptoCurrencyProperty.getValue();
-                                break;
-                            case "Cumulate Rewards and Commisions":
-                                key = this.mainViewController.transactionController.getPoolPairFromId(transaction.poolIDProperty.getValue()) + transaction.cryptoCurrencyProperty.getValue();
-                                break;
-                            case "Cumulate Pool Pair":
-                                key = transaction.cryptoCurrencyProperty.getValue() + transaction.typeProperty.getValue();
-                                break;
-                            case "Cumulate None":
-                                key = this.mainViewController.transactionController.getPoolPairFromId(transaction.poolIDProperty.getValue()) + transaction.cryptoCurrencyProperty.getValue() + transaction.typeProperty.getValue();
-                                break;
-                        }
-
-                        if (!exportList.containsKey(key)) {
-                            exportList.put(key, new TransactionModel(transaction.blockTimeProperty.getValue(), transaction.ownerProperty.getValue(), transaction.typeProperty.getValue(), transaction.amountProperty.getValue(), transaction.blockHashProperty.getValue(), transaction.blockHeightProperty.getValue(), transaction.poolIDProperty.getValue(), transaction.txIDProperty.getValue(), this.mainViewController.transactionController));
-                        } else {
-                            exportList.get(key).cryptoValueProperty.set(exportList.get(key).cryptoValueProperty.getValue() + transaction.cryptoValueProperty.getValue());
-                            exportList.get(key).fiatValueProperty.set(exportList.get(key).fiatValueProperty.getValue() + transaction.fiatValueProperty.getValue());
-                        }
-                    } else {
-
-                        for (HashMap.Entry<String, TransactionModel> entry : exportList.entrySet()) {
-
-                            sb = new StringBuilder();
-
-                            sb.append("\n");
-                            sb.append("\"" + Type2CointrackingType(entry.getValue().typeProperty.getValue()) + "\"").append(exportSplitter);
-                            sb.append("\"" + String.format(localeDecimal, "%.8f", entry.getValue().cryptoValueProperty.getValue()) + "\"").append(exportSplitter);
-                            sb.append("\"" + entry.getValue().cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
-                            sb.append("\"\"").append(exportSplitter);
-                            sb.append("\"\"").append(exportSplitter);
-                            sb.append("\"\"").append(exportSplitter);
-                            sb.append("\"\"").append(exportSplitter);
-                            sb.append("\"DeFiChain-Wallet\"").append(exportSplitter);
-                            sb.append("\"\"").append(exportSplitter);
+                        if ((oldDate.equals("") || oldDate.equals(newDate))) {
+                            String key = "";
 
                             switch (filter) {
                                 case "Cumulate All":
-                                    sb.append("\"" + "LM Interest Income" + "\"").append(exportSplitter);
+                                    key = transaction.cryptoCurrencyProperty.getValue();
                                     break;
                                 case "Cumulate Rewards and Commisions":
-                                    sb.append("\"" + "LM Interest Income (" + this.mainViewController.transactionController.getPoolPairFromId(entry.getValue().poolIDProperty.getValue())).append(")" + "\"").append(exportSplitter);
+                                    key = this.mainViewController.transactionController.getPoolPairFromId(transaction.poolIDProperty.getValue()) + transaction.cryptoCurrencyProperty.getValue();
                                     break;
                                 case "Cumulate Pool Pair":
-                                    sb.append("\"" + "LM " + entry.getValue().typeProperty.getValue() + "\"").append(exportSplitter);
+                                    key = transaction.cryptoCurrencyProperty.getValue() + transaction.typeProperty.getValue();
                                     break;
                                 case "Cumulate None":
-                                    sb.append("\"" + "LM " + entry.getValue().typeProperty.getValue() + " (" + this.mainViewController.transactionController.getPoolPairFromId(entry.getValue().poolIDProperty.getValue())).append(")" + "\"").append(exportSplitter);
+                                    key = this.mainViewController.transactionController.getPoolPairFromId(transaction.poolIDProperty.getValue()) + transaction.cryptoCurrencyProperty.getValue() + transaction.typeProperty.getValue();
                                     break;
                             }
 
-                            sb.append("\"" + TransactionController.getInstance().convertTimeStampToCointracking(entry.getValue().blockTimeProperty.getValue()) + "\"").append(exportSplitter);
-                            sb.append("\"" + entry.getValue().cryptoCurrencyProperty.getValue() + TransactionController.getInstance().convertTimeStampWithoutTimeToString(entry.getValue().blockTimeProperty.getValue()) + "\"").append(exportSplitter);
-                            sb.append("\"\"").append(exportSplitter);
-                            sb.append("\"\"");
-                            writer.write(sb.toString());
-                            sb = null;
-
-                        }
-
-                        exportList = new TreeMap<>();
-                        String key = "";
-
-                        switch (filter) {
-                            case "Cumulate All":
-                                key = transaction.cryptoCurrencyProperty.getValue();
-                                break;
-                            case "Cumulate Rewards and Commisions":
-                                key = this.mainViewController.transactionController.getPoolPairFromId(transaction.poolIDProperty.getValue()) + transaction.cryptoCurrencyProperty.getValue();
-                                break;
-                            case "Cumulate Pool Pair":
-                                key = transaction.cryptoCurrencyProperty.getValue() + transaction.typeProperty.getValue();
-                                break;
-                            case "Cumulate None":
-                                key = this.mainViewController.transactionController.getPoolPairFromId(transaction.poolIDProperty.getValue()) + transaction.cryptoCurrencyProperty.getValue() + transaction.typeProperty.getValue();
-                                break;
-                        }
-                        exportList.put(key, new TransactionModel(transaction.blockTimeProperty.getValue(), transaction.ownerProperty.getValue(), transaction.typeProperty.getValue(), transaction.amountProperty.getValue(), transaction.blockHashProperty.getValue(), transaction.blockHeightProperty.getValue(), transaction.poolIDProperty.getValue(), transaction.txIDProperty.getValue(), this.mainViewController.transactionController));
-                    }
-
-                } else {
-
-
-                    if (!(transaction.typeProperty.getValue().equals("UtxosToAccount") || transaction.typeProperty.getValue().equals("AccountToUtxos"))) {
-
-                        TransactionModel poolSwap2 = null;
-
-                        if (transaction.typeProperty.getValue().equals("PoolSwap") && !transaction.exportCointracking) {
-                            for (int i = transCounter; i < transactions.size(); i++) {
-                                if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
-                                    break;
-
-                                if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue()) && !transactions.get(i).cryptoCurrencyProperty.getValue().equals(transaction.cryptoCurrencyProperty.getValue())) {
-                                    poolSwap2 = transactions.get(i);
-                                    transactions.get(i).exportCointracking = true;
-                                    break;
-                                }
+                            if (!exportList.containsKey(key)) {
+                                exportList.put(key, new TransactionModel(transaction.blockTimeProperty.getValue(), transaction.ownerProperty.getValue(), transaction.typeProperty.getValue(), transaction.amountProperty.getValue(), transaction.blockHashProperty.getValue(), transaction.blockHeightProperty.getValue(), transaction.poolIDProperty.getValue(), transaction.txIDProperty.getValue(), this.mainViewController.transactionController));
+                            } else {
+                                exportList.get(key).cryptoValueProperty.set(exportList.get(key).cryptoValueProperty.getValue() + transaction.cryptoValueProperty.getValue());
+                                exportList.get(key).fiatValueProperty.set(exportList.get(key).fiatValueProperty.getValue() + transaction.fiatValueProperty.getValue());
                             }
+                        } else {
 
-                            if (poolSwap2 != null) {
+                            for (HashMap.Entry<String, TransactionModel> entry : exportList.entrySet()) {
 
                                 sb = new StringBuilder();
+
                                 sb.append("\n");
-                                sb.append("\"Trade\"").append(exportSplitter);
-                                if (transaction.cryptoValueProperty.getValue() > 0.0) {
-                                    sb.append("\"" + String.format(localeDecimal, "%.8f", transaction.cryptoValueProperty.getValue()) + "\"").append(exportSplitter);
-                                    sb.append("\"" + transaction.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
-                                    sb.append("\"" + String.format(localeDecimal, "%.8f", poolSwap2.cryptoValueProperty.getValue() * -1) + "\"").append(exportSplitter);
-                                    sb.append("\"" + poolSwap2.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
-                                } else {
-                                    sb.append("\"" + String.format(localeDecimal, "%.8f", poolSwap2.cryptoValueProperty.getValue()) + "\"").append(exportSplitter);
-                                    sb.append("\"" + poolSwap2.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
-                                    sb.append("\"" + String.format(localeDecimal, "%.8f", transaction.cryptoValueProperty.getValue() * -1) + "\"").append(exportSplitter);
-                                    sb.append("\"" + transaction.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
-                                }
+                                sb.append("\"" + Type2CointrackingType(entry.getValue().typeProperty.getValue()) + "\"").append(exportSplitter);
+                                sb.append("\"" + String.format(localeDecimal, "%.8f", entry.getValue().cryptoValueProperty.getValue()) + "\"").append(exportSplitter);
+                                sb.append("\"" + entry.getValue().cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
+                                sb.append("\"\"").append(exportSplitter);
+                                sb.append("\"\"").append(exportSplitter);
                                 sb.append("\"\"").append(exportSplitter);
                                 sb.append("\"\"").append(exportSplitter);
                                 sb.append("\"DeFiChain-Wallet\"").append(exportSplitter);
                                 sb.append("\"\"").append(exportSplitter);
-                                sb.append("\"\"").append(exportSplitter);
-                                sb.append("\"" + TransactionController.getInstance().convertTimeStampToCointrackingReal(transaction.blockTimeProperty.getValue()) + "\"").append(exportSplitter);
-                                sb.append("\"").append(transaction.txIDProperty.getValue()).append("\"").append(exportSplitter);
+
+                                switch (filter) {
+                                    case "Cumulate All":
+                                        sb.append("\"" + "LM Interest Income" + "\"").append(exportSplitter);
+                                        break;
+                                    case "Cumulate Rewards and Commisions":
+                                        sb.append("\"" + "LM Interest Income (" + this.mainViewController.transactionController.getPoolPairFromId(entry.getValue().poolIDProperty.getValue())).append(")" + "\"").append(exportSplitter);
+                                        break;
+                                    case "Cumulate Pool Pair":
+                                        sb.append("\"" + "LM " + entry.getValue().typeProperty.getValue() + "\"").append(exportSplitter);
+                                        break;
+                                    case "Cumulate None":
+                                        sb.append("\"" + "LM " + entry.getValue().typeProperty.getValue() + " (" + this.mainViewController.transactionController.getPoolPairFromId(entry.getValue().poolIDProperty.getValue())).append(")" + "\"").append(exportSplitter);
+                                        break;
+                                }
+
+                                sb.append("\"" + TransactionController.getInstance().convertTimeStampToCointracking(entry.getValue().blockTimeProperty.getValue()) + "\"").append(exportSplitter);
+                                sb.append("\"" + entry.getValue().cryptoCurrencyProperty.getValue() + TransactionController.getInstance().convertTimeStampWithoutTimeToString(entry.getValue().blockTimeProperty.getValue()) + "\"").append(exportSplitter);
                                 sb.append("\"\"").append(exportSplitter);
                                 sb.append("\"\"");
                                 writer.write(sb.toString());
                                 sb = null;
+
                             }
 
+                            exportList = new TreeMap<>();
+                            String key = "";
+
+                            switch (filter) {
+                                case "Cumulate All":
+                                    key = transaction.cryptoCurrencyProperty.getValue();
+                                    break;
+                                case "Cumulate Rewards and Commisions":
+                                    key = this.mainViewController.transactionController.getPoolPairFromId(transaction.poolIDProperty.getValue()) + transaction.cryptoCurrencyProperty.getValue();
+                                    break;
+                                case "Cumulate Pool Pair":
+                                    key = transaction.cryptoCurrencyProperty.getValue() + transaction.typeProperty.getValue();
+                                    break;
+                                case "Cumulate None":
+                                    key = this.mainViewController.transactionController.getPoolPairFromId(transaction.poolIDProperty.getValue()) + transaction.cryptoCurrencyProperty.getValue() + transaction.typeProperty.getValue();
+                                    break;
+                            }
+                            exportList.put(key, new TransactionModel(transaction.blockTimeProperty.getValue(), transaction.ownerProperty.getValue(), transaction.typeProperty.getValue(), transaction.amountProperty.getValue(), transaction.blockHashProperty.getValue(), transaction.blockHeightProperty.getValue(), transaction.poolIDProperty.getValue(), transaction.txIDProperty.getValue(), this.mainViewController.transactionController));
+                        }
+
+                    } else {
+
+
+                        if (!(transaction.typeProperty.getValue().equals("UtxosToAccount") || transaction.typeProperty.getValue().equals("AccountToUtxos"))) {
+
+                            TransactionModel poolSwap2 = null;
+
+                            if (transaction.typeProperty.getValue().equals("PoolSwap") && !transaction.exportCointracking) {
+                                for (int i = transCounter; i < transactions.size(); i++) {
+                                    if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
+                                        break;
+
+                                    if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue()) && !transactions.get(i).cryptoCurrencyProperty.getValue().equals(transaction.cryptoCurrencyProperty.getValue())) {
+                                        poolSwap2 = transactions.get(i);
+                                        transactions.get(i).exportCointracking = true;
+                                        break;
+                                    }
+                                }
+
+                                if (poolSwap2 != null) {
+
+                                    sb = new StringBuilder();
+                                    sb.append("\n");
+                                    sb.append("\"Trade\"").append(exportSplitter);
+                                    if (transaction.cryptoValueProperty.getValue() > 0.0) {
+                                        sb.append("\"" + String.format(localeDecimal, "%.8f", transaction.cryptoValueProperty.getValue()) + "\"").append(exportSplitter);
+                                        sb.append("\"" + transaction.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
+                                        sb.append("\"" + String.format(localeDecimal, "%.8f", poolSwap2.cryptoValueProperty.getValue() * -1) + "\"").append(exportSplitter);
+                                        sb.append("\"" + poolSwap2.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
+                                    } else {
+                                        sb.append("\"" + String.format(localeDecimal, "%.8f", poolSwap2.cryptoValueProperty.getValue()) + "\"").append(exportSplitter);
+                                        sb.append("\"" + poolSwap2.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
+                                        sb.append("\"" + String.format(localeDecimal, "%.8f", transaction.cryptoValueProperty.getValue() * -1) + "\"").append(exportSplitter);
+                                        sb.append("\"" + transaction.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
+                                    }
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"DeFiChain-Wallet\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"" + TransactionController.getInstance().convertTimeStampToCointrackingReal(transaction.blockTimeProperty.getValue()) + "\"").append(exportSplitter);
+                                    sb.append("\"").append(transaction.txIDProperty.getValue()).append("\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"\"");
+                                    writer.write(sb.toString());
+                                    sb = null;
+                                } else {
+                                    incompleteTransactions.add(transaction);
+                                }
+
+                            }
+
+                            TransactionModel addPool1 = null;
+                            TransactionModel addPool2 = null;
+                            TransactionModel addPool = null;
+
+                            if (transaction.typeProperty.getValue().equals("AddPoolLiquidity") && !transaction.exportCointracking) {
+
+                                for (int i = transCounter; i < transactions.size(); i++) {
+                                    if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
+                                        break;
+
+                                    if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue())) {
+                                        if (transactions.get(i).cryptoCurrencyProperty.getValue().equals("DFI")) {
+                                            addPool1 = transactions.get(i);
+                                            transactions.get(i).exportCointracking = true;
+                                        }
+                                        if (!transactions.get(i).cryptoCurrencyProperty.getValue().equals("DFI") && !transactions.get(i).cryptoCurrencyProperty.getValue().contains("-")) {
+                                            addPool2 = transactions.get(i);
+                                            transactions.get(i).exportCointracking = true;
+                                        }
+                                        if (transactions.get(i).cryptoCurrencyProperty.getValue().contains("-")) {
+                                            addPool = transactions.get(i);
+                                            transactions.get(i).exportCointracking = true;
+                                        }
+                                    }
+                                    if (addPool != null && addPool2 != null && addPool1 != null) break;
+                                }
+
+                                if (addPool != null && addPool2 != null && addPool1 != null) {
+
+                                    sb = new StringBuilder();
+
+                                    sb.append("\n");
+                                    sb.append("\"Trade\"").append(exportSplitter);
+                                    sb.append("\"" + String.format(localeDecimal, "%.8f", addPool.cryptoValueProperty.getValue() / 2) + "\"").append(exportSplitter);
+                                    sb.append("\"" + TransactionController.getInstance().getPoolPairFromId(addPool.poolIDProperty.getValue()) + "\"").append(exportSplitter);
+                                    sb.append("\"" + String.format(localeDecimal, "%.8f", addPool1.cryptoValueProperty.getValue() * -1) + "\"").append(exportSplitter);
+                                    sb.append("\"" + addPool1.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"DeFiChain-Wallet\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"Add-Pool-Liquidity (" + TransactionController.getInstance().getPoolPairFromId(addPool.poolIDProperty.getValue()) + ")\"").append(exportSplitter);
+                                    sb.append("\"" + TransactionController.getInstance().convertTimeStampToCointrackingReal(addPool1.blockTimeProperty.getValue()) + "\"").append(exportSplitter);
+                                    sb.append("\"").append(addPool1.txIDProperty.getValue()).append("\"").append(exportSplitter);
+                                    sb.append("\"").append(addPool1.fiatValueProperty.getValue() * -1).append("\"").append(exportSplitter);
+                                    sb.append("\"").append(addPool1.fiatValueProperty.getValue() * -1).append("\"");
+                                    writer.write(sb.toString());
+                                    sb = null;
+
+                                    sb = new StringBuilder();
+
+                                    sb.append("\n");
+                                    sb.append("\"Trade\"").append(exportSplitter);
+                                    sb.append("\"" + String.format(localeDecimal, "%.8f", addPool.cryptoValueProperty.getValue() / 2) + "\"").append(exportSplitter);
+                                    sb.append("\"" + TransactionController.getInstance().getPoolPairFromId(addPool.poolIDProperty.getValue()) + "\"").append(exportSplitter);
+                                    sb.append("\"" + String.format(localeDecimal, "%.8f", addPool2.cryptoValueProperty.getValue() * -1) + "\"").append(exportSplitter);
+                                    sb.append("\"" + addPool2.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"DeFiChain-Wallet\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"Add-Pool-Liquidity (" + TransactionController.getInstance().getPoolPairFromId(addPool.poolIDProperty.getValue()) + ")\"").append(exportSplitter);
+                                    sb.append("\"" + TransactionController.getInstance().convertTimeStampToCointrackingReal(addPool2.blockTimeProperty.getValue()) + "\"").append(exportSplitter);
+                                    sb.append("\"").append(addPool2.txIDProperty.getValue()).append("\"").append(exportSplitter);
+                                    sb.append("\"").append(addPool2.fiatValueProperty.getValue() * -1).append("\"").append(exportSplitter);
+                                    sb.append("\"").append(addPool2.fiatValueProperty.getValue() * -1).append("\"");
+                                    writer.write(sb.toString());
+                                    sb = null;
+                                } else {
+                                    if (addPool != null) incompleteTransactions.add(addPool);
+                                    if (addPool2 != null) incompleteTransactions.add(addPool2);
+                                    if (addPool1 != null) incompleteTransactions.add(addPool1);
+                                }
+                            }
                         }
 
                         TransactionModel addPool1 = null;
                         TransactionModel addPool2 = null;
                         TransactionModel addPool = null;
 
-                        if (transaction.typeProperty.getValue().equals("AddPoolLiquidity") && !transaction.exportCointracking) {
+                        if (transaction.typeProperty.getValue().equals("RemovePoolLiquidity") && !transaction.exportCointracking) {
 
                             for (int i = transCounter; i < transactions.size(); i++) {
                                 if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
@@ -429,15 +505,15 @@ public class ExportService {
                                 if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue())) {
                                     if (transactions.get(i).cryptoCurrencyProperty.getValue().equals("DFI")) {
                                         addPool1 = transactions.get(i);
-                                        transaction.exportCointracking = true;
+                                        transactions.get(i).exportCointracking = true;
                                     }
                                     if (!transactions.get(i).cryptoCurrencyProperty.getValue().equals("DFI") && !transactions.get(i).cryptoCurrencyProperty.getValue().contains("-")) {
                                         addPool2 = transactions.get(i);
-                                        transaction.exportCointracking = true;
+                                        transactions.get(i).exportCointracking = true;
                                     }
                                     if (transactions.get(i).cryptoCurrencyProperty.getValue().contains("-")) {
                                         addPool = transactions.get(i);
-                                        transaction.exportCointracking = true;
+                                        transactions.get(i).exportCointracking = true;
                                     }
                                 }
                                 if (addPool != null && addPool2 != null && addPool1 != null) break;
@@ -446,22 +522,21 @@ public class ExportService {
                             if (addPool != null && addPool2 != null && addPool1 != null) {
 
                                 sb = new StringBuilder();
-
                                 sb.append("\n");
                                 sb.append("\"Trade\"").append(exportSplitter);
-                                sb.append("\"" + String.format(localeDecimal, "%.8f", addPool.cryptoValueProperty.getValue() / 2) + "\"").append(exportSplitter);
-                                sb.append("\"" + TransactionController.getInstance().getPoolPairFromId(addPool.poolIDProperty.getValue()) + "\"").append(exportSplitter);
-                                sb.append("\"" + String.format(localeDecimal, "%.8f", addPool1.cryptoValueProperty.getValue() * -1) + "\"").append(exportSplitter);
+                                sb.append("\"" + String.format(localeDecimal, "%.8f", addPool1.cryptoValueProperty.getValue()) + "\"").append(exportSplitter);
                                 sb.append("\"" + addPool1.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
+                                sb.append("\"" + String.format(localeDecimal, "%.8f", (addPool.cryptoValueProperty.getValue() / 2) * -1) + "\"").append(exportSplitter);
+                                sb.append("\"" + TransactionController.getInstance().getPoolPairFromId(addPool.poolIDProperty.getValue()) + "\"").append(exportSplitter);
                                 sb.append("\"\"").append(exportSplitter);
                                 sb.append("\"\"").append(exportSplitter);
                                 sb.append("\"DeFiChain-Wallet\"").append(exportSplitter);
                                 sb.append("\"\"").append(exportSplitter);
-                                sb.append("\"Add-Pool-Liquidity (" + TransactionController.getInstance().getPoolPairFromId(addPool.poolIDProperty.getValue()) + ")\"").append(exportSplitter);
+                                sb.append("\"Remove-Pool-Liquidity (" + TransactionController.getInstance().getPoolPairFromId(addPool.poolIDProperty.getValue()) + ")\"").append(exportSplitter);
                                 sb.append("\"" + TransactionController.getInstance().convertTimeStampToCointrackingReal(addPool1.blockTimeProperty.getValue()) + "\"").append(exportSplitter);
                                 sb.append("\"").append(addPool1.txIDProperty.getValue()).append("\"").append(exportSplitter);
-                                sb.append("\"").append(addPool1.fiatValueProperty.getValue() * -1).append("\"").append(exportSplitter);
-                                sb.append("\"").append(addPool1.fiatValueProperty.getValue() * -1).append("\"");
+                                sb.append("\"").append(addPool1.fiatValueProperty.getValue()).append("\"").append(exportSplitter);
+                                sb.append("\"").append(addPool1.fiatValueProperty.getValue()).append("\"");
                                 writer.write(sb.toString());
                                 sb = null;
 
@@ -469,142 +544,119 @@ public class ExportService {
 
                                 sb.append("\n");
                                 sb.append("\"Trade\"").append(exportSplitter);
-                                sb.append("\"" + String.format(localeDecimal, "%.8f", addPool.cryptoValueProperty.getValue() / 2) + "\"").append(exportSplitter);
-                                sb.append("\"" + TransactionController.getInstance().getPoolPairFromId(addPool.poolIDProperty.getValue()) + "\"").append(exportSplitter);
-                                sb.append("\"" + String.format(localeDecimal, "%.8f", addPool2.cryptoValueProperty.getValue() * -1) + "\"").append(exportSplitter);
+                                sb.append("\"" + String.format(localeDecimal, "%.8f", addPool2.cryptoValueProperty.getValue()) + "\"").append(exportSplitter);
                                 sb.append("\"" + addPool2.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
+                                sb.append("\"" + String.format(localeDecimal, "%.8f", (addPool.cryptoValueProperty.getValue() / 2) * -1) + "\"").append(exportSplitter);
+                                sb.append("\"" + TransactionController.getInstance().getPoolPairFromId(addPool.poolIDProperty.getValue()) + "\"").append(exportSplitter);
                                 sb.append("\"\"").append(exportSplitter);
                                 sb.append("\"\"").append(exportSplitter);
                                 sb.append("\"DeFiChain-Wallet\"").append(exportSplitter);
                                 sb.append("\"\"").append(exportSplitter);
-                                sb.append("\"Add-Pool-Liquidity (" + TransactionController.getInstance().getPoolPairFromId(addPool.poolIDProperty.getValue()) + ")\"").append(exportSplitter);
-                                sb.append("\"" + TransactionController.getInstance().convertTimeStampToCointrackingReal(addPool2.blockTimeProperty.getValue()) + "\"").append(exportSplitter);
+                                sb.append("\"Remove-Pool-Liquidity (" + TransactionController.getInstance().getPoolPairFromId(addPool.poolIDProperty.getValue()) + ")\"").append(exportSplitter);
+                                sb.append(TransactionController.getInstance().convertTimeStampToCointrackingReal(addPool2.blockTimeProperty.getValue())).append(exportSplitter);
                                 sb.append("\"").append(addPool2.txIDProperty.getValue()).append("\"").append(exportSplitter);
-                                sb.append("\"").append(addPool2.fiatValueProperty.getValue() * -1).append("\"").append(exportSplitter);
-                                sb.append("\"").append(addPool2.fiatValueProperty.getValue() * -1).append("\"");
+                                sb.append("\"").append(addPool2.fiatValueProperty.getValue()).append("\"").append(exportSplitter);
+                                sb.append("\"").append(addPool2.fiatValueProperty.getValue()).append("\"");
                                 writer.write(sb.toString());
                                 sb = null;
-
-                            }
-                        }
-                    }
-
-                    TransactionModel addPool1 = null;
-                    TransactionModel addPool2 = null;
-                    TransactionModel addPool = null;
-
-                    if (transaction.typeProperty.getValue().equals("RemovePoolLiquidity") && !transaction.exportCointracking) {
-
-                        for (int i = transCounter; i < transactions.size(); i++) {
-                            if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
-                                break;
-
-                            if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue())) {
-                                if (transactions.get(i).cryptoCurrencyProperty.getValue().equals("DFI")) {
-                                    addPool1 = transactions.get(i);
-                                    transaction.exportCointracking = true;
-                                }
-                                if (!transactions.get(i).cryptoCurrencyProperty.getValue().equals("DFI") && !transactions.get(i).cryptoCurrencyProperty.getValue().contains("-")) {
-                                    addPool2 = transactions.get(i);
-                                    transaction.exportCointracking = true;
-                                }
-                                if (transactions.get(i).cryptoCurrencyProperty.getValue().contains("-")) {
-                                    addPool = transactions.get(i);
-                                    transaction.exportCointracking = true;
-                                }
-                            }
-                            if (addPool != null && addPool2 != null && addPool1 != null) break;
-                        }
-
-                        if (addPool != null && addPool2 != null && addPool1 != null) {
-
-                            sb = new StringBuilder();
-                            sb.append("\n");
-                            sb.append("\"Trade\"").append(exportSplitter);
-                            sb.append("\"" + String.format(localeDecimal, "%.8f", addPool1.cryptoValueProperty.getValue()) + "\"").append(exportSplitter);
-                            sb.append("\"" + addPool1.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
-                            sb.append("\"" + String.format(localeDecimal, "%.8f", (addPool.cryptoValueProperty.getValue() / 2) * -1) + "\"").append(exportSplitter);
-                            sb.append("\"" + TransactionController.getInstance().getPoolPairFromId(addPool.poolIDProperty.getValue()) + "\"").append(exportSplitter);
-                            sb.append("\"\"").append(exportSplitter);
-                            sb.append("\"\"").append(exportSplitter);
-                            sb.append("\"DeFiChain-Wallet\"").append(exportSplitter);
-                            sb.append("\"\"").append(exportSplitter);
-                            sb.append("\"Remove-Pool-Liquidity (" + TransactionController.getInstance().getPoolPairFromId(addPool.poolIDProperty.getValue()) + ")\"").append(exportSplitter);
-                            sb.append("\"" + TransactionController.getInstance().convertTimeStampToCointrackingReal(addPool1.blockTimeProperty.getValue()) + "\"").append(exportSplitter);
-                            sb.append("\"").append(addPool1.txIDProperty.getValue()).append("\"").append(exportSplitter);
-                            sb.append("\"").append(addPool1.fiatValueProperty.getValue()).append("\"").append(exportSplitter);
-                            sb.append("\"").append(addPool1.fiatValueProperty.getValue()).append("\"");
-                            writer.write(sb.toString());
-                            sb = null;
-
-                            sb = new StringBuilder();
-
-                            sb.append("\n");
-                            sb.append("\"Trade\"").append(exportSplitter);
-                            sb.append("\"" + String.format(localeDecimal, "%.8f", addPool2.cryptoValueProperty.getValue()) + "\"").append(exportSplitter);
-                            sb.append("\"" + addPool2.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
-                            sb.append("\"" + String.format(localeDecimal, "%.8f", (addPool.cryptoValueProperty.getValue() / 2) * -1) + "\"").append(exportSplitter);
-                            sb.append("\"" + TransactionController.getInstance().getPoolPairFromId(addPool.poolIDProperty.getValue()) + "\"").append(exportSplitter);
-                            sb.append("\"\"").append(exportSplitter);
-                            sb.append("\"\"").append(exportSplitter);
-                            sb.append("\"DeFiChain-Wallet\"").append(exportSplitter);
-                            sb.append("\"\"").append(exportSplitter);
-                            sb.append("\"Remove-Pool-Liquidity (" + TransactionController.getInstance().getPoolPairFromId(addPool.poolIDProperty.getValue()) + ")\"").append(exportSplitter);
-                            sb.append(TransactionController.getInstance().convertTimeStampToCointrackingReal(addPool2.blockTimeProperty.getValue())).append(exportSplitter);
-                            sb.append("\"").append(addPool2.txIDProperty.getValue()).append("\"").append(exportSplitter);
-                            sb.append("\"").append(addPool2.fiatValueProperty.getValue()).append("\"").append(exportSplitter);
-                            sb.append("\"").append(addPool2.fiatValueProperty.getValue()).append("\"");
-                            writer.write(sb.toString());
-                            sb = null;
-                        }
-                    }
-
-                    if ((transaction.typeProperty.getValue().equals("receive") | transaction.typeProperty.getValue().equals("sent")) && !transaction.exportCointracking) {
-
-                        double amount = 0;
-                        int onlyOne = 0;
-                        for (int i = transCounter; i < transactions.size(); i++) {
-                            if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
-                                break;
-
-                            if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue())) {
-                                amount = amount + transactions.get(i).cryptoValueProperty.getValue();
-                                transaction.exportCointracking = true;
-                                transactions.get(i).exportCointracking = true;
-                                onlyOne++;
-                            }
-                        }
-
-                        if (!transaction.cryptoValueProperty.getValue().equals(0.0) && !(amount >= -0.00000001 && amount <= 0.00000001)) {
-                            if (amount > 0) {
-                                sb = new StringBuilder();
-                                sb.append("\n");
-                                sb.append("\"Deposit\"").append(exportSplitter);
-                                sb.append("\"" + String.format(localeDecimal, "%.8f", amount) + "\"").append(exportSplitter);
-                                sb.append("\"" + transaction.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
-                                sb.append("\"\"").append(exportSplitter);
-                                sb.append("\"\"").append(exportSplitter);
-                                sb.append("\"\"").append(exportSplitter);
-                                sb.append("\"\"").append(exportSplitter);
-                                sb.append("\"DeFiChain-Wallet\"").append(exportSplitter);
-                                sb.append("\"\"").append(exportSplitter);
-                                sb.append("\"\"").append(exportSplitter);
-                                sb.append("\"" + TransactionController.getInstance().convertTimeStampToCointrackingReal(transaction.blockTimeProperty.getValue()) + "\"").append(exportSplitter);
-                                sb.append("\"").append(transaction.txIDProperty.getValue()).append("\"").append(exportSplitter);
-                                sb.append("\"\"").append(exportSplitter);
-                                sb.append("\"\"");
-                                writer.write(sb.toString());
-                                sb = null;
-
                             } else {
+                                if (addPool != null) incompleteTransactions.add(addPool);
+                                if (addPool2 != null) incompleteTransactions.add(addPool2);
+                                if (addPool1 != null) incompleteTransactions.add(addPool1);
+                            }
+                        }
+
+                        if ((transaction.typeProperty.getValue().equals("receive") | transaction.typeProperty.getValue().equals("sent")) && !transaction.exportCointracking) {
+
+                            double amount = 0;
+                            int onlyOne = 0;
+                            for (int i = transCounter; i < transactions.size(); i++) {
+                                if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
+                                    break;
+
+                                if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue())) {
+                                    amount = amount + transactions.get(i).cryptoValueProperty.getValue();
+                                    transaction.exportCointracking = true;
+                                    transactions.get(i).exportCointracking = true;
+                                    onlyOne++;
+                                }
+                            }
+
+                            if (!transaction.cryptoValueProperty.getValue().equals(0.0) && !(amount >= -0.00000001 && amount <= 0.00000001)) {
+                                if (amount > 0) {
+                                    sb = new StringBuilder();
+                                    sb.append("\n");
+                                    sb.append("\"Deposit\"").append(exportSplitter);
+                                    sb.append("\"" + String.format(localeDecimal, "%.8f", amount) + "\"").append(exportSplitter);
+                                    sb.append("\"" + transaction.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"DeFiChain-Wallet\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"" + TransactionController.getInstance().convertTimeStampToCointrackingReal(transaction.blockTimeProperty.getValue()) + "\"").append(exportSplitter);
+                                    sb.append("\"").append(transaction.txIDProperty.getValue()).append("\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"\"");
+                                    writer.write(sb.toString());
+                                    sb = null;
+
+                                } else {
+                                    sb = new StringBuilder();
+
+                                    sb.append("\n");
+                                    sb.append("\"Withdrawal\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"" + String.format(localeDecimal, "%.8f", amount * -1) + "\"").append(exportSplitter);
+                                    sb.append("\"" + transaction.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"DeFiChain-Wallet\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"" + TransactionController.getInstance().convertTimeStampToCointrackingReal(transaction.blockTimeProperty.getValue()) + "\"").append(exportSplitter);
+                                    sb.append("\"").append(transaction.txIDProperty.getValue()).append("\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"\"");
+                                    writer.write(sb.toString());
+                                    sb = null;
+                                }
+                            }
+                        }
+
+                        if (transaction.typeProperty.getValue().equals("AccountToAccount") && !transaction.exportCointracking) {
+                            for (int i = transCounter; i < transactions.size(); i++) {
+                                if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
+                                    break;
+
+                                if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue()) && transactions.get(i).cryptoValueProperty.getValue().equals(-1 * transaction.cryptoValueProperty.getValue()) && !transactions.get(i).typeProperty.getValue().equals("sent")) {
+                                    transaction.exportCointracking = true;
+                                    transactions.get(i).exportCointracking = true;
+                                    break;
+                                }
+                            }
+
+                            if (!transaction.exportCointracking && !transaction.cryptoValueProperty.getValue().equals(0.0)) {
                                 sb = new StringBuilder();
 
                                 sb.append("\n");
-                                sb.append("\"Withdrawal\"").append(exportSplitter);
-                                sb.append("\"\"").append(exportSplitter);
-                                sb.append("\"\"").append(exportSplitter);
-                                sb.append("\"" + String.format(localeDecimal, "%.8f", amount * -1) + "\"").append(exportSplitter);
-                                sb.append("\"" + transaction.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
+                                if (transaction.cryptoValueProperty.getValue() < 0) {
+                                    sb.append("\"Withdrawal\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"" + String.format(localeDecimal, "%.8f", transaction.cryptoValueProperty.getValue() * -1) + "\"").append(exportSplitter);
+                                    sb.append("\"" + transaction.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
+                                } else {
+                                    sb.append("\"Deposit\"").append(exportSplitter);
+                                    sb.append("\"" + String.format(localeDecimal, "%.8f", transaction.cryptoValueProperty.getValue()) + "\"").append(exportSplitter);
+                                    sb.append("\"" + transaction.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                }
+
                                 sb.append("\"\"").append(exportSplitter);
                                 sb.append("\"\"").append(exportSplitter);
                                 sb.append("\"DeFiChain-Wallet\"").append(exportSplitter);
@@ -618,157 +670,152 @@ public class ExportService {
                                 sb = null;
                             }
                         }
+
+                        if (transaction.typeProperty.getValue().equals("AnyAccountsToAccounts") && !transaction.exportCointracking) {
+
+                            double amount = 0;
+                            int onlyOne = 0;
+                            for (int i = transCounter; i < transactions.size(); i++) {
+                                if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
+                                    break;
+
+                                if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue())) {
+                                    amount = amount + transactions.get(i).cryptoValueProperty.getValue();
+                                    transaction.exportCointracking = true;
+                                    transactions.get(i).exportCointracking = true;
+                                    onlyOne++;
+                                }
+                            }
+
+                            if ((!transaction.exportCointracking || onlyOne == 1) && !transaction.cryptoValueProperty.getValue().equals(0.0) && !(amount >= -0.00000001 && amount <= 0.00000001)) {
+                                sb = new StringBuilder();
+
+                                sb.append("\n");
+                                if (transaction.cryptoValueProperty.getValue() < 0) {
+                                    sb.append("\"Withdrawal\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"" + String.format(localeDecimal, "%.8f", transaction.cryptoValueProperty.getValue() * -1) + "\"").append(exportSplitter);
+                                    sb.append("\"" + transaction.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
+                                } else {
+                                    sb.append("\"Deposit\"").append(exportSplitter);
+                                    sb.append("\"" + String.format(localeDecimal, "%.8f", transaction.cryptoValueProperty.getValue()) + "\"").append(exportSplitter);
+                                    sb.append("\"" + transaction.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                    sb.append("\"\"").append(exportSplitter);
+                                }
+
+                                sb.append("\"\"").append(exportSplitter);
+                                sb.append("\"\"").append(exportSplitter);
+                                sb.append("\"DeFiChain-Wallet\"").append(exportSplitter);
+                                sb.append("\"\"").append(exportSplitter);
+                                sb.append("\"\"").append(exportSplitter);
+                                sb.append("\"" + TransactionController.getInstance().convertTimeStampToCointrackingReal(transaction.blockTimeProperty.getValue()) + "\"").append(exportSplitter);
+                                sb.append("\"").append(transaction.txIDProperty.getValue()).append("\"").append(exportSplitter);
+                                sb.append("\"\"").append(exportSplitter);
+                                sb.append("\"\"");
+                                writer.write(sb.toString());
+                                sb = null;
+                            }
+
+
+                        }
                     }
 
-                    if (transaction.typeProperty.getValue().equals("AccountToAccount") && !transaction.exportCointracking) {
-                        for (int i = transCounter; i < transactions.size(); i++) {
-                            if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
-                                break;
-
-                            if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue()) && transactions.get(i).cryptoValueProperty.getValue().equals(-1 * transaction.cryptoValueProperty.getValue()) && !transactions.get(i).typeProperty.getValue().equals("sent")) {
-                                transaction.exportCointracking = true;
-                                transactions.get(i).exportCointracking = true;
-                                break;
-                            }
-                        }
-
-                        if (!transaction.exportCointracking && !transaction.cryptoValueProperty.getValue().equals(0.0)) {
-                            sb = new StringBuilder();
-
-                            sb.append("\n");
-                            if (transaction.cryptoValueProperty.getValue() < 0) {
-                                sb.append("\"Withdrawal\"").append(exportSplitter);
-                                sb.append("\"\"").append(exportSplitter);
-                                sb.append("\"\"").append(exportSplitter);
-                                sb.append("\"" + String.format(localeDecimal, "%.8f", transaction.cryptoValueProperty.getValue() * -1) + "\"").append(exportSplitter);
-                                sb.append("\"" + transaction.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
-                            } else {
-                                sb.append("\"Deposit\"").append(exportSplitter);
-                                sb.append("\"" + String.format(localeDecimal, "%.8f", transaction.cryptoValueProperty.getValue()) + "\"").append(exportSplitter);
-                                sb.append("\"" + transaction.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
-                                sb.append("\"\"").append(exportSplitter);
-                                sb.append("\"\"").append(exportSplitter);
-                            }
-
-                            sb.append("\"\"").append(exportSplitter);
-                            sb.append("\"\"").append(exportSplitter);
-                            sb.append("\"DeFiChain-Wallet\"").append(exportSplitter);
-                            sb.append("\"\"").append(exportSplitter);
-                            sb.append("\"\"").append(exportSplitter);
-                            sb.append("\"" + TransactionController.getInstance().convertTimeStampToCointrackingReal(transaction.blockTimeProperty.getValue()) + "\"").append(exportSplitter);
-                            sb.append("\"").append(transaction.txIDProperty.getValue()).append("\"").append(exportSplitter);
-                            sb.append("\"\"").append(exportSplitter);
-                            sb.append("\"\"");
-                            writer.write(sb.toString());
-                            sb = null;
-                        }
-                    }
-
-                    if (transaction.typeProperty.getValue().equals("AnyAccountsToAccounts") && !transaction.exportCointracking) {
-
-                        double amount = 0;
-                        int onlyOne = 0;
-                        for (int i = transCounter; i < transactions.size(); i++) {
-                            if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
-                                break;
-
-                            if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue())) {
-                                amount = amount + transactions.get(i).cryptoValueProperty.getValue();
-                                transaction.exportCointracking = true;
-                                transactions.get(i).exportCointracking = true;
-                                onlyOne++;
-                            }
-                        }
-
-                        if ((!transaction.exportCointracking || onlyOne == 1) && !transaction.cryptoValueProperty.getValue().equals(0.0) && !(amount >= -0.00000001 && amount <= 0.00000001)) {
-                            sb = new StringBuilder();
-
-                            sb.append("\n");
-                            if (transaction.cryptoValueProperty.getValue() < 0) {
-                                sb.append("\"Withdrawal\"").append(exportSplitter);
-                                sb.append("\"\"").append(exportSplitter);
-                                sb.append("\"\"").append(exportSplitter);
-                                sb.append("\"" + String.format(localeDecimal, "%.8f", transaction.cryptoValueProperty.getValue() * -1) + "\"").append(exportSplitter);
-                                sb.append("\"" + transaction.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
-                            } else {
-                                sb.append("\"Deposit\"").append(exportSplitter);
-                                sb.append("\"" + String.format(localeDecimal, "%.8f", transaction.cryptoValueProperty.getValue()) + "\"").append(exportSplitter);
-                                sb.append("\"" + transaction.cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
-                                sb.append("\"\"").append(exportSplitter);
-                                sb.append("\"\"").append(exportSplitter);
-                            }
-
-                            sb.append("\"\"").append(exportSplitter);
-                            sb.append("\"\"").append(exportSplitter);
-                            sb.append("\"DeFiChain-Wallet\"").append(exportSplitter);
-                            sb.append("\"\"").append(exportSplitter);
-                            sb.append("\"\"").append(exportSplitter);
-                            sb.append("\"" + TransactionController.getInstance().convertTimeStampToCointrackingReal(transaction.blockTimeProperty.getValue()) + "\"").append(exportSplitter);
-                            sb.append("\"").append(transaction.txIDProperty.getValue()).append("\"").append(exportSplitter);
-                            sb.append("\"\"").append(exportSplitter);
-                            sb.append("\"\"");
-                            writer.write(sb.toString());
-                            sb = null;
-                        }
+                    oldDate = newDate;
+                    transCounter++;
+                }
+            }
+    }
 
 
-                    }
+            for (
+                    HashMap.Entry<String, TransactionModel> entry : exportList.entrySet()) {
+
+                sb = new StringBuilder();
+
+                sb.append("\n");
+                sb.append("\"" + Type2CointrackingType(entry.getValue().typeProperty.getValue()) + "\"").append(exportSplitter);
+                sb.append("\"" + String.format(localeDecimal, "%.8f", entry.getValue().cryptoValueProperty.getValue()) + "\"").append(exportSplitter);
+                sb.append("\"" + entry.getValue().cryptoCurrencyProperty.getValue() + "\"").append(exportSplitter);
+                sb.append("\"\"").append(exportSplitter);
+                sb.append("\"\"").append(exportSplitter);
+                sb.append("\"\"").append(exportSplitter);
+                sb.append("\"\"").append(exportSplitter);
+                sb.append("\"DeFiChain-Wallet\"").append(exportSplitter);
+                sb.append("\"\"").append(exportSplitter);
+
+                switch (filter) {
+                    case "Cumulate All":
+                        sb.append("\"" + "LM Interest Income" + "\"").append(exportSplitter);
+                        break;
+                    case "Cumulate Rewards and Commisions":
+                        sb.append("\"" + "LM Interest Income (" + this.mainViewController.transactionController.getPoolPairFromId(entry.getValue().poolIDProperty.getValue())).append(")" + "\"").append(exportSplitter);
+                        break;
+                    case "Cumulate Pool Pair":
+                        sb.append("\"" + "LM " + entry.getValue().typeProperty.getValue() + "\"").append(exportSplitter);
+                        break;
+                    case "Cumulate None":
+                        sb.append("\"" + "LM " + entry.getValue().typeProperty.getValue() + " (" + this.mainViewController.transactionController.getPoolPairFromId(entry.getValue().poolIDProperty.getValue())).append(")" + "\"").append(exportSplitter);
+                        break;
                 }
 
-                oldDate = newDate;
-                transCounter++;
-            }
-        }
-    }
+                sb.append("\"" + TransactionController.getInstance().convertTimeStampToCointracking(entry.getValue().blockTimeProperty.getValue()) + "\"").append(exportSplitter);
+                sb.append("\"" + entry.getValue().cryptoCurrencyProperty.getValue() + TransactionController.getInstance().convertTimeStampWithoutTimeToString(entry.getValue().blockTimeProperty.getValue()) + "\"").append(exportSplitter);
+                sb.append("\"\"").append(exportSplitter);
+                sb.append("\"\"");
 
+                writer.write(sb.toString());
+                sb = null;
 
-        for (
-                HashMap.Entry<String, TransactionModel> entry : exportList.entrySet()) {
-
-            sb = new StringBuilder();
-
-            sb.append("\n");
-            sb.append("\"" + Type2CointrackingType(entry.getValue().typeProperty.getValue()) + "\"").append(exportSplitter);
-            sb.append("\""+String.format(localeDecimal, "%.8f", entry.getValue().cryptoValueProperty.getValue())+"\"").append(exportSplitter);
-            sb.append("\""+entry.getValue().cryptoCurrencyProperty.getValue()+"\"").append(exportSplitter);
-            sb.append("\"\"").append(exportSplitter);
-            sb.append("\"\"").append(exportSplitter);
-            sb.append("\"\"").append(exportSplitter);
-            sb.append("\"\"").append(exportSplitter);
-            sb.append("\"DeFiChain-Wallet\"").append(exportSplitter);
-            sb.append("\"\"").append(exportSplitter);
-
-            switch (filter) {
-                case "Cumulate All":
-                    sb.append("\""+"LM Interest Income"+"\"").append(exportSplitter);
-                    break;
-                case "Cumulate Rewards and Commisions":
-                    sb.append("\""+"LM Interest Income (" + this.mainViewController.transactionController.getPoolPairFromId(entry.getValue().poolIDProperty.getValue())).append(")"+"\"").append(exportSplitter);
-                    break;
-                case "Cumulate Pool Pair":
-                    sb.append("\""+"LM " + entry.getValue().typeProperty.getValue()+"\"").append(exportSplitter);
-                    break;
-                case "Cumulate None":
-                    sb.append("\""+"LM " + entry.getValue().typeProperty.getValue() + " (" + this.mainViewController.transactionController.getPoolPairFromId(entry.getValue().poolIDProperty.getValue())).append(")"+"\"").append(exportSplitter);
-                    break;
             }
 
-            sb.append("\""+TransactionController.getInstance().convertTimeStampToCointracking(entry.getValue().blockTimeProperty.getValue())+"\"").append(exportSplitter);
-            sb.append("\""+entry.getValue().cryptoCurrencyProperty.getValue() + TransactionController.getInstance().convertTimeStampWithoutTimeToString(entry.getValue().blockTimeProperty.getValue())+"\"").append(exportSplitter);
-            sb.append("\"\"").append(exportSplitter);
-            sb.append("\"\"");
+            writer.close();
+            exportList.clear();
 
-            writer.write(sb.toString());
-            sb = null;
+            PrintWriter writerIncomplete = null;
+            try {
+                writer = new PrintWriter(new FileWriter(SettingsController.getInstance().INCOMPLETE_FILE_PATH, true));
+            } catch (IOException e) {
+                SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+            }
 
-        }
+            StringBuilder sbIncomplete = new StringBuilder();
 
-        writer.close();
-        exportList.clear();
-        SettingsController.getInstance().checkCointracking = true;
-        return true;
+            for (TableColumn column : this.mainViewController.mainView.rawDataTable.getColumns()
+            ) {
+                sbIncomplete.append(column.getId()).append(this.mainViewController.settingsController.selectedSeperator.getValue());
+            }
+
+            sbIncomplete.setLength(sbIncomplete.length() - 1);
+            sbIncomplete.append("\n");
+            writer.write(sbIncomplete.toString());
+
+            for (TransactionModel transaction : incompleteTransactions) {
+                sbIncomplete = new StringBuilder();
+                sbIncomplete.append(this.mainViewController.transactionController.convertTimeStampToString(transaction.blockTimeProperty.getValue())).append(exportSplitter);
+                sbIncomplete.append(transaction.typeProperty.getValue()).append(exportSplitter);
+                sbIncomplete.append(String.format(localeDecimal, "%.8f", transaction.cryptoValueProperty.getValue())).append(exportSplitter);
+                sbIncomplete.append(transaction.cryptoCurrencyProperty.getValue()).append(exportSplitter);
+                sbIncomplete.append(String.format(localeDecimal, "%.8f", transaction.fiatValueProperty.getValue())).append(exportSplitter);
+                sbIncomplete.append(transaction.fiatCurrencyProperty.getValue()).append(exportSplitter);
+                sbIncomplete.append(transaction.poolIDProperty.getValue()).append(exportSplitter);
+                sbIncomplete.append(transaction.blockHeightProperty.getValue()).append(exportSplitter);
+                sbIncomplete.append(transaction.blockHashProperty.getValue()).append(exportSplitter);
+                sbIncomplete.append(transaction.ownerProperty.getValue()).append(exportSplitter);
+                sbIncomplete.append(transaction.txIDProperty.getValue());
+                sbIncomplete.append("\n");
+                writer.write(sbIncomplete.toString());
+                sbIncomplete = null;
+            }
+            writer.close();
+
+
+            SettingsController.getInstance().checkCointracking = true;
+            return true;
 
     }
+
 
     public String Type2CointrackingType(String type) {
         switch (type) {

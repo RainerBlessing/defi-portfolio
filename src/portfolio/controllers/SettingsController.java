@@ -59,6 +59,7 @@ public class SettingsController {
     public StringProperty exportCointracingVariante = new SimpleStringProperty();
     public StringProperty exportCSVCariante = new SimpleStringProperty();
     public boolean showDisclaim = true;
+    public boolean showMissingTransaction = true;
     public boolean selectedLaunchDefid = false;
     public boolean selectedLaunchSync = true;
     public boolean checkCointracking = false;
@@ -223,6 +224,7 @@ public class SettingsController {
                 }else{
                     this.lastUpdate.setValue("-");
                 }
+                this.showMissingTransaction = configProps.getProperty("MissingTransaction").equals("true");
 
 
 
@@ -256,6 +258,7 @@ public class SettingsController {
             csvWriter.append("ExportCSVVariante=" + this.exportCSVCariante.getValue()).append("\n");
             csvWriter.append("ExportFrom=" + this.exportFrom.getValue()).append("\n");
             csvWriter.append("ExportTo=" + this.exportTo.getValue()).append("\n");
+            csvWriter.append("MissingTransaction=" + this.showMissingTransaction).append("\n");
             csvWriter.flush();
             csvWriter.close();
         } catch (IOException e) {

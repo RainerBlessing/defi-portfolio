@@ -329,12 +329,12 @@ public class MainViewController {
 
             if (balanceModel.getToken2NameValue().equals("-")) {
                 pieChartData.add(new PieChart.Data(balanceModel.getToken1NameValue(), balanceModel.getFiat1Value()));
-                this.poolPairModelList.add(new PoolPairModel(balanceModel.getToken1NameValue()+" ("+String.format(localeDecimal, "%1.2f", CoinPriceController.getInstance().getPriceFromTimeStamp(balanceModel.getToken1NameValue()+ this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis())) + currency+")", 0.0, 0.0, 0.0, String.format(localeDecimal, "%1.8f", balanceModel.getCrypto1Value()), 0.0, 0.0, 0.0, 0.0, String.format(localeDecimal, "%,.2f", balanceModel.getFiat1Value())));
+                this.poolPairModelList.add(new PoolPairModel(balanceModel.getToken1NameValue()+" ("+String.format(localeDecimal, "%1.2f", balanceModel.getFiat1Value()) + currency+")", 0.0, 0.0, 0.0, String.format(localeDecimal, "%1.8f", balanceModel.getCrypto1Value()), 0.0, 0.0, 0.0, 0.0, String.format(localeDecimal, "%,.2f", balanceModel.getFiat1Value())));
                 calculatedPortfolio += balanceModel.getFiat1Value() + balanceModel.getFiat2Value();
 
             } else {
                 pieChartData2.add(new PieChart.Data(balanceModel.getToken1NameValue() + "-" + balanceModel.getToken2NameValue(), balanceModel.getFiat1Value() + balanceModel.getFiat2Value()));
-                this.poolPairModelList.add(new PoolPairModel(balanceModel.getToken1NameValue() + "-" + balanceModel.getToken2NameValue()+" ("+String.format(localeDecimal, "%1.2f", (CoinPriceController.getInstance().getPriceFromTimeStamp(balanceModel.getToken1NameValue()+ this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis())*balanceModel.getCrypto1Value()+CoinPriceController.getInstance().getPriceFromTimeStamp(balanceModel.getToken2NameValue()+ this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis())*balanceModel.getCrypto2Value())/balanceModel.getShareValue()) + currency+")", 0.0, 0.0, 0.0,
+                this.poolPairModelList.add(new PoolPairModel(balanceModel.getToken1NameValue() + "-" + balanceModel.getToken2NameValue()+" ("+String.format(localeDecimal, "%1.2f", (balanceModel.getFiat1Value()+balanceModel.getFiat2Value())/balanceModel.getShareValue()) + currency+")", 0.0, 0.0, 0.0,
                         String.format(localeDecimal, "%1.8f", balanceModel.getShareValue()) + " (" + String.format(localeDecimal, "%1.8f", balanceModel.getCrypto1Value()) + " " + balanceModel.getToken1NameValue() + " + " + String.format(localeDecimal, "%1.8f", balanceModel.getCrypto2Value()) + balanceModel.getToken2NameValue() + ")",
                         0.0, 0.0, 0.0, 0.0, String.format(localeDecimal, "%,.2f", balanceModel.getFiat1Value() + balanceModel.getFiat1Value()) + " (" + String.format(localeDecimal, "%,.2f", balanceModel.getFiat1Value()) + " " + balanceModel.getToken1NameValue() + " + " + String.format(localeDecimal, "%,.2f", balanceModel.getFiat2Value()) + balanceModel.getToken2NameValue() + ")"));
                 calculatedPortfolio2 += balanceModel.getFiat1Value() + balanceModel.getFiat2Value();
@@ -434,7 +434,7 @@ public class MainViewController {
                 for (BalanceModel balanceModel : this.transactionController.getBalanceList()) {
                     if (!balanceModel.getToken2NameValue().equals("-")) {
                         if (key.split("-")[0].equals(balanceModel.getToken1Name().getValue())) {
-                            valuePool = balanceModel.getFiat1Value() + balanceModel.getFiat1Value();
+                            valuePool = balanceModel.getFiat1Value() + balanceModel.getFiat2Value();
                         }
                     }
                 }
