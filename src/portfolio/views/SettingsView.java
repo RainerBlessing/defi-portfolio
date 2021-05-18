@@ -54,6 +54,7 @@ public class SettingsView implements Initializable {
     public Label lblTo;
     public DatePicker exportFrom;
     public DatePicker exportTo;
+    public Label lblDefidVersion;
     @FXML
     public StackPane stack;
     @FXML
@@ -61,7 +62,7 @@ public class SettingsView implements Initializable {
     @FXML
     public Button btnDeleteData;
     @FXML
-    private ComboBox<String> cmbLanguage, cmbPrefCurrency, cmbDecSeperator, cmbCSVSeperator, cmbPrefferedStyle, dataSourceCmb,cmbDefaultDataSource,cointrackingExportCmb, CSVExportcmb;
+    private ComboBox<String> cmbLanguage, cmbPrefCurrency, cmbDecSeperator, cmbCSVSeperator, cmbPrefferedStyle, dataSourceCmb,cmbDefaultDataSource,cointrackingExportCmb, CSVExportcmb,defidVersionCmb;
     SettingsController settingsController = SettingsController.getInstance();
 
     public void btnSaveAndApplyPressed() {
@@ -106,6 +107,9 @@ public class SettingsView implements Initializable {
         this.CSVExportcmb.valueProperty().bindBidirectional(this.settingsController.exportCSVCariante);
         this.CSVExportcmb.getItems().addAll(this.settingsController.csvExportVariants);
 
+        this.defidVersionCmb.getItems().addAll(this.settingsController.defidVersions);
+        this.defidVersionCmb.valueProperty().bindBidirectional(this.settingsController.defidVersion);
+        this.lblDefidVersion.setText(this.settingsController.translationList.getValue().get("defidVersion").toString());
         this.lblDeleteData.setText(this.settingsController.translationList.getValue().get("DeleteLabel").toString());
         this.btnDeleteData.setText(this.settingsController.translationList.getValue().get("DeleteButton").toString());
         this.labelCointrackingExport.setText(this.settingsController.translationList.getValue().get("CointrackingLabel").toString());
@@ -158,6 +162,7 @@ public class SettingsView implements Initializable {
         this.labelCSVExport.setText(this.settingsController.translationList.getValue().get("CSVLabel").toString());
         this.lblFrom.setText(this.settingsController.translationList.getValue().get("ToLabel").toString());
         this.lblTo.setText(this.settingsController.translationList.getValue().get("FromLabel").toString());
+        this.lblDefidVersion.setText(this.settingsController.translationList.getValue().get("defidVersion").toString());
     }
 
     private final Rectangle back = new Rectangle(35, 15, Color.RED);

@@ -58,6 +58,7 @@ public class SettingsController {
     public StringProperty selectedSource = new SimpleStringProperty("Active Wallet");
     public StringProperty exportCointracingVariante = new SimpleStringProperty();
     public StringProperty exportCSVCariante = new SimpleStringProperty();
+    public StringProperty defidVersion = new SimpleStringProperty("<2.3.4>");
     public boolean showDisclaim = true;
     public boolean showMissingTransaction = true;
     public boolean selectedLaunchDefid = false;
@@ -73,7 +74,7 @@ public class SettingsController {
     public String[] datasources = new String[]{"Active Wallet", "All Wallets"};
     public String[] cointrackingExportVariants = new String[]{"Cumulate All", "Cumulate None","Cumulate Pool Pair","Cumulate Rewards and Commisions"};
     public String[] csvExportVariants = new String[]{"Export selected to CSV","Export all to CSV","Export all to CSV (Daily cumulated)"};
-
+    public String[] defidVersions = new String[]{"<2.3.4", ">=2.3.4"};
 
     //All relevant paths and files
     public String USER_HOME_PATH = System.getProperty("user.home").replace("\\","/");
@@ -91,7 +92,7 @@ public class SettingsController {
     public String INCOMPLETE_FILE_PATH = DEFI_PORTFOLIO_HOME + "incompleteList.portfolio";
     public String strTransactionData = "transactionData.portfolio";
     public String strCoinPriceData = "coinPriceData.portfolio";
-    public String[] languages = new String[]{"English", "Deutsch","Espa\u00F1ol","Bokm\u00E5l"};
+    public String[] languages = new String[]{"English", "Deutsch","Espa\u00F1ol","Bokm\u00E5l","Nederlands"};
     public String[] currencies = new String[]{"EUR", "USD", "CHF"};
     public String[] decSeperators = new String[]{".", ","};
     public String[] csvSeperators = new String[]{",", ";"};
@@ -146,6 +147,9 @@ public class SettingsController {
                 break;
             case "Bokm\u00E5l":
                 fileName += "nb.json";
+                break;
+            case "Nederlands":
+                fileName += "dut.json";
                 break;
             default:
                 fileName += "en.json";
@@ -225,8 +229,7 @@ public class SettingsController {
                     this.lastUpdate.setValue("-");
                 }
                 this.showMissingTransaction = configProps.getProperty("MissingTransaction").equals("true");
-
-
+                this.defidVersion.setValue(configProps.getProperty("defidVersion"));
 
             } catch (Exception e) {
                 SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
@@ -259,6 +262,7 @@ public class SettingsController {
             csvWriter.append("ExportFrom=" + this.exportFrom.getValue()).append("\n");
             csvWriter.append("ExportTo=" + this.exportTo.getValue()).append("\n");
             csvWriter.append("MissingTransaction=" + this.showMissingTransaction).append("\n");
+            csvWriter.append("defidVersion=" + this.defidVersion.getValue()).append("\n");
             csvWriter.flush();
             csvWriter.close();
         } catch (IOException e) {

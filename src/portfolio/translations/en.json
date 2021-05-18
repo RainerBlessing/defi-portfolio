@@ -45,7 +45,7 @@
   "HelpTitle": "Contact information",
   "LanguageLabel": "Language",
   "CSV": "CSV seperator",
-  "Decimal": "decimal delimiter",
+  "Decimal": "Decimal delimiter",
   "PrefferedCurrency": "Preferred currency",
   "NoConnection": "No connection",
   "InitializingData": "Initializing Data...",
@@ -82,5 +82,6 @@
   "ExportCSV": "Export to CSV",
   "ToLabel": "From",
   "FromLabel": "To",
+  "defidVersion":"Defid version",
   "MissingTransaction": "At least one transaction is skipped because it is incomplete and may cause deviations in the balance. \nAll transactions are saved in a list."
 }

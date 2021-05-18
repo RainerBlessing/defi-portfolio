@@ -82,5 +82,6 @@
   "ExportCSV": "Exportieren nach CSV",
   "ToLabel": "Von",
   "FromLabel": "Bis",
+  "defidVersion":"Defid Version",
   "MissingTransaction": "Mindestens eine Transaktion wurde \u00FCbersprungen, weil sie unvollst\u00e4ndig ist und Abweichungen in der Bilanz verursachen kann. \nAlle unvollständige Transaktionen wurden in einer Liste gespeichert."
 }
