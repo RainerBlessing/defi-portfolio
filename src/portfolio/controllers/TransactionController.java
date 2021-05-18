@@ -123,31 +123,49 @@ public class TransactionController {
             if (!this.checkRpc()) {
                 switch (this.settingsController.getPlatform()) {
                     case "mac":
-                        FileWriter myWriter = new FileWriter(System.getProperty("user.dir").replace("\\","/") + "/PortfolioData/" + "defi.sh");
-                        myWriter.write(this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
-                        myWriter.close();
-                        defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir").replace("\\","/") + "/PortfolioData/./" + "defi.sh");
+                        FileWriter myWriter = new FileWriter(System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/" + "defi.sh");
+                        if (SettingsController.getInstance().defidVersion.getValue().equals("<2.3.4")) {
+                            myWriter.write(this.settingsController.BINARY_FILE_PATH_Old + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                            myWriter.close();
+                            defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/./Defid_old/" + "defi.sh");
+                        } else {
+                            myWriter.write(this.settingsController.BINARY_FILE_PATH_NEW + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                            myWriter.close();
+                            defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/./Defid_new/" + "defi.sh");
+                        }
                         break;
                     case "win":
-                        String[] commands = {"cmd", "/c", "start", "\"Synchronizing blockchain\"", this.settingsController.BINARY_FILE_PATH, "-conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH};
-                        defidProcess = Runtime.getRuntime().exec(commands);
+                        if (SettingsController.getInstance().defidVersion.getValue().equals("<2.3.4")) {
+                            String[] commands = {"cmd", "/c", "start", "\"Synchronizing blockchain\"", this.settingsController.BINARY_FILE_PATH_Old, "-conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH};
+                            defidProcess = Runtime.getRuntime().exec(commands);
+                        } else {
+                            String[] commands = {"cmd", "/c", "start", "\"Synchronizing blockchain\"", this.settingsController.BINARY_FILE_PATH_NEW, "-conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH};
+                            defidProcess = Runtime.getRuntime().exec(commands);
+                        }
                         break;
                     case "linux":
                         int notfound = 0;
                         try {
-                            defidProcess = Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                            if (SettingsController.getInstance().defidVersion.getValue().equals("<2.3.4")) {
+                                defidProcess = Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " + this.settingsController.BINARY_FILE_PATH_Old + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                            } else {
+                                defidProcess = Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " + this.settingsController.BINARY_FILE_PATH_NEW + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                            }
                         } catch (Exception e) {
                             notfound++;
                         }
                         try {
-                            defidProcess = Runtime.getRuntime().exec("/usr/bin/konsole -e " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                            if (SettingsController.getInstance().defidVersion.getValue().equals("<2.3.4")) {
+                                defidProcess = Runtime.getRuntime().exec("/usr/bin/konsole -e " + this.settingsController.BINARY_FILE_PATH_Old + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                            } else {
+                                defidProcess = Runtime.getRuntime().exec("/usr/bin/konsole -e " + this.settingsController.BINARY_FILE_PATH_NEW + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                            }
                         } catch (Exception e) {
                             notfound++;
                         }
                         if (notfound == 2) {
                             JOptionPane.showMessageDialog(null, "Could not found /usr/bin/x-terminal-emulator or\n /usr/bin/konsole", "Terminal not found", JOptionPane.ERROR_MESSAGE);
                         }
-
                         break;
                 }
             }
@@ -296,7 +314,7 @@ public class TransactionController {
             for (int i = 0; i < Math.ceil(depth / blockDepth); i = i + 1) {
                 if (this.settingsController.getPlatform().equals("mac")) {
                     try {
-                        FileWriter myWriter = new FileWriter(System.getProperty("user.dir").replace("\\","/") + "/PortfolioData/" + "update.portfolio");
+                        FileWriter myWriter = new FileWriter(System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/" + "update.portfolio");
                         myWriter.write(this.settingsController.translationList.getValue().get("UpdateData").toString() + Math.ceil((((double) (i) * blockDepth) / (double) depth) * 100) + "%");
                         myWriter.close();
                     } catch (IOException e) {
@@ -352,11 +370,11 @@ public class TransactionController {
     public void updateJFrame() {
         this.frameUpdate = new JFrame();
         this.frameUpdate.setLayout(null);
-        this.frameUpdate.setIconImage(new ImageIcon(System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/icons/DefiIcon.png").getImage());
+        this.frameUpdate.setIconImage(new ImageIcon(System.getProperty("user.dir").replace("\\", "/") + "/defi-portfolio/src/icons/DefiIcon.png").getImage());
         if (this.settingsController.getPlatform().equals("mac")) {
             this.jl = new JLabel(this.settingsController.translationList.getValue().get("InitializingData").toString(), JLabel.CENTER);
         } else {
-            ImageIcon icon = new ImageIcon(System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/icons/ajaxloader.gif");
+            ImageIcon icon = new ImageIcon(System.getProperty("user.dir").replace("\\", "/") + "/defi-portfolio/src/icons/ajaxloader.gif");
             this.jl = new JLabel(this.settingsController.translationList.getValue().get("InitializingData").toString(), icon, JLabel.CENTER);
         }
         this.jl.setSize(400, 100);
@@ -660,7 +678,7 @@ public class TransactionController {
                 if (this.settingsController.getPlatform().equals("mac")) {
                     try {
                         if (counter > 1000) {
-                            FileWriter myWriter = new FileWriter(System.getProperty("user.dir").replace("\\","/") + "/PortfolioData/" + "update.portfolio");
+                            FileWriter myWriter = new FileWriter(System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/" + "update.portfolio");
                             myWriter.write(this.settingsController.translationList.getValue().get("PreparingData").toString() + Math.ceil((((double) transactionListNew.size() - i) / (double) transactionListNew.size()) * 100) + "%");
                             myWriter.close();
                             counter = 0;
