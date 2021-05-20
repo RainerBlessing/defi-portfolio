@@ -82,7 +82,7 @@ public class ExportService {
                 writer.write(sb.toString());
                 sb = null;
             } else {
-                if ((dateFrom.getTime() / 1000) < transaction.blockTimeProperty.getValue() && (dateTo.getTime() / 1000) > transaction.blockTimeProperty.getValue()) {
+                if ((dateFrom.getTime() / 1000) < transaction.blockTimeProperty.getValue() && ((dateTo.getTime()+86400000) / 1000) > transaction.blockTimeProperty.getValue()) {
                     sb = new StringBuilder();
                     sb.append(this.mainViewController.transactionController.convertTimeStampToString(transaction.blockTimeProperty.getValue())).append(exportSplitter);
                     sb.append(transaction.typeProperty.getValue()).append(exportSplitter);
@@ -144,7 +144,7 @@ public class ExportService {
         }
 
         for (TransactionModel transaction : transactions) {
-            if ((dateFrom.getTime() / 1000) < transaction.blockTimeProperty.getValue() && (dateTo.getTime() / 1000) > transaction.blockTimeProperty.getValue()) {
+            if ((dateFrom.getTime() / 1000) < transaction.blockTimeProperty.getValue() && ((dateTo.getTime()+86400000) / 1000) > transaction.blockTimeProperty.getValue()) {
                 String newDate = this.mainViewController.transactionController.convertTimeStampWithoutTimeToString(transaction.blockTimeProperty.getValue());
 
                 if (transaction.typeProperty.getValue().equals("Commission") || transaction.typeProperty.getValue().equals("Rewards")) {
@@ -278,7 +278,7 @@ public class ExportService {
         }
 
         for (TransactionModel transaction : transactions) {
-            if ((dateFrom.getTime() / 1000) < transaction.blockTimeProperty.getValue() && (dateTo.getTime() / 1000) > transaction.blockTimeProperty.getValue()) {
+            if ((dateFrom.getTime() / 1000) < transaction.blockTimeProperty.getValue() && ((dateTo.getTime()+86400000) / 1000) > transaction.blockTimeProperty.getValue()) {
 
                 if (transaction.blockTimeProperty.getValue() * 1000L < ts.getTime()) {
 
