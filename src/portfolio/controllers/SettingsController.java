@@ -208,7 +208,7 @@ public class SettingsController {
                 this.exportCointracingVariante.setValue(configProps.getProperty("ExportCointrackinVariante"));
                 this.exportCSVCariante.setValue(configProps.getProperty("ExportCSVVariante"));
                 this.exportFrom.setValue(LocalDate.parse(configProps.getProperty("ExportFrom")));
-                this.exportTo.setValue(LocalDate.parse(configProps.getProperty("ExportTo")));
+                this.exportTo.setValue(LocalDate.parse(LocalDate.now().toString()));
                 this.dateFrom.setValue(LocalDate.parse(configProps.getProperty("SelectedDate")));
                 if (!configProps.getProperty("LastUsedExportPath").equals(""))
                     this.lastExportPath = configProps.getProperty("LastUsedExportPath");
