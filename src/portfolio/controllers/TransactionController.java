@@ -118,11 +118,11 @@ public class TransactionController {
                         if (SettingsController.getInstance().defidVersion.getValue().equals("<2.3.4")) {
                             myWriter.write(this.settingsController.BINARY_FILE_PATH_Old + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
                             myWriter.close();
-                            defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/./Defid_old/" + "defi.sh");
+                            defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/./DefidOld/" + "defi.sh");
                         } else {
                             myWriter.write(this.settingsController.BINARY_FILE_PATH_NEW + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
                             myWriter.close();
-                            defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/./Defid_new/" + "defi.sh");
+                            defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/./DefidNew/" + "defi.sh");
                         }
                         break;
                     case "win":

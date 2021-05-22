@@ -327,7 +327,7 @@ public class MainViewController {
 
             if (balanceModel.getToken2NameValue().equals("-")) {
                 pieChartData.add(new PieChart.Data(balanceModel.getToken1NameValue(), balanceModel.getFiat1Value()));
-                this.poolPairModelList.add(new PoolPairModel(balanceModel.getToken1NameValue()+" ("+String.format(localeDecimal, "%1.2f", balanceModel.getFiat1Value()) + currency+")", 0.0, 0.0, 0.0, String.format(localeDecimal, "%1.8f", balanceModel.getCrypto1Value()), 0.0, 0.0, 0.0, 0.0, String.format(localeDecimal, "%,.2f", balanceModel.getFiat1Value())));
+                this.poolPairModelList.add(new PoolPairModel(balanceModel.getToken1NameValue()+" ("+String.format(localeDecimal, "%1.2f",CoinPriceController.getInstance().getPriceFromTimeStamp(balanceModel.getToken1Name().getValue()+SettingsController.getInstance().selectedFiatCurrency.getValue(),System.currentTimeMillis()*1000L)) + currency+")", 0.0, 0.0, 0.0, String.format(localeDecimal, "%1.8f", balanceModel.getCrypto1Value()), 0.0, 0.0, 0.0, 0.0, String.format(localeDecimal, "%,.2f", balanceModel.getFiat1Value())));
                 calculatedPortfolio += balanceModel.getFiat1Value() + balanceModel.getFiat2Value();
 
             } else {
@@ -357,7 +357,6 @@ public class MainViewController {
                 }
             }
         }
-
 
         this.settingsController.tokenYield.set(this.settingsController.translationList.getValue().get("TotalYield") + ":\n" + String.format(localeDecimal, "%,.2f", totalYield) + currency);
         this.settingsController.tokenYieldRewards.set(this.settingsController.translationList.getValue().get("TotalYieldRewards") + ":\n" + String.format(localeDecimal, "%,.2f", totalYieldRewards) + currency);
