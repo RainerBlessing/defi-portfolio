@@ -1,7 +1,7 @@
 {
   "File": "Bestand",
   "Settings": "Instellingen",
-  "Close": "sluiten",
+  "Close": "Sluiten",
   "Help": "Hulp",
   "Donate": "Donatie",
   "DonateLabel": "Houdt u van DeFi-Portfolio en wilt u verdere ontwikkelingen steunen, dan ontvangen wij graag een kleine donatie :-)",
@@ -72,7 +72,7 @@
   "Disclaim": "Disclaimer van aansprakelijkheid: \nDe verstrekte inhoud is alleen voor informatieve doeleinden. \nWe kunnen de juistheid van de gegevens niet garanderen.",
   "DisclaimCheck": "Niet meer laten zien",
   "CloseDefid": "Defid sluiten",
-  "CloseButton": "sluiten",
+  "CloseButton": "Sluiten",
   "Open": "Openen",
   "OpenInstallFolder": "Open de installatiemap",
   "OpenProjectFolder": "Open de projectmap",
