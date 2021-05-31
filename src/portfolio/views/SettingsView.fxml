@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="719.0" prefWidth="413.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.SettingsView">
+<AnchorPane fx:id="anchorPane" prefHeight="628.0" prefWidth="419.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/15.0.1" fx:controller="portfolio.views.SettingsView">
    <ImageView fitHeight="54.0" fitWidth="55.0" layoutX="14.0" layoutY="35.0" pickOnBounds="true" preserveRatio="true">
       <Image url="@../../icons/settings.png" />
    </ImageView>
@@ -21,7 +21,7 @@
    <ComboBox fx:id="cmbPrefCurrency" layoutX="218.0" layoutY="59.0" prefWidth="150.0" />
    <Label fx:id="prefferedStyle" alignment="CENTER_RIGHT" layoutX="115.0" layoutY="107.0" prefHeight="17.0" prefWidth="55.0" text="Design" textAlignment="RIGHT" AnchorPane.rightAnchor="209.0" />
    <ComboBox fx:id="cmbPrefferedStyle" layoutX="218.0" layoutY="103.0" prefWidth="150.0" />
-   <Button fx:id="btnSaveAndApply" layoutX="323.0" layoutY="642.0" mnemonicParsing="false" onMouseClicked="#btnSaveAndApplyPressed" prefHeight="40.0" prefWidth="55.0">
+   <Button fx:id="btnSaveAndApply" layoutX="315.0" layoutY="579.0" mnemonicParsing="false" onMouseClicked="#btnSaveAndApplyPressed" prefHeight="40.0" prefWidth="55.0">
       <graphic>
          <ImageView fitHeight="22.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
             <image>
@@ -36,20 +36,20 @@
          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
       </padding>
    </Button>
-   <Label fx:id="lblLaunchDefid" layoutX="36.0" layoutY="410.0" prefHeight="41.0" prefWidth="158.0" text="Starte &quot;Node&quot; beim Tool Start" textAlignment="RIGHT" wrapText="true" AnchorPane.rightAnchor="209.0" />
-   <StackPane fx:id="stack" layoutX="226.0" layoutY="410.0" prefHeight="41.0" prefWidth="55.0" />
-   <Button fx:id="switchButton" layoutX="298.0" layoutY="418.0" mnemonicParsing="false" text="Button" />
-   <StackPane fx:id="stackSync" layoutX="243.0" layoutY="410.0" prefHeight="41.0" prefWidth="55.0" />
-   <Label fx:id="lblDeleteData" layoutX="37.0" layoutY="443.0" prefHeight="67.0" prefWidth="157.0" text="Lösche lokale Portfolio-Daten (Tool Neustart erforderlich)" textAlignment="RIGHT" wrapText="true" AnchorPane.rightAnchor="209.0" />
-   <Button fx:id="btnDeleteData" layoutX="225.0" layoutY="461.0" mnemonicParsing="false" onAction="#btnDeletePressed" text="Löschen" />
+   <Label fx:id="lblLaunchDefid" layoutX="40.0" layoutY="360.0" prefHeight="41.0" prefWidth="158.0" text="Starte &quot;Node&quot; beim Tool Start" textAlignment="RIGHT" wrapText="true" AnchorPane.rightAnchor="209.0" />
+   <StackPane fx:id="stack" layoutX="227.0" layoutY="362.0" prefHeight="41.0" prefWidth="67.0" />
+   <Button fx:id="switchButton" layoutX="302.0" layoutY="368.0" mnemonicParsing="false" text="Button" />
+   <StackPane fx:id="stackSync" layoutX="247.0" layoutY="360.0" prefHeight="41.0" prefWidth="73.0" />
+   <Label fx:id="lblDeleteData" layoutX="41.0" layoutY="393.0" prefHeight="67.0" prefWidth="157.0" text="Lösche lokale Portfolio-Daten (Tool Neustart erforderlich)" textAlignment="RIGHT" wrapText="true" AnchorPane.rightAnchor="209.0" />
+   <Button fx:id="btnDeleteData" layoutX="226.0" layoutY="411.0" mnemonicParsing="false" onAction="#btnDeletePressed" text="Löschen" AnchorPane.leftAnchor="220.0" />
    <ComboBox fx:id="dataSourceCmb" layoutX="218.0" layoutY="147.0" prefWidth="150.0" />
    <Label fx:id="labelDataSource" alignment="CENTER_RIGHT" layoutX="40.0" layoutY="151.0" prefHeight="17.0" prefWidth="150.0" text="Data source" textAlignment="RIGHT" AnchorPane.rightAnchor="209.0" />
-   <Button fx:id="btnCloseDefid" layoutX="222.0" layoutY="510.0" mnemonicParsing="false" onAction="#btnCloseDefidPressed" text="Schließen" />
-   <Label fx:id="lblCloseDefid" alignment="CENTER_RIGHT" layoutX="44.0" layoutY="514.0" prefHeight="17.0" prefWidth="150.0" text="Close Defid" textAlignment="RIGHT" AnchorPane.rightAnchor="209.0" />
-   <Button fx:id="btnOpenInstallationFolder" layoutX="225.0" layoutY="604.0" mnemonicParsing="false" onAction="#btnOpenInstallationFolderPressed" text="open" />
-   <Button fx:id="btnOpenProjectFolder" layoutX="225.0" layoutY="558.0" mnemonicParsing="false" onAction="#btnOpenProjectFolderPressed" text="open" />
-   <Label fx:id="lblOpenProjectFolder" alignment="CENTER_RIGHT" layoutX="10.0" layoutY="562.0" prefHeight="17.0" prefWidth="184.0" text="Open Projekt folder" textAlignment="RIGHT" AnchorPane.rightAnchor="209.0" />
-   <Label fx:id="lblOpenInstallationFolder" alignment="CENTER_RIGHT" layoutX="10.0" layoutY="608.0" prefHeight="17.0" prefWidth="184.0" text="Open Installation folder" textAlignment="RIGHT" AnchorPane.rightAnchor="209.0" />
+   <Button fx:id="btnCloseDefid" layoutX="226.0" layoutY="460.0" mnemonicParsing="false" onAction="#btnCloseDefidPressed" text="Schließen" AnchorPane.leftAnchor="220.0" />
+   <Label fx:id="lblCloseDefid" alignment="CENTER_RIGHT" layoutX="48.0" layoutY="464.0" prefHeight="17.0" prefWidth="150.0" text="Close Defid" textAlignment="RIGHT" AnchorPane.rightAnchor="209.0" />
+   <Button fx:id="btnOpenInstallationFolder" layoutX="229.0" layoutY="554.0" mnemonicParsing="false" onAction="#btnOpenInstallationFolderPressed" text="open" AnchorPane.leftAnchor="220.0" />
+   <Button fx:id="btnOpenProjectFolder" layoutX="229.0" layoutY="508.0" mnemonicParsing="false" onAction="#btnOpenProjectFolderPressed" text="open" AnchorPane.leftAnchor="220.0" />
+   <Label fx:id="lblOpenProjectFolder" alignment="CENTER_RIGHT" layoutX="14.0" layoutY="512.0" prefHeight="17.0" prefWidth="184.0" text="Open Projekt folder" textAlignment="RIGHT" AnchorPane.rightAnchor="209.0" />
+   <Label fx:id="lblOpenInstallationFolder" alignment="CENTER_RIGHT" layoutX="14.0" layoutY="558.0" prefHeight="17.0" prefWidth="184.0" text="Open Installation folder" textAlignment="RIGHT" AnchorPane.rightAnchor="209.0" />
    <ComboBox fx:id="cointrackingExportCmb" layoutX="216.0" layoutY="196.0" prefWidth="150.0" />
    <Label fx:id="labelCointrackingExport" alignment="CENTER_RIGHT" layoutX="38.0" layoutY="200.0" prefHeight="17.0" prefWidth="150.0" text="Cointracking export" textAlignment="RIGHT" AnchorPane.rightAnchor="209.0" />
    <ComboBox fx:id="CSVExportcmb" layoutX="217.0" layoutY="242.0" prefWidth="150.0" />
@@ -58,8 +58,6 @@
    <DatePicker fx:id="exportTo" layoutX="220.0" layoutY="325.0" prefHeight="25.0" prefWidth="150.0" />
    <Label fx:id="lblFrom" alignment="CENTER_RIGHT" layoutX="57.0" layoutY="287.0" prefHeight="17.0" prefWidth="150.0" text="From" textAlignment="RIGHT" AnchorPane.rightAnchor="209.0" />
    <Label fx:id="lblTo" alignment="CENTER_RIGHT" layoutX="57.0" layoutY="329.0" prefHeight="17.0" prefWidth="150.0" text="To" textAlignment="RIGHT" AnchorPane.rightAnchor="206.0" />
-   <Label fx:id="lblDefidVersion" alignment="CENTER_RIGHT" layoutX="55.0" layoutY="371.0" prefHeight="17.0" prefWidth="150.0" text="DeFi Wallet" textAlignment="RIGHT" AnchorPane.rightAnchor="209.0" />
-   <ComboBox fx:id="defidVersionCmb" layoutX="218.0" layoutY="367.0" prefWidth="150.0" />
    <padding>
       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
    </padding>

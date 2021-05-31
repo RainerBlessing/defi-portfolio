@@ -82,6 +82,5 @@
   "ExportCSV": "Exporteren naar CSV",
   "ToLabel": "Van",
   "FromLabel": "Naar",
-  "defidVersion":"Defid versie",
   "MissingTransaction": "Minstens één transactie is overgeslagen omdat deze onvolledig is en tot discrepanties in de balans kan leiden. \nAlle onvolledige transacties werden in een lijst opgeslagen."
 }

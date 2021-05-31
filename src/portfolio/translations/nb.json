@@ -82,6 +82,5 @@
   "ExportCSV": "Eksporter til CSV",
   "ToLabel": "Av",
   "FromLabel": "Til",
-  "defidVersion":"Defid versjon",
   "MissingTransaction": "Minst en transaksjon ble hoppet over fordi den ikke er komplett og kan for\u00E5rsake avvik i balansen.\nAlle ikke komplette transaksjoner ble lagret i en liste."
 }

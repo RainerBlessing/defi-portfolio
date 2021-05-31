@@ -115,42 +115,23 @@ public class TransactionController {
                 switch (this.settingsController.getPlatform()) {
                     case "mac":
                         FileWriter myWriter = new FileWriter(System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/" + "defi.sh");
-                        if (SettingsController.getInstance().defidVersion.getValue().equals("<2.3.4")) {
-                            myWriter.write(this.settingsController.BINARY_FILE_PATH_Old + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
-                            myWriter.close();
-                            defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/./DefidOld/" + "defi.sh");
-                        } else {
-                            myWriter.write(this.settingsController.BINARY_FILE_PATH_NEW + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
-                            myWriter.close();
-                            defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/./DefidNew/" + "defi.sh");
-                        }
+                        myWriter.write(this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                        myWriter.close();
+                        defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/./DefidOld/" + "defi.sh");
                         break;
                     case "win":
-                        if (SettingsController.getInstance().defidVersion.getValue().equals("<2.3.4")) {
-                            String[] commands = {"cmd", "/c", "start", "\"Synchronizing blockchain\"", this.settingsController.BINARY_FILE_PATH_Old, "-conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH};
+                            String[] commands = {"cmd", "/c", "start", "\"Synchronizing blockchain\"", this.settingsController.BINARY_FILE_PATH, "-conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH};
                             defidProcess = Runtime.getRuntime().exec(commands);
-                        } else {
-                            String[] commands = {"cmd", "/c", "start", "\"Synchronizing blockchain\"", this.settingsController.BINARY_FILE_PATH_NEW, "-conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH};
-                            defidProcess = Runtime.getRuntime().exec(commands);
-                        }
                         break;
                     case "linux":
                         int notfound = 0;
                         try {
-                            if (SettingsController.getInstance().defidVersion.getValue().equals("<2.3.4")) {
-                                defidProcess = Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " + this.settingsController.BINARY_FILE_PATH_Old + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
-                            } else {
-                                defidProcess = Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " + this.settingsController.BINARY_FILE_PATH_NEW + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
-                            }
+                            defidProcess = Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
                         } catch (Exception e) {
                             notfound++;
                         }
                         try {
-                            if (SettingsController.getInstance().defidVersion.getValue().equals("<2.3.4")) {
-                                defidProcess = Runtime.getRuntime().exec("/usr/bin/konsole -e " + this.settingsController.BINARY_FILE_PATH_Old + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
-                            } else {
-                                defidProcess = Runtime.getRuntime().exec("/usr/bin/konsole -e " + this.settingsController.BINARY_FILE_PATH_NEW + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
-                            }
+                            defidProcess = Runtime.getRuntime().exec("/usr/bin/konsole -e " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
                         } catch (Exception e) {
                             notfound++;
                         }

@@ -82,6 +82,5 @@
   "ExportCSV": "Export a CSV",
   "ToLabel": "De",
   "FromLabel": "A",
-  "defidVersion":"Defid versi\u00F3n",
   "MissingTransaction": "Al, menos una transacción ha sido omitida porque está incompleta y por tanto puede causar discrepancias en el balance. Todas las transacciones incompletas se han almacenado en una lista."
 }
