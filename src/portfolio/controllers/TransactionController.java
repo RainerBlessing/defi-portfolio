@@ -117,7 +117,7 @@ public class TransactionController {
                         FileWriter myWriter = new FileWriter(System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/" + "defi.sh");
                         myWriter.write(this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
                         myWriter.close();
-                        defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/./DefidOld/" + "defi.sh");
+                        defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/./" + "defi.sh");
                         break;
                     case "win":
                             String[] commands = {"cmd", "/c", "start", "\"Synchronizing blockchain\"", this.settingsController.BINARY_FILE_PATH, "-conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH};
@@ -301,6 +301,7 @@ public class TransactionController {
                     jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"mine\", {\"maxBlockHeight\":" + (blockCount - (i * blockDepth) - i) + ",\"depth\":" + blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + blockDepth * 2000 + "}]}");
                 }
                 JSONArray transactionJson = (JSONArray) jsonObject.get("result");
+                if(transactionJson.size() == 0) break;
                 for (Object transaction : transactionJson) {
                     JSONObject transactionJ = (JSONObject) transaction;
                     for (String amount : (transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", "")).split(",")) {
