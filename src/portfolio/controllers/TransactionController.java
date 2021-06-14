@@ -282,26 +282,28 @@ public class TransactionController {
         try {
             int blockCount = Integer.parseInt(getBlockCountRpc());
             int blockDepth = 10000;
+            int firstBlock = 468146;
             int restBlockCount = blockCount + blockDepth + 1;
             for (int i = 0; i < Math.ceil(depth / blockDepth); i = i + 1) {
                 if (this.settingsController.getPlatform().equals("mac")) {
                     try {
                         FileWriter myWriter = new FileWriter(System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/" + "update.portfolio");
-                        myWriter.write(this.settingsController.translationList.getValue().get("UpdateData").toString() + Math.ceil((((double) (i) * blockDepth) / (double) depth) * 100) + "%");
+                        myWriter.write(this.settingsController.translationList.getValue().get("UpdateData").toString() + Math.ceil((((double) (i) * blockDepth) / (double) (depth-firstBlock)) * 100) + "%");
                         myWriter.close();
                     } catch (IOException e) {
                         this.settingsController.logger.warning("Could not write to update.portfolio.");
                     }
                 } else {
-                    this.jl.setText(this.settingsController.translationList.getValue().get("UpdateData").toString() + Math.ceil((((double) (i) * blockDepth) / (double) depth) * 100) + "%");
+                    this.jl.setText(this.settingsController.translationList.getValue().get("UpdateData").toString() + Math.ceil((((double) (i) * blockDepth) / (double) (depth-firstBlock)) * 100) + "%");
                 }
+                if((blockCount - (i * blockDepth) - i) < firstBlock) break;
                 if (SettingsController.getInstance().selectedSource.getValue().equals("All Wallets")) {
                     jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"all\", {\"maxBlockHeight\":" + (blockCount - (i * blockDepth) - i) + ",\"depth\":" + blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + blockDepth * 2000 + "}]}");
                 } else {
                     jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"mine\", {\"maxBlockHeight\":" + (blockCount - (i * blockDepth) - i) + ",\"depth\":" + blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + blockDepth * 2000 + "}]}");
                 }
                 JSONArray transactionJson = (JSONArray) jsonObject.get("result");
-                if(transactionJson.size() == 0) break;
+
                 for (Object transaction : transactionJson) {
                     JSONObject transactionJ = (JSONObject) transaction;
                     for (String amount : (transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", "")).split(",")) {
