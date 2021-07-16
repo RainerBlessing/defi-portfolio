@@ -41,6 +41,7 @@ public class SettingsController {
     public StringProperty selectedStyleMode = new SimpleStringProperty("Dark Mode");
     public StringProperty selectedCoin = new SimpleStringProperty("BTC-DFI");
     public StringProperty selectedPlotCurrency = new SimpleStringProperty("Coin");
+    public StringProperty selectedDefaulUpdateSource = new SimpleStringProperty("Show options");
     public StringProperty selectedPlotType = new SimpleStringProperty();
     public StringProperty selectedIntervall = new SimpleStringProperty();
     public StringProperty tokenBalance = new SimpleStringProperty();
@@ -73,6 +74,7 @@ public class SettingsController {
     public String[] datasources = new String[]{"Active Wallet", "All Wallets"};
     public String[] cointrackingExportVariants = new String[]{"Cumulate All", "Cumulate None","Cumulate Pool Pair","Cumulate Rewards and Commisions"};
     public String[] csvExportVariants = new String[]{"Export selected to CSV","Export all to CSV","Export all to CSV (Daily cumulated)"};
+    public String[] defaultUpdateSource = new String[]{"Show options", "Update data","Cake CSV","Wallet CSV"};
 
     //All relevant paths and files
     public String USER_HOME_PATH = System.getProperty("user.home").replace("\\","/");
@@ -230,6 +232,11 @@ public class SettingsController {
                 }else{
                     this.lastUpdate.setValue("-");
                 }
+                if(configProps.getProperty("DefaultDataSource") !=null){
+                    this.selectedDefaulUpdateSource.setValue(configProps.getProperty("DefaultDataSource"));
+                }else{
+                    this.selectedDefaulUpdateSource.setValue("Show options");
+                }
                 this.showMissingTransaction = configProps.getProperty("MissingTransaction").equals("true");
 
             } catch (Exception e) {
@@ -263,6 +270,7 @@ public class SettingsController {
             csvWriter.append("ExportFrom=" + this.exportFrom.getValue()).append("\n");
             csvWriter.append("ExportTo=" + this.exportTo.getValue()).append("\n");
             csvWriter.append("MissingTransaction=" + this.showMissingTransaction).append("\n");
+            csvWriter.append("DefaultDataSource=" + this.selectedDefaulUpdateSource.getValue()).append("\n");
             csvWriter.flush();
             csvWriter.close();
         } catch (IOException e) {

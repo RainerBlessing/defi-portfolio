@@ -156,7 +156,7 @@ public class MainView implements Initializable {
     public MenuItem menuItemExportAllSelectedPlot = new MenuItem("Export all to CSV");
 
 
-    public Stage settingsStage, helpStage, donateStage;
+    public Stage settingsStage, helpStage, donateStage, stageUpdateData;
     public boolean init = true;
     public Button btnSettings;
     public Button btnHelp;
@@ -435,29 +435,74 @@ public class MainView implements Initializable {
         this.strCurrentBlockOnBlockchain.textProperty().bindBidirectional(this.mainViewController.strCurrentBlockOnBlockchain);
         this.strLastUpdate.textProperty().bindBidirectional(this.mainViewController.settingsController.lastUpdate);
         this.btnUpdateDatabase.setOnAction(e -> {
-            this.mainViewController.settingsController.selectedLaunchSync = true;
-            this.mainViewController.transactionController.startServer();
-            this.mainViewController.settingsController.runCheckTimer = true;
-            Timer checkTimer = new Timer("");
-            if (SettingsController.getInstance().getPlatform().equals("mac")) {
-                try {
-                    FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
-                    myWriter.write(this.mainViewController.settingsController.translationList.getValue().get("ConnectNode").toString());
-                    myWriter.close();
+                switch(SettingsController.getInstance().selectedDefaulUpdateSource.getValue()) {
+                case "Update data":
+                    TransactionController.getInstance().updateDatabase();
+//                    this.mainViewController.settingsController.selectedLaunchSync = true;
+//                    this.mainViewController.transactionController.startServer();
+//                    this.mainViewController.settingsController.runCheckTimer = true;
+//                    Timer checkTimer = new Timer("");
+//                    if (SettingsController.getInstance().getPlatform().equals("mac")) {
+//                        try {
+//                            FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
+//                            myWriter.write(this.mainViewController.settingsController.translationList.getValue().get("ConnectNode").toString());
+//                            myWriter.close();
+//                            try {
+//                                Process ps = null;
+//                                ps = Runtime.getRuntime().exec("./jre/bin/java -Xdock:icon=icons.icns -jar UpdateData.jar " + this.mainViewController.settingsController.selectedStyleMode.getValue().replace(" ", ""));
+//                            } catch (IOException r) {
+//                                SettingsController.getInstance().logger.warning("Exception occured: " + r.toString());
+//                            }
+//                        } catch (IOException h) {
+//                            SettingsController.getInstance().logger.warning("Could not write to update.portfolio.");
+//                        }
+//                    } else {
+//                        this.mainViewController.transactionController.updateJFrame();
+//                        this.mainViewController.transactionController.jl.setText(this.mainViewController.settingsController.translationList.getValue().get("ConnectNode").toString());
+//                    }
+//                    checkTimer.scheduleAtFixedRate(new CheckConnection(this.mainViewController), 0, 30000);
+                    break;
+                case "Cake CSV":
+                        TransactionController.getInstance().importCakeCSV();
+                    break;
+                case "Wallet CSV":
+                       TransactionController.getInstance().importWalletCSV();
+                    break;
+                case "Show options":
+                    if (this.stageUpdateData != null) this.stageUpdateData.close();
                     try {
-                        Process ps = null;
-                        ps = Runtime.getRuntime().exec("./jre/bin/java -Xdock:icon=icons.icns -jar UpdateData.jar " + this.mainViewController.settingsController.selectedStyleMode.getValue().replace(" ", ""));
-                    } catch (IOException r) {
-                        SettingsController.getInstance().logger.warning("Exception occured: " + r.toString());
+                        Parent rootDisclaimer = null;
+                        rootDisclaimer = FXMLLoader.load(getClass().getResource("ImportDataView.fxml"));
+
+                        Scene sceneUpdateData = new Scene(rootDisclaimer);
+                        this.stageUpdateData = new Stage();
+                   //     final Delta dragDelta = new Delta();
+                        this.stageUpdateData.setScene(sceneUpdateData);
+                        this.stageUpdateData.initStyle(StageStyle.UNDECORATED);
+                        sceneUpdateData.setOnMousePressed(mouseEvent -> {
+                            // record a delta distance for the drag and drop operation.
+                            dragDelta.x = this.stageUpdateData.getX() - mouseEvent.getScreenX();
+                            dragDelta.y = this.stageUpdateData.getY() - mouseEvent.getScreenY();
+                        });
+                        sceneUpdateData.setOnMouseDragged(mouseEvent -> {
+                            this.stageUpdateData.setX(mouseEvent.getScreenX() + dragDelta.x);
+                            this.stageUpdateData.setY(mouseEvent.getScreenY() + dragDelta.y);
+                        });
+                        this.stageUpdateData.getIcons().add(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/databaseprocess.png").toURI().toString()));
+                        this.stageUpdateData.show();
+
+                        if (SettingsController.getInstance().selectedStyleMode.getValue().equals("Dark Mode")) {
+                            java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
+                            this.stageUpdateData.getScene().getStylesheets().add(darkMode.toURI().toString());
+                        } else {
+                            java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
+                            this.stageUpdateData.getScene().getStylesheets().add(lightMode.toURI().toString());
+                        }
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
                     }
-                } catch (IOException h) {
-                    SettingsController.getInstance().logger.warning("Could not write to update.portfolio.");
-                }
-            } else {
-                this.mainViewController.transactionController.updateJFrame();
-                this.mainViewController.transactionController.jl.setText(this.mainViewController.settingsController.translationList.getValue().get("ConnectNode").toString());
+                    break;
             }
-            checkTimer.scheduleAtFixedRate(new CheckConnection(this.mainViewController), 0, 30000);
         });
 
         tabPane.getSelectionModel().selectedItemProperty().addListener((ov, t, t1) ->

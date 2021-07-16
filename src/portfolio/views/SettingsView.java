@@ -47,6 +47,7 @@ public class SettingsView implements Initializable {
     public Label lblOpenInstallationFolder;
     public Label labelCointrackingExport;
     public Label labelCSVExport;
+    public Label lblDefaultDataSource;
     public Button btnCloseDefid;
     public Button btnOpenProjectFolder;
     public Button btnOpenInstallationFolder;
@@ -136,6 +137,10 @@ public class SettingsView implements Initializable {
         this.btnCloseDefid.setText(this.settingsController.translationList.getValue().get("CloseButton").toString());
         this.btnOpenProjectFolder.setText(this.settingsController.translationList.getValue().get("Open").toString());
         this.btnOpenInstallationFolder.setText(this.settingsController.translationList.getValue().get("Open").toString());
+
+        this.lblDefaultDataSource.setText(this.settingsController.translationList.getValue().get("DefaultDataUpdate").toString());
+        this.cmbDefaultDataSource.getItems().addAll(this.settingsController.defaultUpdateSource);
+        this.cmbDefaultDataSource.valueProperty().bindBidirectional(this.settingsController.selectedDefaulUpdateSource);
         this.SwitchButton();
     }
 
@@ -158,6 +163,7 @@ public class SettingsView implements Initializable {
         this.labelCSVExport.setText(this.settingsController.translationList.getValue().get("CSVLabel").toString());
         this.lblFrom.setText(this.settingsController.translationList.getValue().get("ToLabel").toString());
         this.lblTo.setText(this.settingsController.translationList.getValue().get("FromLabel").toString());
+        this.lblDefaultDataSource.setText(this.settingsController.translationList.getValue().get("DefaultDataUpdate").toString());
     }
 
     private final Rectangle back = new Rectangle(35, 15, Color.RED);
