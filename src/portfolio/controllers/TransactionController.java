@@ -2,6 +2,8 @@ package portfolio.controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -1013,5 +1015,30 @@ public class TransactionController {
     }
     public void importWalletCSV(){
         System.out.println("wallet import");
+        FileChooser fileChooser = new FileChooser();
+
+        FileChooser.ExtensionFilter extFilter =
+                new FileChooser.ExtensionFilter("DeFi Wallet CSV (*.csv)", "*.csv");
+        fileChooser.getExtensionFilters().add(extFilter);
+        if(this.settingsController.lastWalletCSVImportPath != null){
+            fileChooser.setInitialDirectory(new File(this.settingsController.lastWalletCSVImportPath));
+        }
+
+        Label fileLabel = new Label();
+        File file = fileChooser.showOpenDialog(new Stage());
+        if (file != null) {
+            // Save latest path in settings
+            this.settingsController.lastWalletCSVImportPath = file.getParent().toString();
+            this.settingsController.saveSettings();
+
+            System.out.println(file.getPath());
+
+            // check if valid wallet csv
+
+            // import csv data
+
+
+        }
+
     }
 }

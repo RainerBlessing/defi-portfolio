@@ -74,7 +74,7 @@ public class SettingsController {
     public String[] datasources = new String[]{"Active Wallet", "All Wallets"};
     public String[] cointrackingExportVariants = new String[]{"Cumulate All", "Cumulate None","Cumulate Pool Pair","Cumulate Rewards and Commisions"};
     public String[] csvExportVariants = new String[]{"Export selected to CSV","Export all to CSV","Export all to CSV (Daily cumulated)"};
-    public String[] defaultUpdateSource = new String[]{"Show options", "Update data","Cake CSV","Wallet CSV"};
+    public String[] defaultUpdateSource = new String[]{"Show options", "Update data","Wallet CSV"};
 
     //All relevant paths and files
     public String USER_HOME_PATH = System.getProperty("user.home").replace("\\","/");
@@ -114,6 +114,7 @@ public class SettingsController {
     public Timer timer = new Timer("Timer");
 
     public String lastExportPath = USER_HOME_PATH;
+    public String lastWalletCSVImportPath;
     public boolean runCheckTimer;
     public int errorBouncer = 0;
 
@@ -238,7 +239,7 @@ public class SettingsController {
                     this.selectedDefaulUpdateSource.setValue("Show options");
                 }
                 this.showMissingTransaction = configProps.getProperty("MissingTransaction").equals("true");
-
+                this.lastWalletCSVImportPath = configProps.getProperty("LastWalletCSVImportPath");
             } catch (Exception e) {
                 SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
                 saveSettings();
@@ -271,6 +272,7 @@ public class SettingsController {
             csvWriter.append("ExportTo=" + this.exportTo.getValue()).append("\n");
             csvWriter.append("MissingTransaction=" + this.showMissingTransaction).append("\n");
             csvWriter.append("DefaultDataSource=" + this.selectedDefaulUpdateSource.getValue()).append("\n");
+            csvWriter.append("LastWalletCSVImportPath=" + this.lastWalletCSVImportPath).append("\n");
             csvWriter.flush();
             csvWriter.close();
         } catch (IOException e) {
