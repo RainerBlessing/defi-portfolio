@@ -1076,12 +1076,38 @@ public class TransactionController {
 
                         // TransactionID not available in CSV
                         // Check if RemovePoolLM,AddPoolLm und PoolSwap --> in einzelne Transaktionen aufteilen
-                        TransactionModel transAction = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[6], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
+                        switch (transactionSplit[4]) {
+                            case "PoolSwap": {
+                                if(transactionSplit.length>7) {
+                                    TransactionModel transAction1 = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[6], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
+                                    TransactionModel transAction2 = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[7], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
+                                    transactionList.add(transAction1);
+                                    transactionList.add(transAction2);
+                                }
+                                break;
+                            }
+                            case "AddPoolLiquidity":
+                            case "RemovePoolLiquidity": {
+                                if(transactionSplit.length>7) {
+                                    TransactionModel transAction1 = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[6], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
+                                    TransactionModel transAction2 = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[7], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
+                                    transactionList.add(transAction1);
+                                    transactionList.add(transAction2);
 
-                        transactionList.add(transAction);
-
-                        if (transAction.typeProperty.getValue().equals("Rewards") | transAction.typeProperty.getValue().equals("Commission")) {
-                            addToPortfolioModel(transAction);
+                                    if (transactionSplit.length > 8) {
+                                        TransactionModel transAction3 = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[8], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
+                                        transactionList.add(transAction3);
+                                    }
+                                }
+                                break;
+                            }
+                            default:
+                                TransactionModel transAction = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[6], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
+                                transactionList.add(transAction);
+                                if (transAction.typeProperty.getValue().equals("Rewards") | transAction.typeProperty.getValue().equals("Commission")) {
+                                    addToPortfolioModel(transAction);
+                                }
+                                break;
                         }
                     }
                     this.jl.setText(MainViewController.getInstance().settingsController.translationList.getValue().get("LoadingWalletCSV").toString());
