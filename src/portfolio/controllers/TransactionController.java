@@ -54,7 +54,7 @@ public class TransactionController {
     public TransactionController() {
         if (classSingleton) {
             classSingleton = false;
-            this.transactionList = getLocalTransactionList();
+            transactionList = getLocalTransactionList();
             this.localBlockCount = getLocalBlockCount();
             getLocalBalanceList();
             calcImpermanentLoss();
@@ -647,7 +647,7 @@ public class TransactionController {
         int counter = 0;
         for (int i = transactionListNew.size() - 1; i >= 0; i--) {
             if (transactionListNew.get(i).blockHeightProperty.getValue() > this.localBlockCount) {
-                this.transactionList.add(transactionListNew.get(i));
+                transactionList.add(transactionListNew.get(i));
                 updateTransactionList.add(transactionListNew.get(i));
                 //if (!transactionListNew.get(i).getTypeValue().equals("UtxosToAccount") | !transactionListNew.get(i).getTypeValue().equals("AccountToUtxos"))
                 // addBalanceModel(transactionListNew.get(i));
@@ -716,7 +716,7 @@ public class TransactionController {
                 writer.close();
                 calcImpermanentLoss();
                 if (!this.settingsController.getPlatform().equals("mac")) this.frameUpdate.dispose();
-                this.localBlockCount = this.transactionList.get(this.transactionList.size() - 1).blockHeightProperty.getValue();
+                this.localBlockCount = transactionList.get(transactionList.size() - 1).blockHeightProperty.getValue();
                 stopServer();
                 transactionListNew = null;
                 updateTransactionList = null;
@@ -1029,27 +1029,32 @@ public class TransactionController {
         }
 
         Label fileLabel = new Label();
-        File file = fileChooser.showOpenDialog(new Stage());
-        if (file != null) {
+        List<File> list = fileChooser.showOpenMultipleDialog(new Stage());
+        //File file = fileChooser.showOpenDialog(new Stage());
+        if (list != null) {
             // Save latest path in settings
-            this.settingsController.lastWalletCSVImportPath = file.getParent().toString().replace("\\","/");
+            this.settingsController.lastWalletCSVImportPath = list.get(0).getParent().toString().replace("\\","/");
             this.settingsController.saveSettings();
 
             // check if valid wallet csv
 
             // import csv data
-            this.transactionList = getLocalWalletCSVList(file.getPath());
+            getLocalWalletCSVList(list);
             this.localBlockCount = getLocalBlockCount();
             getLocalBalanceList();
             calcImpermanentLoss();
             MainViewController.getInstance().plotUpdate(MainViewController.getInstance().mainView.tabPane.getSelectionModel().getSelectedItem().getId());
-
+         //   MainViewController.getInstance().mainView.rawDataTable.setUserData(transactionList);
         }
     }
 
-    public ObservableList<TransactionModel> getLocalWalletCSVList(String filePath) {
-        File strPortfolioData = new File(filePath);
-        List<TransactionModel> transactionList = new ArrayList<>();
+    //public ObservableList<TransactionModel> getLocalWalletCSVList(String filePath) {
+    public void getLocalWalletCSVList(List<File> files) {
+
+        transactionList.clear();
+        portfolioList.clear();
+        for(int iFile = 0;iFile<files.size();iFile++){
+        File strPortfolioData = files.get(iFile);
 
         this.updateJFrame();
         this.jl.setText(MainViewController.getInstance().settingsController.translationList.getValue().get("LoadingWalletCSV").toString());
@@ -1069,6 +1074,8 @@ public class TransactionController {
                         String[] transactionSplit = line.split(",");
                         transactionSplit[2] = convertWalletDateToTimeStamp(transactionSplit[2]);
 
+                        // TransactionID not available in CSV
+                        // Check if RemovePoolLM,AddPoolLm und PoolSwap --> in einzelne Transaktionen aufteilen
                         TransactionModel transAction = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[6], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
 
                         transactionList.add(transAction);
@@ -1083,14 +1090,14 @@ public class TransactionController {
                 }
                 reader.close();
                 this.frameUpdate.dispose();
-                return FXCollections.observableArrayList(transactionList);
+               // return FXCollections.observableArrayList(transactionList);
             } catch (IOException e) {
                 this.frameUpdate.dispose();
                 this.settingsController.logger.warning("Exception occured: " + e.toString());
             }
-        }
+        }}
         this.frameUpdate.dispose();
-        return FXCollections.observableArrayList(transactionList);
+     //   return FXCollections.observableArrayList(transactionList);
     }
 
     public String convertWalletDateToTimeStamp(String input){
