@@ -1,5 +1,6 @@
 package portfolio.controllers;
 
+import com.fasterxml.jackson.core.Base64Variant;
 import com.sun.corba.se.impl.monitoring.MonitoredAttributeInfoImpl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -1040,90 +1041,83 @@ public class TransactionController {
 
             // import csv data
             getLocalWalletCSVList(list);
-            this.localBlockCount = getLocalBlockCount();
             getLocalBalanceList();
             calcImpermanentLoss();
             MainViewController.getInstance().plotUpdate(MainViewController.getInstance().mainView.tabPane.getSelectionModel().getSelectedItem().getId());
-         //   MainViewController.getInstance().mainView.rawDataTable.setUserData(transactionList);
+
         }
     }
 
     //public ObservableList<TransactionModel> getLocalWalletCSVList(String filePath) {
     public void getLocalWalletCSVList(List<File> files) {
-
         transactionList.clear();
         portfolioList.clear();
-        for(int iFile = 0;iFile<files.size();iFile++){
-        File strPortfolioData = files.get(iFile);
+        for (File strPortfolioData : files) {
+            this.updateJFrame();
+            this.jl.setText(MainViewController.getInstance().settingsController.translationList.getValue().get("LoadingWalletCSV").toString());
 
-        this.updateJFrame();
-        this.jl.setText(MainViewController.getInstance().settingsController.translationList.getValue().get("LoadingWalletCSV").toString());
+            if (strPortfolioData.exists()) {
+                try {
+                    BufferedReader reader;
+                    reader = new BufferedReader(new FileReader(strPortfolioData));
+                    String line = reader.readLine();
+                    int count = 1;
+                    while (line != null) {
 
+                        if (!line.contains("Block Height")) {
+                            line = line.replace("\"", "");
+                            String[] transactionSplit = line.split(",");
+                            transactionSplit[2] = convertWalletDateToTimeStamp(transactionSplit[2]);
 
-        if (strPortfolioData.exists()) {
-            try {
-                BufferedReader reader;
-                reader = new BufferedReader(new FileReader(
-                        strPortfolioData));
-                String line = reader.readLine();
-                int count = 1;
-                while (line != null) {
-
-                    if (!line.contains("Block Height")) {
-                        line = line.replace("\"","");
-                        String[] transactionSplit = line.split(",");
-                        transactionSplit[2] = convertWalletDateToTimeStamp(transactionSplit[2]);
-
-                        // TransactionID not available in CSV
-                        // Check if RemovePoolLM,AddPoolLm und PoolSwap --> in einzelne Transaktionen aufteilen
-                        switch (transactionSplit[4]) {
-                            case "PoolSwap": {
-                                if(transactionSplit.length>7) {
-                                    TransactionModel transAction1 = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[6], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
-                                    TransactionModel transAction2 = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[7], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
-                                    transactionList.add(transAction1);
-                                    transactionList.add(transAction2);
-                                }
-                                break;
-                            }
-                            case "AddPoolLiquidity":
-                            case "RemovePoolLiquidity": {
-                                if(transactionSplit.length>7) {
-                                    TransactionModel transAction1 = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[6], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
-                                    TransactionModel transAction2 = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[7], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
-                                    transactionList.add(transAction1);
-                                    transactionList.add(transAction2);
-
-                                    if (transactionSplit.length > 8) {
-                                        TransactionModel transAction3 = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[8], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
-                                        transactionList.add(transAction3);
+                            // TransactionID not available in CSV
+                            // Check if RemovePoolLM,AddPoolLm und PoolSwap --> in einzelne Transaktionen aufteilen
+                            switch (transactionSplit[4]) {
+                                case "PoolSwap": {
+                                    if (transactionSplit.length > 7) {
+                                        TransactionModel transAction1 = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[6], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
+                                        TransactionModel transAction2 = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[7], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
+                                        transactionList.add(transAction1);
+                                        transactionList.add(transAction2);
                                     }
+                                    break;
                                 }
-                                break;
+                                case "AddPoolLiquidity":
+                                case "RemovePoolLiquidity": {
+                                    if (transactionSplit.length > 7) {
+                                        TransactionModel transAction1 = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[6], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
+                                        TransactionModel transAction2 = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[7], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
+                                        transactionList.add(transAction1);
+                                        transactionList.add(transAction2);
+
+                                        if (transactionSplit.length > 8) {
+                                            TransactionModel transAction3 = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[8], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
+                                            transactionList.add(transAction3);
+                                        }
+                                    }
+                                    break;
+                                }
+                                default:
+                                    TransactionModel transAction = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[6], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
+                                    transactionList.add(transAction);
+                                    if (transAction.typeProperty.getValue().equals("Rewards") | transAction.typeProperty.getValue().equals("Commission")) {
+                                        addToPortfolioModel(transAction);
+                                    }
+                                    break;
                             }
-                            default:
-                                TransactionModel transAction = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[6], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
-                                transactionList.add(transAction);
-                                if (transAction.typeProperty.getValue().equals("Rewards") | transAction.typeProperty.getValue().equals("Commission")) {
-                                    addToPortfolioModel(transAction);
-                                }
-                                break;
                         }
+                        this.jl.setText(MainViewController.getInstance().settingsController.translationList.getValue().get("LoadingWalletCSV").toString());
+                        count++;
+                        line = reader.readLine();
                     }
-                    this.jl.setText(MainViewController.getInstance().settingsController.translationList.getValue().get("LoadingWalletCSV").toString());
-                    count++;
-                    line = reader.readLine();
+                    reader.close();
+                    this.frameUpdate.dispose();
+                } catch (IOException e) {
+                    this.frameUpdate.dispose();
+                    this.settingsController.logger.warning("Exception occured: " + e.toString());
                 }
-                reader.close();
-                this.frameUpdate.dispose();
-               // return FXCollections.observableArrayList(transactionList);
-            } catch (IOException e) {
-                this.frameUpdate.dispose();
-                this.settingsController.logger.warning("Exception occured: " + e.toString());
             }
-        }}
+        }
         this.frameUpdate.dispose();
-     //   return FXCollections.observableArrayList(transactionList);
     }
 
     public String convertWalletDateToTimeStamp(String input){
