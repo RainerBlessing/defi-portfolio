@@ -83,5 +83,6 @@
   "ToLabel": "De",
   "FromLabel": "A",
   "DefaultDataUpdate": "Fuente de actualización por defecto",
+  "LoadingWalletCSV": "cargando Wallet CSV",
   "MissingTransaction": "Al, menos una transacción ha sido omitida porque está incompleta y por tanto puede causar discrepancias en el balance. Todas las transacciones incompletas se han almacenado en una lista."
 }

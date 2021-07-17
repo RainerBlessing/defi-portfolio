@@ -83,5 +83,6 @@
   "ToLabel": "From",
   "FromLabel": "To",
   "DefaultDataUpdate": "Default update source",
+  "LoadingWalletCSV": "Loading Wallet CSV",
   "MissingTransaction": "At least one transaction is skipped because it is incomplete and may cause deviations in the balance. \nAll transactions are saved in a list."
 }

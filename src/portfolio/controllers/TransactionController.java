@@ -1,5 +1,6 @@
 package portfolio.controllers;
 
+import com.sun.corba.se.impl.monitoring.MonitoredAttributeInfoImpl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.stage.FileChooser;
@@ -7,6 +8,7 @@ import javafx.stage.Stage;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import portfolio.Main;
 import portfolio.models.*;
 import portfolio.views.MainView;
 import javax.swing.*;
@@ -1010,17 +1012,19 @@ public class TransactionController {
         }
         checkTimer.scheduleAtFixedRate(new CheckConnection(MainViewController.getInstance()), 0, 30000);
     }
+
     public void importCakeCSV(){
         System.out.println("cake import");
     }
+
+
     public void importWalletCSV(){
-        System.out.println("wallet import");
         FileChooser fileChooser = new FileChooser();
 
         FileChooser.ExtensionFilter extFilter =
                 new FileChooser.ExtensionFilter("DeFi Wallet CSV (*.csv)", "*.csv");
         fileChooser.getExtensionFilters().add(extFilter);
-        if(this.settingsController.lastWalletCSVImportPath != null){
+        if(this.settingsController.lastWalletCSVImportPath != null && !this.settingsController.lastWalletCSVImportPath.isEmpty()){
             fileChooser.setInitialDirectory(new File(this.settingsController.lastWalletCSVImportPath));
         }
 
@@ -1028,17 +1032,76 @@ public class TransactionController {
         File file = fileChooser.showOpenDialog(new Stage());
         if (file != null) {
             // Save latest path in settings
-            this.settingsController.lastWalletCSVImportPath = file.getParent().toString();
+            this.settingsController.lastWalletCSVImportPath = file.getParent().toString().replace("\\","/");
             this.settingsController.saveSettings();
-
-            System.out.println(file.getPath());
 
             // check if valid wallet csv
 
             // import csv data
-
+            this.transactionList = getLocalWalletCSVList(file.getPath());
+            this.localBlockCount = getLocalBlockCount();
+            getLocalBalanceList();
+            calcImpermanentLoss();
+            MainViewController.getInstance().plotUpdate(MainViewController.getInstance().mainView.tabPane.getSelectionModel().getSelectedItem().getId());
 
         }
+    }
 
+    public ObservableList<TransactionModel> getLocalWalletCSVList(String filePath) {
+        File strPortfolioData = new File(filePath);
+        List<TransactionModel> transactionList = new ArrayList<>();
+
+        this.updateJFrame();
+        this.jl.setText(MainViewController.getInstance().settingsController.translationList.getValue().get("LoadingWalletCSV").toString());
+
+
+        if (strPortfolioData.exists()) {
+            try {
+                BufferedReader reader;
+                reader = new BufferedReader(new FileReader(
+                        strPortfolioData));
+                String line = reader.readLine();
+                int count = 1;
+                while (line != null) {
+
+                    if (!line.contains("Block Height")) {
+                        line = line.replace("\"","");
+                        String[] transactionSplit = line.split(",");
+                        transactionSplit[2] = convertWalletDateToTimeStamp(transactionSplit[2]);
+
+                        TransactionModel transAction = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[6], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
+
+                        transactionList.add(transAction);
+
+                        if (transAction.typeProperty.getValue().equals("Rewards") | transAction.typeProperty.getValue().equals("Commission")) {
+                            addToPortfolioModel(transAction);
+                        }
+                    }
+                    this.jl.setText(MainViewController.getInstance().settingsController.translationList.getValue().get("LoadingWalletCSV").toString());
+                    count++;
+                    line = reader.readLine();
+                }
+                reader.close();
+                this.frameUpdate.dispose();
+                return FXCollections.observableArrayList(transactionList);
+            } catch (IOException e) {
+                this.frameUpdate.dispose();
+                this.settingsController.logger.warning("Exception occured: " + e.toString());
+            }
+        }
+        this.frameUpdate.dispose();
+        return FXCollections.observableArrayList(transactionList);
+    }
+
+    public String convertWalletDateToTimeStamp(String input){
+        Date date = null;
+        try {
+            date = new SimpleDateFormat("dd/MM/yyyy / hh:mm a").parse(input);
+        } catch (ParseException e) {
+            this.settingsController.logger.warning("Exception occured: " + e.toString());
+        }
+        assert date != null;
+        Timestamp ts = new Timestamp(date.getTime());
+        return Long.toString(ts.getTime() / 1000);
     }
 }
