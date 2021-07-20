@@ -21,6 +21,8 @@ import java.net.URL;
 import java.net.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -738,42 +740,55 @@ public class TransactionController {
         String pool;
         switch (poolID) {
             case "0":
+            case "0.0":
                 pool = "DFI";
                 break;
             case "1":
+            case "1.0":
                 pool = "ETH";
                 break;
             case "2":
+            case "2.0":
                 pool = "BTC";
                 break;
             case "3":
+            case "3.0":
                 pool = "USDT";
                 break;
             case "4":
+            case "4.0":
                 pool = "ETH-DFI";
                 break;
             case "5":
+            case "5.0":
                 pool = "BTC-DFI";
                 break;
             case "6":
+            case "6.0":
                 pool = "USDT-DFI";
                 break;
             case "7":
+            case "7.0":
                 pool = "DOGE";
                 break;
             case "8":
+            case "8.0":
                 pool = "DOGE-DFI";
                 break;
             case "9":
+            case "9.0":
                 pool = "LTC";
                 break;
             case "10":
+            case "10.0":
                 pool = "LTC-DFI";
                 break;
             case "11":
+            case "11.0":
                 pool = "BCH";
                 break;
             case "12":
+            case "12.0":
                 pool = "BCH-DFI";
                 break;
             default:
@@ -1041,6 +1056,7 @@ public class TransactionController {
 
             // import csv data
             getLocalWalletCSVList(list);
+            getCoinAndTokenBalances();
             getLocalBalanceList();
             calcImpermanentLoss();
             MainViewController.getInstance().plotUpdate(MainViewController.getInstance().mainView.tabPane.getSelectionModel().getSelectedItem().getId());
@@ -1050,68 +1066,54 @@ public class TransactionController {
 
     //public ObservableList<TransactionModel> getLocalWalletCSVList(String filePath) {
     public void getLocalWalletCSVList(List<File> files) {
-        transactionList.clear();
-        portfolioList.clear();
+
+        // Cookie löschen
+
         for (File strPortfolioData : files) {
             this.updateJFrame();
             this.jl.setText(MainViewController.getInstance().settingsController.translationList.getValue().get("LoadingWalletCSV").toString());
 
             if (strPortfolioData.exists()) {
                 try {
-                    BufferedReader reader;
-                    reader = new BufferedReader(new FileReader(strPortfolioData));
-                    String line = reader.readLine();
-                    int count = 1;
-                    while (line != null) {
-
-                        if (!line.contains("Block Height")) {
-                            line = line.replace("\"", "");
-                            String[] transactionSplit = line.split(",");
-                            transactionSplit[2] = convertWalletDateToTimeStamp(transactionSplit[2]);
-
-                            // TransactionID not available in CSV
-                            // Check if RemovePoolLM,AddPoolLm und PoolSwap --> in einzelne Transaktionen aufteilen
-                            switch (transactionSplit[4]) {
-                                case "PoolSwap": {
-                                    if (transactionSplit.length > 7) {
-                                        TransactionModel transAction1 = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[6], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
-                                        TransactionModel transAction2 = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[7], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
-                                        transactionList.add(transAction1);
-                                        transactionList.add(transAction2);
-                                    }
-                                    break;
-                                }
-                                case "AddPoolLiquidity":
-                                case "RemovePoolLiquidity": {
-                                    if (transactionSplit.length > 7) {
-                                        TransactionModel transAction1 = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[6], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
-                                        TransactionModel transAction2 = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[7], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
-                                        transactionList.add(transAction1);
-                                        transactionList.add(transAction2);
-
-                                        if (transactionSplit.length > 8) {
-                                            TransactionModel transAction3 = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[8], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
-                                            transactionList.add(transAction3);
-                                        }
-                                    }
-                                    break;
-                                }
-                                default:
-                                    TransactionModel transAction = new TransactionModel(Long.parseLong(transactionSplit[2]), transactionSplit[3], transactionSplit[4], transactionSplit[6], transactionSplit[1], Integer.parseInt(transactionSplit[0]), transactionSplit[5], "-", this);
-                                    transactionList.add(transAction);
-                                    if (transAction.typeProperty.getValue().equals("Rewards") | transAction.typeProperty.getValue().equals("Commission")) {
-                                        addToPortfolioModel(transAction);
-                                    }
-                                    break;
+                    // Start skript
+                    switch (this.settingsController.getPlatform()) {
+                        case "mac":
+                            FileWriter myWriter = new FileWriter(System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/" + "defi.sh");
+                            myWriter.write(this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                            myWriter.close();
+                            defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/./" + "defi.sh");
+                            break;
+                        case "win":
+                            String path = System.getProperty("user.dir")+"\\defi-portfolio\\src\\portfolio\\libraries\\main.py";
+                            String[] commands = {"cmd", "/c", "start", "\"Merging data\"", path,SettingsController.getInstance().DEFI_PORTFOLIO_HOME.replace("/","\\")+"transactionData.portfolio",strPortfolioData.getAbsolutePath()};
+                            defidProcess = Runtime.getRuntime().exec(commands);
+                            break;
+                        case "linux":
+                            int notfound = 0;
+                            try {
+                                defidProcess = Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                            } catch (Exception e) {
+                                notfound++;
                             }
-                        }
-                        this.jl.setText(MainViewController.getInstance().settingsController.translationList.getValue().get("LoadingWalletCSV").toString());
-                        count++;
-                        line = reader.readLine();
+                            try {
+                                defidProcess = Runtime.getRuntime().exec("/usr/bin/konsole -e " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                            } catch (Exception e) {
+                                notfound++;
+                            }
+                            if (notfound == 2) {
+                                JOptionPane.showMessageDialog(null, "Could not found /usr/bin/x-terminal-emulator or\n /usr/bin/konsole", "Terminal not found", JOptionPane.ERROR_MESSAGE);
+                            }
+                            break;
                     }
-                    reader.close();
+
+                    // cookie anlegen
+
+                    // wait 500ms
+                    Thread.sleep(1000);
                     this.frameUpdate.dispose();
-                } catch (IOException e) {
+                    // cookie löschen
+
+                } catch (Exception e) {
                     this.frameUpdate.dispose();
                     this.settingsController.logger.warning("Exception occured: " + e.toString());
                 }
