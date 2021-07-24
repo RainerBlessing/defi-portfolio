@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.Base64Variant;
 import com.sun.corba.se.impl.monitoring.MonitoredAttributeInfoImpl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.json.simple.JSONArray;
@@ -1052,26 +1053,31 @@ public class TransactionController {
             this.settingsController.lastWalletCSVImportPath = list.get(0).getParent().toString().replace("\\","/");
             this.settingsController.saveSettings();
 
-            // check if valid wallet csv
-
             // import csv data
             getLocalWalletCSVList(list);
-            getCoinAndTokenBalances();
-            getLocalBalanceList();
-            calcImpermanentLoss();
-            MainViewController.getInstance().plotUpdate(MainViewController.getInstance().mainView.tabPane.getSelectionModel().getSelectedItem().getId());
-
+            //getCoinAndTokenBalances();
+            //getLocalBalanceList();
+            //calcImpermanentLoss();
+            //MainViewController.getInstance().plotUpdate(MainViewController.getInstance().mainView.tabPane.getSelectionModel().getSelectedItem().getId());
         }
     }
 
     //public ObservableList<TransactionModel> getLocalWalletCSVList(String filePath) {
     public void getLocalWalletCSVList(List<File> files) {
-
-        // Cookie löschen
+        int iFile = 1;
+        this.updateJFrame();
+        this.frameUpdate.setAlwaysOnTop(true);
 
         for (File strPortfolioData : files) {
-            this.updateJFrame();
-            this.jl.setText(MainViewController.getInstance().settingsController.translationList.getValue().get("LoadingWalletCSV").toString());
+            this.jl.setText(MainViewController.getInstance().settingsController.translationList.getValue().get("LoadingWalletCSV").toString()+ "("+iFile+"/"+files.size()+")");
+            File file = new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME+"\\CSVMerge.cookie");
+            if(!file.exists()){
+                try {
+                    file.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
 
             if (strPortfolioData.exists()) {
                 try {
@@ -1084,7 +1090,7 @@ public class TransactionController {
                             defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/./" + "defi.sh");
                             break;
                         case "win":
-                            String path = System.getProperty("user.dir")+"\\defi-portfolio\\src\\portfolio\\libraries\\main.py";
+                            String path = System.getProperty("user.dir")+"\\defi-portfolio\\src\\portfolio\\libraries\\main.exe";
                             String[] commands = {"cmd", "/c", "start", "\"Merging data\"", path,SettingsController.getInstance().DEFI_PORTFOLIO_HOME.replace("/","\\")+"transactionData.portfolio",strPortfolioData.getAbsolutePath()};
                             defidProcess = Runtime.getRuntime().exec(commands);
                             break;
@@ -1106,20 +1112,24 @@ public class TransactionController {
                             break;
                     }
 
-                    // cookie anlegen
-
-                    // wait 500ms
-                    Thread.sleep(1000);
-                    this.frameUpdate.dispose();
-                    // cookie löschen
+                    while(file.exists()){
+                        Thread.sleep(1000);
+                    }
 
                 } catch (Exception e) {
                     this.frameUpdate.dispose();
                     this.settingsController.logger.warning("Exception occured: " + e.toString());
                 }
             }
+            iFile++;
         }
         this.frameUpdate.dispose();
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information");
+        alert.setHeaderText(null);
+        alert.setContentText("Please restart the tool to get the updated data!!");
+        alert.showAndWait();
     }
 
     public String convertWalletDateToTimeStamp(String input){

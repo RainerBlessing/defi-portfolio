@@ -3,11 +3,14 @@ import sys
 import numpy as np
 import pandas as pd
 import time
-import datetime
+import os
+import numpy as np
 
 def adaptCSV(var):
-  #  pathTransactions = 'C:\\Users\\Arthur\\AppData\\Roaming\\defi-portfolio\\transactionData.portfolio'
-  #  pathWalletCSV = 'C:\\Users\\Arthur\\Desktop\\Transactions\\Transactions_2021-7-16_23-43-12.csv'
+    #var=[];
+    #var.append('C:\\Users\\Arthur\\AppData\\Roaming\\defi-portfolio\\transactionData.portfolio')
+    #var.append('C:\\Users\\Arthur\\Desktop\\Transactions\\Transactions_2021-7-16_23-43-12.csv')
+    #var.append('C:\\Users\\Arthur\\Desktop\\Transactions\\test.csv')
 
     pathTransactions = var[0]
     pathWalletCSV = var[1]
@@ -26,25 +29,65 @@ def adaptCSV(var):
     walletCSV['txID'] = '\'\''
 
     # change date format
-    date_series = pd.to_datetime(walletCSV['DD/MM/YYYY (Date) / Time'])
+    date_series = pd.to_datetime(walletCSV['DD/MM/YYYY (Date) / Time'],format="%d/%m/%Y / %I:%M %p")
     index = pd.DatetimeIndex(date_series)
     index = index.astype(np.int64).to_series()/1000000000
     index = index.reset_index(drop="True")
     walletCSV['DD/MM/YYYY (Date) / Time'] = index.astype(int)
 
-    # separeate addpool remove pool
-    a = walletCSV.loc[walletCSV['Type'] == 'AddPoolLiquidity']
-    a = walletCSV.loc[walletCSV['Type'] == 'RemovePoolLiquidity']
-    a = walletCSV.loc[walletCSV['Type'] == 'PoolSwap']
+    # separeate addpool, remove pool and ppol swaps
+    addPoolListe = walletCSV.loc[walletCSV['Type'] == 'AddPoolLiquidity']
+    walletCSV = walletCSV.drop(walletCSV[walletCSV['Type'] == 'AddPoolLiquidity'].index)
+    for _,addPoolZeile in addPoolListe.iterrows():
+      amounts = addPoolZeile['Amount'].split(',')
+      addPoolZeile = addPoolZeile.to_frame()
+      addPoolZeile = addPoolZeile.transpose()
+      for i in amounts:
+        addPoolZeile['Amount']=i
+        walletCSV= walletCSV.append(addPoolZeile)
+
+    removePoolListe = walletCSV.loc[walletCSV['Type'] == 'RemovePoolLiquidity']
+    walletCSV = walletCSV.drop(walletCSV[walletCSV['Type'] == 'RemovePoolLiquidity'].index)
+    for _,removePoolZeile in removePoolListe.iterrows():
+      amounts = removePoolZeile['Amount'].split(',')
+      removePoolZeile = removePoolZeile.to_frame()
+      removePoolZeile = removePoolZeile.transpose()
+      for i in amounts:
+        removePoolZeile['Amount']=i
+        walletCSV= walletCSV.append(removePoolZeile)
+
+    poolSwapListe = walletCSV.loc[walletCSV['Type'] == 'PoolSwap']
+    walletCSV = walletCSV.drop(walletCSV[walletCSV['Type'] == 'PoolSwap'].index)
+    for _,poolSwapZeile in poolSwapListe.iterrows():
+      amounts = poolSwapZeile['Amount'].split(',')
+      poolSwapZeile = poolSwapZeile.to_frame()
+      poolSwapZeile = poolSwapZeile.transpose()
+      for i in amounts:
+        poolSwapZeile['Amount']=i
+        walletCSV= walletCSV.append(poolSwapZeile)
 
 
-    # merge dataframes unequal transactions
-    frames = [walletCSV, transactions]
+    # remove equal transactions from walletCSV
+    walletCSV = walletCSV.drop_duplicates().merge(transactions.drop_duplicates(), on=[ 'Address','Type', 'Amount','Block Hash', 'Block Height'],
+                                     how='left', indicator=True)
+    walletCSV=walletCSV.loc[walletCSV._merge == 'left_only']
+    walletCSV = walletCSV.drop('Pool ID_y', 1)
+    walletCSV = walletCSV.drop('txID_y', 1)
+    walletCSV = walletCSV.drop('_merge', 1)
+    walletCSV = walletCSV.drop('DD/MM/YYYY (Date) / Time_y', 1)
+    walletCSV = walletCSV.rename(columns={'Pool ID_x': 'Pool ID', 'txID_x': 'txID','DD/MM/YYYY (Date) / Time_x': 'DD/MM/YYYY (Date) / Time'})
+
+    # merge dataframes
     result = walletCSV.append(transactions)
 
+    result = result.sort_values(by=['DD/MM/YYYY (Date) / Time'])
     # save csv
-    result.to_csv('C:\\Users\\Arthur\\AppData\\Roaming\\defi-portfolio\\transactionData.portfolio',  index=False,  header=False, sep=';',line_terminator='\n')
+    result.to_csv(pathTransactions,  index=False,  header=False, sep=';',line_terminator='\n')
 
+
+    path = os.path.split(pathTransactions)
+    if os.path.exists(path[0]+'\\CSVMerge.cookie'):
+      os.remove(path[0]+'\\CSVMerge.cookie')
 
 if __name__ == '__main__':
     var = sys.argv[1:]
