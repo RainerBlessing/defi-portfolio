@@ -1,28 +1,30 @@
 import sys
-
-import numpy as np
 import pandas as pd
 import time
 import os
 import numpy as np
+from pathlib import Path
 
 def adaptCSV(var):
     #var=[];
     #var.append('C:\\Users\\Arthur\\AppData\\Roaming\\defi-portfolio\\transactionData.portfolio')
-    #var.append('C:\\Users\\Arthur\\Desktop\\Transactions\\Transactions_2021-7-16_23-43-12.csv')
-    #var.append('C:\\Users\\Arthur\\Desktop\\Transactions\\test.csv')
+    #var.append('C:\\Users\\Arthur\\Desktop\\Transactions\\Transactions_2021-7-16_23-42-15.csv')
+
 
     pathTransactions = var[0]
     pathWalletCSV = var[1]
     print(pathTransactions)
     print(pathWalletCSV)
     time.sleep(1)
-    transactions = pd.read_csv(pathTransactions, sep=';',engine = 'python')
-    transactions = transactions.replace([np.nan], '', regex=True)
-    transactions = transactions.replace('', '\'\'', regex=True)
-    transactions.columns = ['DD/MM/YYYY (Date) / Time', 'Address','Type', 'Amount','Block Hash', 'Block Height',  'Pool ID','txID']
 
-    walletCSV =  pd.read_csv(pathWalletCSV)
+    if Path(pathTransactions).is_file():
+        transactions = pd.read_csv(pathTransactions, sep=';',engine = 'python')
+        transactions = transactions.replace([np.nan], '', regex=True)
+        transactions = transactions.replace('', '\'\'', regex=True)
+        transactions.columns = ['DD/MM/YYYY (Date) / Time', 'Address','Type', 'Amount','Block Hash', 'Block Height',  'Pool ID','txID']
+    else:
+        transactions = pd.DataFrame(columns = ['DD/MM/YYYY (Date) / Time', 'Address','Type', 'Amount','Block Hash', 'Block Height',  'Pool ID','txID']);
+    walletCSV = pd.read_csv(pathWalletCSV)
 
     #Reorder columns
     walletCSV = walletCSV[['DD/MM/YYYY (Date) / Time', 'Address','Type', 'Amount','Block Hash', 'Block Height',  'Pool ID']]
@@ -68,6 +70,7 @@ def adaptCSV(var):
 
 
     # remove equal transactions from walletCSV
+
     walletCSV = walletCSV.drop_duplicates().merge(transactions.drop_duplicates(), on=[ 'Address','Type', 'Amount','Block Hash', 'Block Height'],
                                      how='left', indicator=True)
     walletCSV=walletCSV.loc[walletCSV._merge == 'left_only']
