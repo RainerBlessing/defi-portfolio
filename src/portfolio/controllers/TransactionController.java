@@ -4,9 +4,13 @@ import com.fasterxml.jackson.core.Base64Variant;
 import com.sun.corba.se.impl.monitoring.MonitoredAttributeInfoImpl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -1142,11 +1146,7 @@ public class TransactionController {
         }
         this.frameUpdate.dispose();
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information");
-        alert.setHeaderText(null);
-        alert.setContentText("Please restart the tool to get the updated data!!");
-        alert.showAndWait();
+        MainView.getInstance().showRestartWindow();
     }
 
     public String convertWalletDateToTimeStamp(String input){

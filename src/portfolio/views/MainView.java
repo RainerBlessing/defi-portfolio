@@ -1402,4 +1402,38 @@ public class MainView implements Initializable {
         }
     }
 
+    public void showRestartWindow(){
+        Parent rootRestartTool = null;
+        try {
+            rootRestartTool = FXMLLoader.load(getClass().getResource("RestartToolView.fxml"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Scene sceneRestartTool = new Scene(rootRestartTool);
+        Stage stageRestartTool = new Stage();
+        stageRestartTool.setTitle("Restart Tool");
+        stageRestartTool.setScene(sceneRestartTool);
+        stageRestartTool.initStyle(StageStyle.UNDECORATED);
+        final Delta dragDelta = new Delta();
+        sceneRestartTool.setOnMousePressed(mouseEvent -> {
+            // record a delta distance for the drag and drop operation.
+            dragDelta.x = stageRestartTool.getX() - mouseEvent.getScreenX();
+            dragDelta.y = stageRestartTool.getY() - mouseEvent.getScreenY();
+        });
+        sceneRestartTool.setOnMouseDragged(mouseEvent -> {
+            stageRestartTool.setX(mouseEvent.getScreenX() + dragDelta.x);
+            stageRestartTool.setY(mouseEvent.getScreenY() + dragDelta.y);
+        });
+        stageRestartTool.show();
+        stageRestartTool.setAlwaysOnTop(true);
+
+        if (SettingsController.getInstance().selectedStyleMode.getValue().equals("Dark Mode")) {
+            java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
+            stageRestartTool.getScene().getStylesheets().add(darkMode.toURI().toString());
+        } else {
+            java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
+            stageRestartTool.getScene().getStylesheets().add(lightMode.toURI().toString());
+        }
+    }
+
 }
