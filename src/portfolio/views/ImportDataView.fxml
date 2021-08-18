@@ -8,7 +8,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="298.0" prefWidth="237.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.ImportDataView">
+<AnchorPane prefHeight="298.0" prefWidth="237.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.ImportDataView">
    <children>
       <CheckBox fx:id="cmbSaveDefault" layoutX="32.0" layoutY="260.0" mnemonicParsing="false" onAction="#defaultChanged" prefHeight="38.0" prefWidth="109.0" text="Save as default" visible="false" wrapText="true" />
       <Button fx:id="btnClose" layoutX="154.0" layoutY="229.0" mnemonicParsing="false" onAction="#btnClosePressed" prefHeight="40.0" prefWidth="55.0">

@@ -78,6 +78,11 @@ public class CoinPriceController {
                     coinPriceList.get("DOGEUSD").addAll(client.getCoinMarketChartRangeById("dogecoin", "usd", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
                     coinPriceList.get("DOGECHF").addAll(client.getCoinMarketChartRangeById("dogecoin", "chf", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
 
+                    //Update BCH
+                    coinPriceList.get("USDCEUR").addAll(client.getCoinMarketChartRangeById("usd-coin", "eur", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
+                    coinPriceList.get("USDCUSD").addAll(client.getCoinMarketChartRangeById("usd-coin", "usd", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
+                    coinPriceList.get("USDCCHF").addAll(client.getCoinMarketChartRangeById("usd-coin", "chf", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices());
+
                     coinPrice.SetKeyMap(coinPriceList);
                     coinPrice.lastTimeStamp = Long.toString(currentTimeStamp);
 
@@ -227,6 +232,26 @@ public class CoinPriceController {
                     coinPriceList.get("DOGECHF").remove(coinPriceList.get("DOGECHF").size()-1);
                     coinPriceList.get("DOGECHF").add(newPriceDOGECHF);
 
+                    //Update USDC
+
+                    List<String> newPriceUSDCEUR = new ArrayList<>();
+                    newPriceUSDCEUR.add(Long.toString(currentTimeStamp*1000L));
+                    newPriceUSDCEUR.add(client.getPrice("usd-coin", "eur").get("usd-coin").get("eur").toString());
+                    coinPriceList.get("USDCEUR").remove(coinPriceList.get("USDCEUR").size()-1);
+                    coinPriceList.get("USDCEUR").add(newPriceUSDCEUR);
+
+                    List<String> newPriceUSDCUSD = new ArrayList<>();
+                    newPriceUSDCUSD.add(Long.toString(currentTimeStamp*1000L));
+                    newPriceUSDCUSD.add(client.getPrice("usd-coin", "usd").get("usd-coin").get("usd").toString());
+                    coinPriceList.get("USDCUSD").remove(coinPriceList.get("USDCUSD").size()-1);
+                    coinPriceList.get("USDTUSD").add(newPriceUSDCUSD);
+
+                    List<String> newPriceUSDCCHF = new ArrayList<>();
+                    newPriceUSDCCHF.add(Long.toString(currentTimeStamp*1000L));
+                    newPriceUSDCCHF.add(client.getPrice("usd-coin", "chf").get("usd-coin").get("chf").toString());
+                    coinPriceList.get("USDCCHF").remove(coinPriceList.get("USDCCHF").size()-1);
+                    coinPriceList.get("USDCCHF").add(newPriceUSDCCHF);
+
                     coinPrice.SetKeyMap(coinPriceList);
                     coinPrice.lastTimeStamp = Long.toString(currentTimeStamp);
                 }
@@ -279,6 +304,10 @@ public class CoinPriceController {
             case "BCH":
             case "BCH-DFI":
                 tokenName = "bitcoin-cash";
+                break;
+            case "USDC":
+            case "USDC-DFI":
+                tokenName = "usd-coin";
                 break;
             default:
                 tokenName = "-";

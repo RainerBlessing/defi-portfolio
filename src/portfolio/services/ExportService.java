@@ -969,6 +969,12 @@ public class ExportService {
                 case "BCH-DFI":
                     pool = "12";
                     break;
+                case "USDC":
+                    pool = "13";
+                    break;
+                case "USDC-DFI":
+                    pool = "14";
+                    break;
                 default:
                     pool = "-";
                     break;

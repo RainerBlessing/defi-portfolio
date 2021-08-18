@@ -39,6 +39,7 @@ public class CheckConnection extends TimerTask {
                                 int currentBlockCount = Integer.parseInt(this.mainViewController.transactionController.getBlockCountRpc());
                                 int maxBlockCount = Integer.parseInt(this.mainViewController.transactionController.getBlockCount());
                                 double progress = Math.floor(((double)currentBlockCount*10000.0/(double)maxBlockCount))/100.0;
+                                if(progress > 100)progress=100;
                                 if(currentBlockCount>maxBlockCount)currentBlockCount=maxBlockCount;
                                 if(SettingsController.getInstance().getPlatform().equals("mac")){
                                     try {

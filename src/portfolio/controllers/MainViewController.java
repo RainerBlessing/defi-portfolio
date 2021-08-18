@@ -296,6 +296,10 @@ public class MainViewController {
             case "BCH-DFI":
                 tokenName = "#478559";
                 break;
+            case "USDC":
+            case "USDC-DFI":
+                tokenName = "#2775CA";
+                break;
             default:
                 tokenName = "-";
                 break;
@@ -436,6 +440,9 @@ public class MainViewController {
                     }
                 }
                 double lossValue = ((valuePool / valueInputCoins) - 1) * 100;
+                if(lossValue > 0) {
+                    lossValue = lossValue * -1;
+                }
                 inputTotal += valueInputCoins;
                 currentTotal += valuePool;
                 this.poolPairModelList.add(new PoolPairModel(String.format(localeDecimal, "%,.2f", lossValue) + "%" + " (" + key + ")", 0.0, 0.0, 0.0, String.format(localeDecimal, "%,1.2f", valueInputCoins), 0.0, 0.0, 0.0, 0.0, String.format(localeDecimal, "%,1.2f", valuePool)));

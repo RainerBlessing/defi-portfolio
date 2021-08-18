@@ -548,12 +548,15 @@ public class TransactionController {
             }
 
             if (transactionSplit.typeProperty.getValue().equals("Commission")) {
+                try{
                 if (pool.split("-")[1].equals(transactionSplit.cryptoCurrencyProperty.getValue())) {
                     newFiatCommissions1 = transactionSplit.fiatValueProperty.getValue();
                     newCoinCommissions1 = transactionSplit.cryptoValueProperty.getValue();
                 } else {
                     newFiatCommissions2 = transactionSplit.fiatValueProperty.getValue();
                     newCoinCommissions2 = transactionSplit.cryptoValueProperty.getValue();
+                }}catch(Exception ex){
+                    this.settingsController.logger.warning("Exception occured: " + ex.toString());
                 }
             }
 
@@ -792,6 +795,14 @@ public class TransactionController {
             case "12.0":
                 pool = "BCH-DFI";
                 break;
+            case "13":
+            case "13.0":
+                pool = "USDC";
+                break;
+            case "14":
+            case "14.0":
+                pool = "USDC-DFI";
+                break;
             default:
                 pool = "-";
                 break;
@@ -840,6 +851,12 @@ public class TransactionController {
                 break;
             case "BCH-DFI":
                 pool = "12";
+                break;
+            case "USDC":
+                pool = "13";
+                break;
+            case "USDC-DFI":
+                pool = "14";
                 break;
             default:
                 pool = "-";

@@ -60,6 +60,10 @@ public class CoinPriceModel implements java.io.Serializable {
         coinPriceList.put("DOGEUSD", new ArrayList<>());
         coinPriceList.put("DOGECHF", new ArrayList<>());
 
+        coinPriceList.put("USDCEUR", new ArrayList<>());
+        coinPriceList.put("USDCUSD", new ArrayList<>());
+        coinPriceList.put("USDCCHF", new ArrayList<>());
+
     }
 
     public TreeMap<String, List<List<String>>> GetKeyMap(){

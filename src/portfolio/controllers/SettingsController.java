@@ -22,7 +22,7 @@ import java.util.logging.SimpleFormatter;
 
 
 public class SettingsController {
-    public String Version = "V1.5.0";
+    public String Version = "V1.5.1";
 
     private static SettingsController OBJ = null;
 
@@ -68,7 +68,7 @@ public class SettingsController {
 
     public StringProperty lastUpdate = new SimpleStringProperty("-");
     //Combo box filling
-    public String[] cryptoCurrencies = new String[]{"BTC-DFI", "ETH-DFI", "USDT-DFI", "LTC-DFI", "BCH-DFI", "DOGE-DFI"};
+    public String[] cryptoCurrencies = new String[]{"BTC-DFI", "ETH-DFI", "USDT-DFI", "LTC-DFI", "BCH-DFI", "DOGE-DFI", "USDC-DFI"};
     public String[] plotCurrency = new String[]{"Coin", "Daily Fiat", "Current Fiat"};
     public String[] styleModes = new String[]{"Light Mode", "Dark Mode"};
     public String[] datasources = new String[]{"Active Wallet", "All Wallets"};
