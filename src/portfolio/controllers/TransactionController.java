@@ -1146,7 +1146,14 @@ public class TransactionController {
         }
         this.frameUpdate.dispose();
 
-        MainView.getInstance().showRestartWindow();
+        File f = new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME.replace("/","\\")+"MergingErrorOccured.txt");
+        if (f.exists()){
+            f.delete();
+            MainView.getInstance().showFileTypeNotSupported();
+        }else{
+            MainView.getInstance().showRestartWindow();
+        }
+
     }
 
     public String convertWalletDateToTimeStamp(String input){

@@ -14,9 +14,7 @@ import javafx.scene.chart.StackedAreaChart;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -25,7 +23,6 @@ import javafx.stage.Stage;
 
 import java.awt.*;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -35,7 +32,6 @@ import java.util.*;
 
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
-import portfolio.controllers.CheckConnection;
 import portfolio.controllers.SettingsController;
 import portfolio.controllers.TransactionController;
 import portfolio.models.PoolPairModel;
@@ -1399,6 +1395,40 @@ public class MainView implements Initializable {
             infoView.show();
         } catch (IOException e) {
             SettingsController.getInstance().logger.warning(e.toString());
+        }
+    }
+
+    public void showFileTypeNotSupported(){
+        Parent rootFileTypeNotSupported = null;
+        try {
+            rootFileTypeNotSupported = FXMLLoader.load(getClass().getResource("FileTypeNotSupportedView.fxml"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Scene sceneFileTypeNotSupported = new Scene(rootFileTypeNotSupported);
+        Stage stageFileTypeNotSupported = new Stage();
+        stageFileTypeNotSupported.setTitle("Filetype not supported!");
+        stageFileTypeNotSupported.setScene(sceneFileTypeNotSupported);
+        stageFileTypeNotSupported.initStyle(StageStyle.UNDECORATED);
+        final Delta dragDelta = new Delta();
+        sceneFileTypeNotSupported.setOnMousePressed(mouseEvent -> {
+            // record a delta distance for the drag and drop operation.
+            dragDelta.x = stageFileTypeNotSupported.getX() - mouseEvent.getScreenX();
+            dragDelta.y = stageFileTypeNotSupported.getY() - mouseEvent.getScreenY();
+        });
+        sceneFileTypeNotSupported.setOnMouseDragged(mouseEvent -> {
+            stageFileTypeNotSupported.setX(mouseEvent.getScreenX() + dragDelta.x);
+            stageFileTypeNotSupported.setY(mouseEvent.getScreenY() + dragDelta.y);
+        });
+        stageFileTypeNotSupported.show();
+        stageFileTypeNotSupported.setAlwaysOnTop(true);
+
+        if (SettingsController.getInstance().selectedStyleMode.getValue().equals("Dark Mode")) {
+            java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
+            stageFileTypeNotSupported.getScene().getStylesheets().add(darkMode.toURI().toString());
+        } else {
+            java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
+            stageFileTypeNotSupported.getScene().getStylesheets().add(lightMode.toURI().toString());
         }
     }
 

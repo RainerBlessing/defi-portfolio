@@ -85,5 +85,6 @@
   "DefaultDataUpdate": "Standaard updatebron",
   "LoadingWalletCSV": "Wallet CSV laden",
   "Restart": "Start het programma opnieuw op om de bijgewerkte gegevens te krijgen!",
+  "FileTypeNotSupported": "De CSV is geen geldige wallet-export!",
   "MissingTransaction": "Minstens één transactie is overgeslagen omdat deze onvolledig is en tot discrepanties in de balans kan leiden. \nAlle onvolledige transacties werden in een lijst opgeslagen."
 }
