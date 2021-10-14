@@ -22,7 +22,6 @@ public class TimerController extends TimerTask {
     public void run() {
         Platform.runLater(() -> {
                     if (SettingsController.getInstance().runTimer) {
-
                         try {
                             HttpURLConnection connection = (HttpURLConnection) new URL("https://api.defichain.io/v1/getblockcount").openConnection();
                             String jsonText = "";
@@ -33,6 +32,9 @@ public class TimerController extends TimerTask {
                             }
                             JSONObject obj = (JSONObject) JSONValue.parse(jsonText);
                             if (obj.get("data") != null) {
+                                if(Long.parseLong(mainViewController.strCurrentBlockLocally.getValue()) > Long.parseLong(obj.get("data").toString())){
+                                    mainViewController.strCurrentBlockLocally.set(obj.get("data").toString());
+                                }
                                 mainViewController.strCurrentBlockOnBlockchain.set(obj.get("data").toString());
                             }
                         } catch (IOException e) {
