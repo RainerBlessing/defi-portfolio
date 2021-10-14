@@ -381,7 +381,7 @@ public class ExportService {
                             if (transaction.typeProperty.getValue().equals("PoolSwap") && !transaction.exportCointracking) {
                                 for (int i = transCounter; i < transactions.size(); i++) {
                                     if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
-                                        break;
+                                 //       break;
 
                                     if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue()) && !transactions.get(i).cryptoCurrencyProperty.getValue().equals(transaction.cryptoCurrencyProperty.getValue())) {
                                         poolSwap2 = transactions.get(i);
@@ -431,7 +431,7 @@ public class ExportService {
 
                                 for (int i = transCounter; i < transactions.size(); i++) {
                                     if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
-                                        break;
+                                   //     break;
 
                                     if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue())) {
                                         if (transactions.get(i).cryptoCurrencyProperty.getValue().equals("DFI")) {
@@ -492,9 +492,15 @@ public class ExportService {
                                     writer.write(sb.toString());
                                     sb = null;
                                 } else {
-                                    if (addPool != null) incompleteTransactions.add(addPool);
-                                    if (addPool2 != null) incompleteTransactions.add(addPool2);
-                                    if (addPool1 != null) incompleteTransactions.add(addPool1);
+                                    if (addPool != null) {
+                                        incompleteTransactions.add(addPool);
+                                    }
+                                    if (addPool2 != null) {
+                                        incompleteTransactions.add(addPool2);
+                                    }
+                                    if (addPool1 != null) {
+                                        incompleteTransactions.add(addPool1);
+                                    }
                                 }
                             }
                         }
@@ -507,7 +513,7 @@ public class ExportService {
 
                             for (int i = transCounter; i < transactions.size(); i++) {
                                 if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
-                                    break;
+                                //    break;
 
                                 if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue())) {
                                     if (transactions.get(i).cryptoCurrencyProperty.getValue().equals("DFI")) {
@@ -567,9 +573,15 @@ public class ExportService {
                                 writer.write(sb.toString());
                                 sb = null;
                             } else {
-                                if (addPool != null) incompleteTransactions.add(addPool);
-                                if (addPool2 != null) incompleteTransactions.add(addPool2);
-                                if (addPool1 != null) incompleteTransactions.add(addPool1);
+                                if (addPool != null) {
+                                    incompleteTransactions.add(addPool);
+                                }
+                                if (addPool2 != null) {
+                                    incompleteTransactions.add(addPool2);
+                                }
+                                if (addPool1 != null) {
+                                    incompleteTransactions.add(addPool1);
+                                }
                             }
                         }
 
@@ -579,7 +591,7 @@ public class ExportService {
                             int onlyOne = 0;
                             for (int i = transCounter; i < transactions.size(); i++) {
                                 if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
-                                    break;
+                                  //  break;
 
                                 if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue())) {
                                     amount = amount + transactions.get(i).cryptoValueProperty.getValue();
@@ -637,7 +649,7 @@ public class ExportService {
                         if (transaction.typeProperty.getValue().equals("AccountToAccount") && !transaction.exportCointracking) {
                             for (int i = transCounter; i < transactions.size(); i++) {
                                 if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
-                                    break;
+                           //         break;
 
                                 if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue()) && transactions.get(i).cryptoValueProperty.getValue().equals(-1 * transaction.cryptoValueProperty.getValue()) && !transactions.get(i).typeProperty.getValue().equals("sent")) {
                                     transaction.exportCointracking = true;
@@ -690,7 +702,7 @@ public class ExportService {
                                 int onlyOne = 0;
                                 for (int i = transCounter; i < transactions.size(); i++) {
                                     if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
-                                        break;
+                                     //   break;
 
                                     if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue())) {
                                         amount = amount + transactions.get(i).cryptoValueProperty.getValue();
@@ -831,6 +843,9 @@ public class ExportService {
                 if (SettingsController.getInstance().showMissingTransaction) {
                     MainView.getInstance().showMissingTransactionWindow();
                 }
+            }else{
+                File incompleteFile = new File(SettingsController.getInstance().INCOMPLETE_FILE_PATH);
+                if (incompleteFile.exists()) incompleteFile.delete();
             }
 
             SettingsController.getInstance().checkCointracking = true;
