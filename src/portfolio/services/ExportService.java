@@ -381,9 +381,9 @@ public class ExportService {
                             if (transaction.typeProperty.getValue().equals("PoolSwap") && !transaction.exportCointracking) {
                                 for (int i = transCounter; i < transactions.size(); i++) {
                                     if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
-                                 //       break;
+                                        break;
 
-                                    if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue()) && !transactions.get(i).cryptoCurrencyProperty.getValue().equals(transaction.cryptoCurrencyProperty.getValue())) {
+                                    if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue()) && !transactions.get(i).cryptoCurrencyProperty.getValue().equals(transaction.cryptoCurrencyProperty.getValue()) && transactions.get(i).typeProperty.getValue().equals(transaction.typeProperty.getValue())) {
                                         poolSwap2 = transactions.get(i);
                                         transactions.get(i).exportCointracking = true;
                                         break;
@@ -431,9 +431,9 @@ public class ExportService {
 
                                 for (int i = transCounter; i < transactions.size(); i++) {
                                     if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
-                                   //     break;
+                                        break;
 
-                                    if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue())) {
+                                    if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue()) && transactions.get(i).typeProperty.getValue().equals(transaction.typeProperty.getValue()) && transactions.get(i).typeProperty.getValue().equals(transaction.typeProperty.getValue())) {
                                         if (transactions.get(i).cryptoCurrencyProperty.getValue().equals("DFI")) {
                                             addPool1 = transactions.get(i);
                                             transactions.get(i).exportCointracking = true;
@@ -513,9 +513,9 @@ public class ExportService {
 
                             for (int i = transCounter; i < transactions.size(); i++) {
                                 if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
-                                //    break;
+                                    break;
 
-                                if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue())) {
+                                if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue()) && transactions.get(i).typeProperty.getValue().equals(transaction.typeProperty.getValue())) {
                                     if (transactions.get(i).cryptoCurrencyProperty.getValue().equals("DFI")) {
                                         addPool1 = transactions.get(i);
                                         transactions.get(i).exportCointracking = true;
@@ -591,7 +591,7 @@ public class ExportService {
                             int onlyOne = 0;
                             for (int i = transCounter; i < transactions.size(); i++) {
                                 if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
-                                  //  break;
+                                    break;
 
                                 if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue())) {
                                     amount = amount + transactions.get(i).cryptoValueProperty.getValue();
@@ -649,7 +649,7 @@ public class ExportService {
                         if (transaction.typeProperty.getValue().equals("AccountToAccount") && !transaction.exportCointracking) {
                             for (int i = transCounter; i < transactions.size(); i++) {
                                 if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
-                           //         break;
+                                    break;
 
                                 if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue()) && transactions.get(i).cryptoValueProperty.getValue().equals(-1 * transaction.cryptoValueProperty.getValue()) && !transactions.get(i).typeProperty.getValue().equals("sent")) {
                                     transaction.exportCointracking = true;
@@ -702,7 +702,7 @@ public class ExportService {
                                 int onlyOne = 0;
                                 for (int i = transCounter; i < transactions.size(); i++) {
                                     if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
-                                     //   break;
+                                        break;
 
                                     if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue())) {
                                         amount = amount + transactions.get(i).cryptoValueProperty.getValue();
