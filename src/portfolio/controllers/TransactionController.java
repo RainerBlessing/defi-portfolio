@@ -1,20 +1,12 @@
 package portfolio.controllers;
 
-import com.fasterxml.jackson.core.Base64Variant;
-import com.sun.corba.se.impl.monitoring.MonitoredAttributeInfoImpl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
-import portfolio.Main;
 import portfolio.models.*;
 import portfolio.views.MainView;
 import javax.swing.*;
@@ -26,8 +18,6 @@ import java.net.URL;
 import java.net.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -57,7 +47,9 @@ public class TransactionController {
     public JLabel jl;
     public Process defidProcess;
     private Boolean classSingleton = true;
+    private List<String> accountAddresses;
     public TreeMap<String, ImpermanentLossModel> impermanentLossList = new TreeMap<>();
+    public TreeMap<String, Double> balanceTreeMap = new TreeMap<>();
 
     public TransactionController() {
         if (classSingleton) {
@@ -476,7 +468,7 @@ public class TransactionController {
 
         File strPortfolioData = new File(this.strTransactionData);
         List<TransactionModel> transactionList = new ArrayList<>();
-
+        this.accountAddresses = new ArrayList<>();
         if (strPortfolioData.exists()) {
 
             try {
@@ -489,6 +481,8 @@ public class TransactionController {
                     String[] transactionSplit = line.split(";");
                     TransactionModel transAction = new TransactionModel(Long.parseLong(transactionSplit[0]), transactionSplit[1], transactionSplit[2], transactionSplit[3], transactionSplit[4], Integer.parseInt(transactionSplit[5]), transactionSplit[6], transactionSplit[7], this);
                     transactionList.add(transAction);
+
+                    if(!this.accountAddresses.contains(transactionSplit[1])) this.accountAddresses.add(transactionSplit[1]);
 
                     if (transAction.typeProperty.getValue().equals("Rewards") | transAction.typeProperty.getValue().equals("Commission")) {
                         addToPortfolioModel(transAction);
@@ -519,10 +513,24 @@ public class TransactionController {
         return jsonObject.get("result").toString();
     }
 
-    public JSONArray getTokenBalances() {
-        JSONObject jsonObject = getRpcResponse("{\"method\": \"gettokenbalances\"}");
-        JSONArray jsonArray = (JSONArray) jsonObject.get("result");
-        return jsonArray;
+    public JSONArray getAddressBalances(String address) {
+
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URL("https://api.defichain.io/v1/getaccount?including_start=true&owner="+address).openConnection();
+            String jsonText = "";
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                jsonText = br.readLine();
+            } catch (Exception ex) {
+                this.settingsController.logger.warning("Exception occured: " + ex.toString());
+            }
+            JSONArray jsonArray = (JSONArray) JSONValue.parse(jsonText);
+
+            return jsonArray;
+        } catch (IOException e) {
+            this.settingsController.logger.warning("Exception occured: " + e.toString());
+        }
+        return null;
+
     }
 
     public void addToPortfolioModel(TransactionModel transactionSplit) {
@@ -660,6 +668,7 @@ public class TransactionController {
             if (transactionListNew.get(i).blockHeightProperty.getValue() > this.localBlockCount) {
                 transactionList.add(transactionListNew.get(i));
                 updateTransactionList.add(transactionListNew.get(i));
+                if(!this.accountAddresses.contains(transactionListNew.get(i).ownerProperty.getValue())) this.accountAddresses.add(transactionListNew.get(i).ownerProperty.getValue());
                 //if (!transactionListNew.get(i).getTypeValue().equals("UtxosToAccount") | !transactionListNew.get(i).getTypeValue().equals("AccountToUtxos"))
                 // addBalanceModel(transactionListNew.get(i));
                 //
@@ -871,29 +880,38 @@ public class TransactionController {
 
     public void getCoinAndTokenBalances() {
         List<BalanceModel> balanceModelList = new ArrayList<>();
-        JSONArray jsonArray = getTokenBalances();
-        try {
-
-            Double dfiCoin = Double.parseDouble(getBalance());
+        JSONArray jsonArray = new JSONArray();
+        for (String address:
+                this.accountAddresses) {
+             jsonArray = getAddressBalances(address);
             for (int i = 0; i < jsonArray.size(); i++) {
-                String tokenName = getPoolPairFromId(jsonArray.get(i).toString().split("@")[1]);
-                if (tokenName.equals("-")) {
-                    tokenName = getTokenFromID(jsonArray.get(i).toString().split("@")[1]);
+                String tokenName = jsonArray.get(i).toString().split("@")[1];
+                double tokenValue = Double.parseDouble(jsonArray.get(i).toString().split("@")[0]);
+                if (!balanceTreeMap.containsKey(tokenName)) {
+                    balanceTreeMap.put(tokenName,tokenValue);
+                } else {
+                    double oldValue = balanceTreeMap.get(tokenName).doubleValue();
+                    balanceTreeMap.put(tokenName, oldValue+tokenValue);
                 }
-                if (tokenName.contains("-")) {
-                    Double poolRatio = Double.parseDouble(getPoolRatio(jsonArray.get(i).toString().split("@")[1]));
-                    Double token1 = Math.sqrt(poolRatio * Double.parseDouble(jsonArray.get(i).toString().split("@")[0]) * Double.parseDouble(jsonArray.get(i).toString().split("@")[0]));
-                    Double token2 = Math.sqrt(Double.parseDouble(jsonArray.get(i).toString().split("@")[0]) * Double.parseDouble(jsonArray.get(i).toString().split("@")[0]) / poolRatio);
+            }
+        }
+
+
+                for(Map.Entry<String,Double> entry : balanceTreeMap.entrySet()) {
+
+
+                if (entry.getKey().contains("-")) {
+                    Double poolRatio = Double.parseDouble(getPoolRatio(this.getIdFromPoolPair(entry.getKey())));
+                    Double token1 = Math.sqrt(poolRatio * entry.getValue() * entry.getValue());
+                    Double token2 = Math.sqrt(entry.getValue() * entry.getValue() / poolRatio);
                     try {
-                        balanceModelList.add(new BalanceModel(tokenName.split("-")[0], coinPriceController.getPriceFromTimeStamp(tokenName.split("-")[0] + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * token1, token1, tokenName.split("-")[1], coinPriceController.getPriceFromTimeStamp(tokenName.split("-")[1] + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * token2, token2, Double.parseDouble(jsonArray.get(i).toString().split("@")[0])));
+                        balanceModelList.add(new BalanceModel(entry.getKey().split("-")[0], coinPriceController.getPriceFromTimeStamp(entry.getKey().split("-")[0] + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * token1, token1, entry.getKey().split("-")[1], coinPriceController.getPriceFromTimeStamp(entry.getKey().split("-")[1] + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * token2, token2, entry.getValue()));
                     } catch (Exception e) {
                         this.settingsController.logger.warning("Exception occured: " + e.toString());
                     }
                 } else {
-                    if (!tokenName.equals("DFI")) dfiCoin = 0.0;
-                    if (coinPriceController.getPriceFromTimeStamp(tokenName + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) > 0) {
-
-                        balanceModelList.add(new BalanceModel(tokenName, coinPriceController.getPriceFromTimeStamp(tokenName + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * (Double.parseDouble(jsonArray.get(i).toString().split("@")[0]) + dfiCoin), Double.parseDouble(jsonArray.get(i).toString().split("@")[0]) + dfiCoin,
+                    if (coinPriceController.getPriceFromTimeStamp(entry.getKey() + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) > 0) {
+                        balanceModelList.add(new BalanceModel(entry.getKey(), coinPriceController.getPriceFromTimeStamp(entry.getKey() + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * entry.getValue(), entry.getValue() ,
                                 "-", 0.0, 0.0, 0.0));
                     }
                 }
@@ -924,9 +942,6 @@ public class TransactionController {
                 this.balanceList = balanceModelList;
             }
 
-        } catch (Exception e) {
-            this.settingsController.logger.warning("Exception occured: " + e.toString());
-        }
     }
 
     public List<TransactionModel> getTransactionsInTime(List<TransactionModel> transactions, long startTime, long endTime) {

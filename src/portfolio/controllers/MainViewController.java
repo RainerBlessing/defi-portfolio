@@ -70,6 +70,7 @@ public class MainViewController {
         this.poolPairList = FXCollections.observableArrayList(this.poolPairModelList);
         this.expService = new ExportService(this);
         this.coinPriceController.updateCoinPriceData();
+        this.transactionController.getCoinAndTokenBalances();
         // get last block locally
         this.strCurrentBlockLocally.set(Integer.toString(transactionController.getLocalBlockCount()));
 
