@@ -5,7 +5,10 @@ import javafx.animation.PauseTransition;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.TableColumn;
@@ -13,7 +16,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import portfolio.Main;
 import portfolio.models.*;
 import portfolio.services.ExportService;
 import portfolio.views.MainView;
@@ -21,6 +26,7 @@ import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -48,6 +54,7 @@ public class MainViewController {
     public TransactionController transactionController = TransactionController.getInstance();
     public ExportService expService;
     public boolean updateSingleton = true;
+    final Delta dragDelta = new Delta();
 
     private static MainViewController OBJ = null;
 
@@ -817,15 +824,17 @@ public class MainViewController {
             if (success) {
                 this.settingsController.lastExportPath = selectedFile.getParent().toString();
                 this.settingsController.saveSettings();
-                this.strProgressbar.setValue("Excel successfully exported!");
-                PauseTransition pause = new PauseTransition(Duration.seconds(10));
-                pause.setOnFinished(e -> this.strProgressbar.setValue(null));
-                pause.play();
+                try {
+                    this.showExportSuccessfullWindow();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } else {
-                this.strProgressbar.setValue("Error while exporting excel!");
-                PauseTransition pause = new PauseTransition(Duration.seconds(10));
-                pause.setOnFinished(e -> this.strProgressbar.setValue(null));
-                pause.play();
+                try {
+                    this.showExportErrorWindow();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -875,15 +884,17 @@ public class MainViewController {
             if (success) {
                 this.settingsController.lastExportPath = selectedFile.getParent().toString();
                 this.settingsController.saveSettings();
-                this.strProgressbar.setValue("Excel successfully exported!");
-                PauseTransition pause = new PauseTransition(Duration.seconds(10));
-                pause.setOnFinished(e -> this.strProgressbar.setValue(null));
-                pause.play();
+                try {
+                    this.showExportSuccessfullWindow();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } else {
-                this.strProgressbar.setValue("Error while exporting excel!");
-                PauseTransition pause = new PauseTransition(Duration.seconds(10));
-                pause.setOnFinished(e -> this.strProgressbar.setValue(null));
-                pause.play();
+                try {
+                    this.showExportErrorWindow();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -908,16 +919,74 @@ public class MainViewController {
             if (success) {
                 this.settingsController.lastExportPath = selectedFile.getParent().toString();
                 this.settingsController.saveSettings();
-                this.strProgressbar.setValue("Excel successfully exported!");
-                PauseTransition pause = new PauseTransition(Duration.seconds(10));
-                pause.setOnFinished(e -> this.strProgressbar.setValue(null));
-                pause.play();
+                try {
+                    this.showExportSuccessfullWindow();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } else {
-                this.strProgressbar.setValue("Error while exporting excel!");
-                PauseTransition pause = new PauseTransition(Duration.seconds(10));
-                pause.setOnFinished(e -> this.strProgressbar.setValue(null));
-                pause.play();
+                try {
+                    this.showExportErrorWindow();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
+
+    public void showExportSuccessfullWindow() throws IOException {
+        Parent rootExportFinished = null;
+        rootExportFinished = FXMLLoader.load(getClass().getResource("../views/ExportSuccessfullView.fxml"));
+        Scene sceneExportFinished = new Scene(rootExportFinished);
+        Stage stageExportFinished = new Stage();
+        stageExportFinished.setScene(sceneExportFinished);
+        stageExportFinished.initStyle(StageStyle.UNDECORATED);
+        sceneExportFinished.setOnMousePressed(mouseEvent -> {
+            // record a delta distance for the drag and drop operation.
+            dragDelta.x = stageExportFinished.getX() - mouseEvent.getScreenX();
+            dragDelta.y = stageExportFinished.getY() - mouseEvent.getScreenY();
+        });
+        sceneExportFinished.setOnMouseDragged(mouseEvent -> {
+            stageExportFinished.setX(mouseEvent.getScreenX() + dragDelta.x);
+            stageExportFinished.setY(mouseEvent.getScreenY() + dragDelta.y);
+        });
+        stageExportFinished.show();
+        stageExportFinished.setAlwaysOnTop(true);
+
+        if (SettingsController.getInstance().selectedStyleMode.getValue().equals("Dark Mode")) {
+            java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
+            stageExportFinished.getScene().getStylesheets().add(darkMode.toURI().toString());
+        } else {
+            java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
+            stageExportFinished.getScene().getStylesheets().add(lightMode.toURI().toString());
+        }
+    }
+    public void showExportErrorWindow() throws IOException {
+        Parent rootExportFinished = null;
+        rootExportFinished = FXMLLoader.load(getClass().getResource("../views/ExportErrorView.fxml"));
+        Scene sceneExportFinished = new Scene(rootExportFinished);
+        Stage stageExportFinished = new Stage();
+        stageExportFinished.setScene(sceneExportFinished);
+        stageExportFinished.initStyle(StageStyle.UNDECORATED);
+        sceneExportFinished.setOnMousePressed(mouseEvent -> {
+            // record a delta distance for the drag and drop operation.
+            dragDelta.x = stageExportFinished.getX() - mouseEvent.getScreenX();
+            dragDelta.y = stageExportFinished.getY() - mouseEvent.getScreenY();
+        });
+        sceneExportFinished.setOnMouseDragged(mouseEvent -> {
+            stageExportFinished.setX(mouseEvent.getScreenX() + dragDelta.x);
+            stageExportFinished.setY(mouseEvent.getScreenY() + dragDelta.y);
+        });
+        stageExportFinished.show();
+        stageExportFinished.setAlwaysOnTop(true);
+
+        if (SettingsController.getInstance().selectedStyleMode.getValue().equals("Dark Mode")) {
+            java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
+            stageExportFinished.getScene().getStylesheets().add(darkMode.toURI().toString());
+        } else {
+            java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
+            stageExportFinished.getScene().getStylesheets().add(lightMode.toURI().toString());
+        }
+    }
+    static class Delta { double x, y; }
 }

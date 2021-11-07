@@ -86,5 +86,7 @@
   "LoadingWalletCSV": "cargando Wallet CSV",
   "Restart": "Reinicie la herramienta para obtener los datos actualizados!",
   "FileTypeNotSupported": "El CSV no es una exportación de billetera válida!",
+  "CSVExportedSuccessfully": "CSV exportado correctamente",
+  "CSVExportedError": "Error al exportar el archivo CSV",
   "MissingTransaction": "Al, menos una transacción ha sido omitida porque está incompleta y por tanto puede causar discrepancias en el balance. Todas las transacciones incompletas se han almacenado en una lista."
 }
