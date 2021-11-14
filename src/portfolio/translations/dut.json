@@ -88,5 +88,6 @@
   "FileTypeNotSupported": "De CSV is geen geldige wallet-export!",
   "CSVExportedSuccessfully": "CSV succesvol ge\u00EBxporteerd!",
   "CSVExportedError": "Fout bij het exporteren van het CSV-bestand!",
+  "BuyDFI": "Kopen DFI",
   "MissingTransaction": "Minstens één transactie is overgeslagen omdat deze onvolledig is en tot discrepanties in de balans kan leiden. \nAlle onvolledige transacties werden in een lijst opgeslagen."
 }

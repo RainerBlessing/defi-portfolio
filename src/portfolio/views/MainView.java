@@ -157,6 +157,7 @@ public class MainView implements Initializable {
     public Button btnSettings;
     public Button btnHelp;
     public Button btnDonate;
+    public Button btnBuyDFI;
     public Label connectionLabel;
     public Button btnConnect;
     public Tab Portfolio;
@@ -1255,6 +1256,7 @@ public class MainView implements Initializable {
         this.LastUpdate.setText(this.mainViewController.settingsController.translationList.getValue().get("LastUpdate").toString());
         this.btnSettings.setText(this.mainViewController.settingsController.translationList.getValue().get("Settings").toString());
         this.btnDonate.setText(this.mainViewController.settingsController.translationList.getValue().get("Donate").toString());
+        this.btnBuyDFI.setText(this.mainViewController.settingsController.translationList.getValue().get("BuyDFI").toString());
         this.Rewards.setText(this.mainViewController.settingsController.translationList.getValue().get("Rewards").toString());
         this.Commissions.setText(this.mainViewController.settingsController.translationList.getValue().get("Commissions").toString());
         this.Overview.setText(this.mainViewController.settingsController.translationList.getValue().get("Overview").toString());
@@ -1397,7 +1399,28 @@ public class MainView implements Initializable {
             SettingsController.getInstance().logger.warning(e.toString());
         }
     }
-
+    public void openDFXHomepage(){
+        if (SettingsController.getInstance().getPlatform().equals("linux")) {
+            // Workaround for Linux because "Desktop.getDesktop().browse()" doesn't work on some Linux implementations
+            try {
+                if (Runtime.getRuntime().exec(new String[]{"which", "xdg-open"}).getInputStream().read() != -1) {
+                    Runtime.getRuntime().exec(new String[]{"xdg-open", "https://dfx.swiss/"});
+                } else {
+                    System.out.println("xdg-open is not supported!");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                Desktop.getDesktop().browse(new URL("https://dfx.swiss/").toURI());
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     public void showFileTypeNotSupported(){
         Parent rootFileTypeNotSupported = null;
         try {
