@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.AddAdressView">
+   <children>
+      <TextField fx:id="txtUserAddress" layoutX="224.0" layoutY="71.0" prefHeight="25.0" prefWidth="264.0" />
+      <Button fx:id="btnAddAddress" layoutX="518.0" layoutY="71.0" mnemonicParsing="false" onAction="#addAddress" prefHeight="25.0" prefWidth="46.0" text="Add" />
+      <TextArea fx:id="txtArea" editable="false" layoutX="41.0" layoutY="151.0" prefHeight="189.0" prefWidth="526.0" promptText="No addresse added" text="fgh4564654jkljkljkk&#10;zuizui45123564nhjkh&#10;jhjklhuih7897mjkljkm" />
+      <Button fx:id="btnClearList" layoutX="232.0" layoutY="353.0" mnemonicParsing="false" onAction="#clearList" prefHeight="25.0" prefWidth="81.0" text="Clear list" />
+      <Button fx:id="btnClose" layoutX="474.0" layoutY="353.0" mnemonicParsing="false" onAction="#closeWindow" prefHeight="25.0" prefWidth="90.0" text="Close" />
+      <ImageView fitHeight="109.0" fitWidth="105.0" layoutX="30.0" layoutY="22.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../icons/edit_modify_icon-icons.com_72390.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="btnSaveAndClose" layoutX="340.0" layoutY="353.0" mnemonicParsing="false" onAction="#SaveAndClose" prefHeight="25.0" prefWidth="105.0" text="Save &amp; Close" />
+      <Label fx:id="lblAddress" layoutX="165.0" layoutY="75.0" text="Address" />
+      <Label fx:id="lblAddedAddresses" layoutX="41.0" layoutY="127.0" text="Added addresses" />
+   </children>
+</AnchorPane>
