@@ -89,5 +89,14 @@
   "CSVExportedSuccessfully": "CSV ble eksportert!",
   "CSVExportedError": "Feil under eksport av CSV-filen!",
   "BuyDFI": "Kj\u00F8pe DFI",
+  "address": "Adresse",
+  "typeYourAddress": "Skriv inn adressen din",
+  "add": "Legge til",
+  "addedAddresses": "Lagt til adresser",
+  "noAddressAdded": "Ingen adresser lagt til",
+  "clearList": "T\u00F8m listen",
+  "saveAndClose": "Lagre & lukk",
+  "openAddressConfig": "Adresconfiguratie openen",
+  "NoAddressFoundGoToConfig": "Ingen adresser funnet. Vennligst legg til adressene dine i adressekonfigurasjonen. Du finner den i innstillingsmenyen eller klikk p\u00E5 knappen nedenfor.",
   "MissingTransaction": "Minst en transaksjon ble hoppet over fordi den ikke er komplett og kan for\u00E5rsake avvik i balansen.\nAlle ikke komplette transaksjoner ble lagret i en liste."
 }

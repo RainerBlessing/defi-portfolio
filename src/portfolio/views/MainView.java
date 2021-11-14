@@ -137,6 +137,7 @@ public class MainView implements Initializable {
     public Label StartDateCom;
     public Label StartDateOver;
     public Label EndDateOver;
+    public Stage NoAddressesWarningView;
 
     public MenuItem menuItemCopySelected = new MenuItem("Copy");
     public MenuItem menuItemCopyHeaderSelected = new MenuItem("Copy with header");
@@ -434,7 +435,40 @@ public class MainView implements Initializable {
         this.btnUpdateDatabase.setOnAction(e -> {
                 switch(SettingsController.getInstance().selectedDefaulUpdateSource.getValue()) {
                 case "Update data":
-                    TransactionController.getInstance().updateDatabase();
+                    if(SettingsController.getInstance().listAddresses.size() > 0){
+                        TransactionController.getInstance().updateDatabase();
+                    }
+                    else{
+                        if (NoAddressesWarningView != null) NoAddressesWarningView.close();
+                        Parent root = null;
+                        try {
+                            root = FXMLLoader.load(getClass().getResource("NoAddressesWarningView.fxml"));
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                        Scene scene = new Scene(root);
+                        NoAddressesWarningView = new Stage();
+                        NoAddressesWarningView.initStyle(StageStyle.UNDECORATED);
+                        scene.setOnMousePressed(mouseEvent -> {
+                            dragDelta.x = NoAddressesWarningView.getX() - mouseEvent.getScreenX();
+                            dragDelta.y = NoAddressesWarningView.getY() - mouseEvent.getScreenY();
+                        });
+                        scene.setOnMouseDragged(mouseEvent -> {
+                            NoAddressesWarningView.setX(mouseEvent.getScreenX() + dragDelta.x);
+                            NoAddressesWarningView.setY(mouseEvent.getScreenY() + dragDelta.y);
+                        });
+                        NoAddressesWarningView.setScene(scene);
+
+                        NoAddressesWarningView.show();
+
+                        File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
+                        File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
+                        if (SettingsController.getInstance().selectedStyleMode.getValue().equals("Dark Mode")) {
+                            NoAddressesWarningView.getScene().getStylesheets().add(darkMode.toURI().toString());
+                        } else {
+                            NoAddressesWarningView.getScene().getStylesheets().add(lightMode.toURI().toString());
+                        }
+                    }
 //                    this.mainViewController.settingsController.selectedLaunchSync = true;
 //                    this.mainViewController.transactionController.startServer();
 //                    this.mainViewController.settingsController.runCheckTimer = true;
@@ -489,10 +523,10 @@ public class MainView implements Initializable {
                         this.stageUpdateData.show();
 
                         if (SettingsController.getInstance().selectedStyleMode.getValue().equals("Dark Mode")) {
-                            java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
+                            File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
                             this.stageUpdateData.getScene().getStylesheets().add(darkMode.toURI().toString());
                         } else {
-                            java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
+                            File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
                             this.stageUpdateData.getScene().getStylesheets().add(lightMode.toURI().toString());
                         }
                     } catch (IOException ioException) {
@@ -1488,5 +1522,4 @@ public class MainView implements Initializable {
             stageRestartTool.getScene().getStylesheets().add(lightMode.toURI().toString());
         }
     }
-
 }

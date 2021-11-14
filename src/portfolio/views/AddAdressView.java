@@ -29,12 +29,22 @@ public class AddAdressView implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.loadAddresses();
         this.updateTextArea();
+
+        this.lblAddress.setText(SettingsController.getInstance().translationList.getValue().get("address").toString());
+        this.txtUserAddress.promptTextProperty().setValue(SettingsController.getInstance().translationList.getValue().get("typeYourAddress").toString());
+        this.btnAddAddress.setText(SettingsController.getInstance().translationList.getValue().get("add").toString());
+        this.lblAddedAddresses.setText(SettingsController.getInstance().translationList.getValue().get("addedAddresses").toString());
+        this.txtArea.promptTextProperty().setValue(SettingsController.getInstance().translationList.getValue().get("noAddressAdded").toString());
+        this.btnClearList.setText(SettingsController.getInstance().translationList.getValue().get("clearList").toString());
+        this.btnSaveAndClose.setText(SettingsController.getInstance().translationList.getValue().get("saveAndClose").toString());
+        this.btnClose.setText(SettingsController.getInstance().translationList.getValue().get("Close").toString());
     }
 
     public void addAddress(){
-        if(!this.txtUserAddress.getText().isEmpty()){
+        if(!this.txtUserAddress.getText().isEmpty() && !this.listAdresses.contains(this.txtUserAddress.getText())){
             this.listAdresses.add(this.txtUserAddress.getText());
         }
+        this.txtUserAddress.clear();
         this.updateTextArea();
     }
 

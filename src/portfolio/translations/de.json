@@ -88,5 +88,14 @@
   "CSVExportedSuccessfully": "CSV wurde erfolgreich exportiert!",
   "CSVExportedError": "Fehler beim exportieren der CSV Datei!",
   "BuyDFI": "Kaufe DFI",
+  "address": "Addresse",
+  "typeYourAddress": "Geben Sie Ihre Adresse ein",
+  "add": "Hinzufügen",
+  "addedAddresses": "Hinzugefügte Adressen",
+  "noAddressAdded": "Keine Adressen hinzugefügt",
+  "clearList": "Lösche die Liste",
+  "saveAndClose": "Speichern & Schließen",
+  "openAddressConfig": "\u00D6ffne Adresskonfiguration",
+  "NoAddressFoundGoToConfig": "Keine Adressen gefunden. Bitte f\u00fcgen Sie Ihre Adressen in der Adresskonfiguration hinzu. Sie finden diese im Men\u00fc Einstellungen oder klicken Sie auf die Schaltfl\u00e4che unten.",
   "MissingTransaction": "Mindestens eine Transaktion wurde \u00FCbersprungen, weil sie unvollst\u00e4ndig ist und Abweichungen in der Bilanz verursachen kann. \nAlle unvollständige Transaktionen wurden in einer Liste gespeichert."
 }
