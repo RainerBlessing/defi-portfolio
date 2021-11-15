@@ -302,11 +302,11 @@ public class TransactionController {
                     this.jl.setText(this.settingsController.translationList.getValue().get("UpdateData").toString() + Math.ceil((((double) (i) * blockDepth) / (double) (depth-firstBlock)) * 100) + "%");
                 }
                 if((blockCount - (i * blockDepth) - i) < firstBlock) break;
-                if (SettingsController.getInstance().selectedSource.getValue().equals("All Wallets")) {
-                    jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"all\", {\"maxBlockHeight\":" + (blockCount - (i * blockDepth) - i) + ",\"depth\":" + blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + blockDepth * 2000 + "}]}");
-                } else {
-                    jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"mine\", {\"maxBlockHeight\":" + (blockCount - (i * blockDepth) - i) + ",\"depth\":" + blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + blockDepth * 2000 + "}]}");
-                }
+
+                for(Object address: SettingsController.getInstance().listAddresses){
+                    jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\""+address+"\", {\"maxBlockHeight\":" + (blockCount - (i * blockDepth) - i) + ",\"depth\":" + blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + blockDepth * 2000 + "}]}");
+
+
                 JSONArray transactionJson = (JSONArray) jsonObject.get("result");
 
                 for (Object transaction : transactionJson) {
@@ -319,15 +319,15 @@ public class TransactionController {
                         }
                     }
                 }
+                }
                 restBlockCount = blockCount - i * blockDepth;
             }
 
             restBlockCount = restBlockCount - blockDepth;
-            if (SettingsController.getInstance().selectedSource.getValue().equals("All Wallets")) {
-                jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"all\", {\"maxBlockHeight\":" + (restBlockCount - 1) + ",\"depth\":" + depth % blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + (depth % blockDepth) * 2000 + "}]}");
-            } else {
-                jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":[\"mine\", {\"maxBlockHeight\":" + (restBlockCount - 1) + ",\"depth\":" + depth % blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + (depth % blockDepth) * 2000 + "}]}");
-            }
+
+            for(Object address: SettingsController.getInstance().listAddresses){
+                jsonObject = getRpcResponse("{\"method\":\"listaccounthistory\",\"params\":\""+address+"\", {\"maxBlockHeight\":" + (restBlockCount - 1) + ",\"depth\":" + depth % blockDepth + ",\"no_rewards\":" + false + ",\"limit\":" + (depth % blockDepth) * 2000 + "}]}");
+
             JSONArray transactionJson = (JSONArray) jsonObject.get("result");
             for (Object transaction : transactionJson) {
                 JSONObject transactionJ = (JSONObject) transaction;
@@ -339,7 +339,7 @@ public class TransactionController {
                         transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), amount, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), "", transactionJ.get("txid").toString(), this));
                     }
                 }
-            }
+            }   }
         } catch (Exception e) {
             this.settingsController.logger.warning("Exception occured: " + e.toString());
         }
