@@ -1438,7 +1438,7 @@ public class MainView implements Initializable {
             // Workaround for Linux because "Desktop.getDesktop().browse()" doesn't work on some Linux implementations
             try {
                 if (Runtime.getRuntime().exec(new String[]{"which", "xdg-open"}).getInputStream().read() != -1) {
-                    Runtime.getRuntime().exec(new String[]{"xdg-open", "https://dfx.swiss/"});
+                    Runtime.getRuntime().exec(new String[]{"xdg-open", "https://dfx.swiss/app?code=DFI-POR"});
                 } else {
                     System.out.println("xdg-open is not supported!");
                 }
@@ -1447,7 +1447,7 @@ public class MainView implements Initializable {
             }
         } else {
             try {
-                Desktop.getDesktop().browse(new URL("https://dfx.swiss/").toURI());
+                Desktop.getDesktop().browse(new URL("https://dfx.swiss/app?code=DFI-POR").toURI());
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (URISyntaxException e) {
