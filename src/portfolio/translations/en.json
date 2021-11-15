@@ -86,5 +86,17 @@
   "LoadingWalletCSV": "Loading Wallet CSV",
   "Restart": "Please restart the tool to get the updated data!",
   "FileTypeNotSupported": "The CSV is no valid Wallet export!",
+  "CSVExportedSuccessfully": "CSV exported successfully!",
+  "CSVExportedError": "Error while exporting the CSV file!",
+  "BuyDFI": "Buy DFI",
+  "address": "Address",
+  "typeYourAddress": "Type your address",
+  "add": "Add",
+  "addedAddresses": "Added addresses",
+  "noAddressAdded": "No address added",
+  "clearList": "Clear list",
+  "saveAndClose": "Save & Close",
+  "openAddressConfig": "Open address configuration",
+  "NoAddressFoundGoToConfig": "No addresses found. Please add your addresses in the address configuration. You can find it in the settings menu or click on the button below.",
   "MissingTransaction": "At least one transaction is skipped because it is incomplete and may cause deviations in the balance. \nAll transactions are saved in a list."
 }

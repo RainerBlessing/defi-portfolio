@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Timer;
@@ -64,7 +65,7 @@ public class SettingsController {
     public boolean selectedLaunchDefid = false;
     public boolean selectedLaunchSync = true;
     public boolean checkCointracking = false;
-
+    public ArrayList<String> listAddresses = new ArrayList();
 
     public StringProperty lastUpdate = new SimpleStringProperty("-");
     //Combo box filling
@@ -131,10 +132,28 @@ public class SettingsController {
         SimpleFormatter formatter = new SimpleFormatter();
         fh.setFormatter(formatter);
         this.loadSettings();
+        this.loadAddresses();
         updateLanguage();
         getConfig();
     }
 
+    public void loadAddresses(){
+        String savePath = this.DEFI_PORTFOLIO_HOME + "Addresses.csv";
+        File f = new File(savePath);
+        if(f.exists() && !f.isDirectory()) {
+            this.listAddresses.clear();
+            try (BufferedReader br = new BufferedReader(new FileReader(savePath))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    this.listAddresses.add(line);
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     public void updateLanguage() {
 
         JSONParser jsonParser = new JSONParser();

@@ -1,11 +1,16 @@
 package portfolio.views;
 
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -13,11 +18,11 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.ResourceBundle;
 
+import javafx.stage.StageStyle;
 import portfolio.controllers.MainViewController;
 import portfolio.controllers.SettingsController;
 
@@ -29,7 +34,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import portfolio.controllers.TransactionController;
-import sun.security.krb5.internal.crypto.Des;
 
 public class SettingsView implements Initializable {
     public Button btnSaveAndApply;
@@ -45,16 +49,19 @@ public class SettingsView implements Initializable {
     public Label lblCloseDefid;
     public Label lblOpenProjectFolder;
     public Label lblOpenInstallationFolder;
+    public Label lblOpenAdressConfig;
     public Label labelCointrackingExport;
     public Label labelCSVExport;
     public Label lblDefaultDataSource;
     public Button btnCloseDefid;
     public Button btnOpenProjectFolder;
     public Button btnOpenInstallationFolder;
+    public Button btnOpenAdressConfig;
     public Label lblFrom;
     public Label lblTo;
     public DatePicker exportFrom;
     public DatePicker exportTo;
+    public Stage AddressConfigStage;
     @FXML
     public StackPane stack;
     @FXML
@@ -137,6 +144,8 @@ public class SettingsView implements Initializable {
         this.btnCloseDefid.setText(this.settingsController.translationList.getValue().get("CloseButton").toString());
         this.btnOpenProjectFolder.setText(this.settingsController.translationList.getValue().get("Open").toString());
         this.btnOpenInstallationFolder.setText(this.settingsController.translationList.getValue().get("Open").toString());
+        this.btnOpenAdressConfig.setText(this.settingsController.translationList.getValue().get("Open").toString());
+        this.lblOpenAdressConfig.setText(this.settingsController.translationList.getValue().get("openAddressConfig").toString());
 
         this.lblDefaultDataSource.setText(this.settingsController.translationList.getValue().get("DefaultDataUpdate").toString());
         this.cmbDefaultDataSource.getItems().addAll(this.settingsController.defaultUpdateSource);
@@ -164,6 +173,8 @@ public class SettingsView implements Initializable {
         this.lblFrom.setText(this.settingsController.translationList.getValue().get("ToLabel").toString());
         this.lblTo.setText(this.settingsController.translationList.getValue().get("FromLabel").toString());
         this.lblDefaultDataSource.setText(this.settingsController.translationList.getValue().get("DefaultDataUpdate").toString());
+        this.btnOpenAdressConfig.setText(this.settingsController.translationList.getValue().get("Open").toString());
+        this.lblOpenAdressConfig.setText(this.settingsController.translationList.getValue().get("openAddressConfig").toString());
     }
 
     private final Rectangle back = new Rectangle(35, 15, Color.RED);
@@ -267,6 +278,56 @@ public class SettingsView implements Initializable {
                 SettingsController.getInstance().logger.warning(e.toString());
             }
         }
+    }
+    public void btnOpenAdressConfig() throws IOException {
+        if (AddressConfigStage != null) AddressConfigStage.close();
+        final Delta dragDelta = new Delta();
+        Parent root = FXMLLoader.load(getClass().getResource("AddAddresses.fxml"));
+        Scene scene = new Scene(root);
+        AddressConfigStage = new Stage();
+        AddressConfigStage.initStyle(StageStyle.UNDECORATED);
+        scene.setOnMousePressed(mouseEvent -> {
+            // record a delta distance for the drag and drop operation.
+            dragDelta.x = AddressConfigStage.getX() - mouseEvent.getScreenX();
+            dragDelta.y = AddressConfigStage.getY() - mouseEvent.getScreenY();
+        });
+        scene.setOnMouseDragged(mouseEvent -> {
+            AddressConfigStage.setX(mouseEvent.getScreenX() + dragDelta.x);
+            AddressConfigStage.setY(mouseEvent.getScreenY() + dragDelta.y);
+        });
+        //AddressConfigStage.getIcons().add(new Image(new File(System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/icons/settings.png").toURI().toString()));
+        //AddressConfigStage.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Settings").toString());
+        AddressConfigStage.setScene(scene);
+
+//        ChangeListener<Number> widthListener = (observable, oldValue, newValue) -> {
+//            double stageWidth = newValue.doubleValue();
+//            AddressConfigStage.setX(mainAnchorPane.getScene().getWindow().getX() + mainAnchorPane.getScene().getWindow().getWidth() / 2 - stageWidth / 2);
+//        };
+//        ChangeListener<Number> heightListener = (observable, oldValue, newValue) -> {
+//            double stageHeight = newValue.doubleValue();
+//            AddressConfigStage.setY(mainAnchorPane.getScene().getWindow().getY() + mainAnchorPane.getScene().getWindow().getHeight() / 2 - stageHeight / 2);
+//        };
+
+   //     AddressConfigStage.widthProperty().addListener(widthListener);
+     //   AddressConfigStage.heightProperty().addListener(heightListener);
+
+        AddressConfigStage.setOnShown(e -> {
+        //    AddressConfigStage.widthProperty().removeListener(widthListener);
+         //   AddressConfigStage.heightProperty().removeListener(heightListener);
+        });
+
+        AddressConfigStage.show();
+
+        java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
+        java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
+        if (SettingsController.getInstance().selectedStyleMode.getValue().equals("Dark Mode")) {
+            AddressConfigStage.getScene().getStylesheets().add(darkMode.toURI().toString());
+        } else {
+            AddressConfigStage.getScene().getStylesheets().add(lightMode.toURI().toString());
+        }
+    }
+    static class Delta {
+        double x, y;
     }
 }
 

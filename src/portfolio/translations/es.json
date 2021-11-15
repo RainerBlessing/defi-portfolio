@@ -86,5 +86,17 @@
   "LoadingWalletCSV": "cargando Wallet CSV",
   "Restart": "Reinicie la herramienta para obtener los datos actualizados!",
   "FileTypeNotSupported": "El CSV no es una exportación de billetera válida!",
+  "CSVExportedSuccessfully": "CSV exportado correctamente",
+  "CSVExportedError": "Error al exportar el archivo CSV",
+  "BuyDFI": "Comprar DFI",
+  "address": "Direcci\u00F3n",
+  "typeYourAddress": "Ingrese su direccion",
+  "add": "A\u00F1adir",
+  "addedAddresses": "Direcciones agregadas",
+  "noAddressAdded": "No se agregaron direcciones",
+  "clearList": "Limpiar la lista",
+  "saveAndClose": "Almacenamiento & cierre",
+  "openAddressConfig": "Configuraci\u00F3n de la direcci\u00F3n abierta",
+  "NoAddressFoundGoToConfig": "No se han encontrado direcciones. Por favor, a\u00F1ada sus direcciones en la configuraci\u00F3n de direcciones. Puede encontrarlo en el men\u00FA de configuraci\u00F3n o hacer clic en el botón de abajo.",
   "MissingTransaction": "Al, menos una transacción ha sido omitida porque está incompleta y por tanto puede causar discrepancias en el balance. Todas las transacciones incompletas se han almacenado en una lista."
 }

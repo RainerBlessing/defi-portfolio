@@ -86,5 +86,18 @@
   "LoadingWalletCSV": "Wallet CSV laden",
   "Restart": "Start het programma opnieuw op om de bijgewerkte gegevens te krijgen!",
   "FileTypeNotSupported": "De CSV is geen geldige wallet-export!",
+  "CSVExportedSuccessfully": "CSV succesvol ge\u00EBxporteerd!",
+  "CSVExportedError": "Fout bij het exporteren van het CSV-bestand!",
+  "BuyDFI": "Kopen DFI",
+  "address": "Adres",
+  "typeYourAddress": "Vul je adres in",
+  "add": "Toevoegen aan",
+  "addedAddresses": "Adressen toegevoegd",
+  "noAddressAdded": "Geen adressen toegevoegd",
+  "clearList": "Wis de lijst",
+  "saveAndClose": "Opslaan & sluiten",
+  "openAddressConfig": "Open adres configuratie",
+  "NoAddressFoundGoToConfig": "Geen adressen gevonden. Gelieve uw adressen toe te voegen in de adresconfiguratie. U kunt deze vinden in het instellingenmenu of klik op de knop hieronder.",
+
   "MissingTransaction": "Minstens één transactie is overgeslagen omdat deze onvolledig is en tot discrepanties in de balans kan leiden. \nAlle onvolledige transacties werden in een lijst opgeslagen."
 }
