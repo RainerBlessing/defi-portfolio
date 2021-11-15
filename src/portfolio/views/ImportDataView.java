@@ -25,6 +25,7 @@ public class ImportDataView {
     @FXML
     public CheckBox cmbSaveDefault;
     public Stage NoAddressesWarningView;
+    public Stage AddressConfigStage;
 
     public void btnUpdateDataPressed(){
         if(SettingsController.getInstance().listAddresses.size() > 0){
@@ -83,5 +84,53 @@ public class ImportDataView {
     }
     static class Delta {
         double x, y;
+    }
+
+    public void btnOpenAdressConfig() throws IOException {
+        if (AddressConfigStage != null) AddressConfigStage.close();
+        final SettingsView.Delta dragDelta = new SettingsView.Delta();
+        Parent root = FXMLLoader.load(getClass().getResource("AddAddresses.fxml"));
+        Scene scene = new Scene(root);
+        AddressConfigStage = new Stage();
+        AddressConfigStage.initStyle(StageStyle.UNDECORATED);
+        scene.setOnMousePressed(mouseEvent -> {
+            // record a delta distance for the drag and drop operation.
+            dragDelta.x = AddressConfigStage.getX() - mouseEvent.getScreenX();
+            dragDelta.y = AddressConfigStage.getY() - mouseEvent.getScreenY();
+        });
+        scene.setOnMouseDragged(mouseEvent -> {
+            AddressConfigStage.setX(mouseEvent.getScreenX() + dragDelta.x);
+            AddressConfigStage.setY(mouseEvent.getScreenY() + dragDelta.y);
+        });
+        //AddressConfigStage.getIcons().add(new Image(new File(System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/icons/settings.png").toURI().toString()));
+        //AddressConfigStage.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Settings").toString());
+        AddressConfigStage.setScene(scene);
+
+//        ChangeListener<Number> widthListener = (observable, oldValue, newValue) -> {
+//            double stageWidth = newValue.doubleValue();
+//            AddressConfigStage.setX(mainAnchorPane.getScene().getWindow().getX() + mainAnchorPane.getScene().getWindow().getWidth() / 2 - stageWidth / 2);
+//        };
+//        ChangeListener<Number> heightListener = (observable, oldValue, newValue) -> {
+//            double stageHeight = newValue.doubleValue();
+//            AddressConfigStage.setY(mainAnchorPane.getScene().getWindow().getY() + mainAnchorPane.getScene().getWindow().getHeight() / 2 - stageHeight / 2);
+//        };
+
+        //     AddressConfigStage.widthProperty().addListener(widthListener);
+        //   AddressConfigStage.heightProperty().addListener(heightListener);
+
+        AddressConfigStage.setOnShown(e -> {
+            //    AddressConfigStage.widthProperty().removeListener(widthListener);
+            //   AddressConfigStage.heightProperty().removeListener(heightListener);
+        });
+
+        AddressConfigStage.show();
+
+        java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
+        java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
+        if (SettingsController.getInstance().selectedStyleMode.getValue().equals("Dark Mode")) {
+            AddressConfigStage.getScene().getStylesheets().add(darkMode.toURI().toString());
+        } else {
+            AddressConfigStage.getScene().getStylesheets().add(lightMode.toURI().toString());
+        }
     }
 }

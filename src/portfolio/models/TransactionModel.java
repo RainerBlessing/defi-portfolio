@@ -20,6 +20,10 @@ public class TransactionModel {
     public StringProperty txIDProperty = new SimpleStringProperty("");
     public boolean exportCointracking = false;
 
+    public Long getBlockTime(){
+        return blockTimeProperty.getValue();
+    }
+
     public TransactionModel(Long blockTime, String owner, String type, String amounts, String blockHash, int blockHeight, String poolID, String txid, TransactionController transactionController) {
         this.blockTimeProperty.set(blockTime);
         this.ownerProperty.set(owner);

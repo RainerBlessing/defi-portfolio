@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="758.0" prefWidth="419.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.SettingsView">
+<AnchorPane fx:id="anchorPane" prefHeight="758.0" prefWidth="419.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.SettingsView">
    <ImageView fitHeight="54.0" fitWidth="55.0" layoutX="14.0" layoutY="35.0" pickOnBounds="true" preserveRatio="true">
       <Image url="@../../icons/settings.png" />
    </ImageView>

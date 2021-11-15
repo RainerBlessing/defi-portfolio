@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 
+
 public class TransactionController {
 
     private static TransactionController OBJ = null;
@@ -47,7 +48,6 @@ public class TransactionController {
     public JLabel jl;
     public Process defidProcess;
     private Boolean classSingleton = true;
-    private List<String> accountAddresses;
     public TreeMap<String, ImpermanentLossModel> impermanentLossList = new TreeMap<>();
     public TreeMap<String, Double> balanceTreeMap = new TreeMap<>();
 
@@ -174,7 +174,8 @@ public class TransactionController {
     }
 
     public List<BalanceModel> getBalanceList() {
-        return balanceList;
+
+        return this.balanceList = getCoinAndTokenBalances();
     }
 
     public void clearPortfolioList() {
@@ -290,16 +291,19 @@ public class TransactionController {
             int firstBlock = 468146;
             int restBlockCount = blockCount + blockDepth + 1;
             for (int i = 0; i < Math.ceil(depth / blockDepth); i = i + 1) {
+
+                double percentage = Math.ceil((((double) (i) * blockDepth) / (double) (depth-firstBlock)) * 100);
+                if(percentage>100.0)percentage=100.0;
                 if (this.settingsController.getPlatform().equals("mac")) {
                     try {
                         FileWriter myWriter = new FileWriter(System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/" + "update.portfolio");
-                        myWriter.write(this.settingsController.translationList.getValue().get("UpdateData").toString() + Math.ceil((((double) (i) * blockDepth) / (double) (depth-firstBlock)) * 100) + "%");
+                        myWriter.write(this.settingsController.translationList.getValue().get("UpdateData").toString() + percentage + "%");
                         myWriter.close();
                     } catch (IOException e) {
                         this.settingsController.logger.warning("Could not write to update.portfolio.");
                     }
                 } else {
-                    this.jl.setText(this.settingsController.translationList.getValue().get("UpdateData").toString() + Math.ceil((((double) (i) * blockDepth) / (double) (depth-firstBlock)) * 100) + "%");
+                    this.jl.setText(this.settingsController.translationList.getValue().get("UpdateData").toString() + percentage + "%");
                 }
                 if((blockCount - (i * blockDepth) - i) < firstBlock) break;
 
@@ -468,7 +472,6 @@ public class TransactionController {
 
         File strPortfolioData = new File(this.strTransactionData);
         List<TransactionModel> transactionList = new ArrayList<>();
-        this.accountAddresses = new ArrayList<>();
         if (strPortfolioData.exists()) {
 
             try {
@@ -481,8 +484,6 @@ public class TransactionController {
                     String[] transactionSplit = line.split(";");
                     TransactionModel transAction = new TransactionModel(Long.parseLong(transactionSplit[0]), transactionSplit[1], transactionSplit[2], transactionSplit[3], transactionSplit[4], Integer.parseInt(transactionSplit[5]), transactionSplit[6], transactionSplit[7], this);
                     transactionList.add(transAction);
-
-                    if(!this.accountAddresses.contains(transactionSplit[1])) this.accountAddresses.add(transactionSplit[1]);
 
                     if (transAction.typeProperty.getValue().equals("Rewards") | transAction.typeProperty.getValue().equals("Commission")) {
                         addToPortfolioModel(transAction);
@@ -668,7 +669,6 @@ public class TransactionController {
             if (transactionListNew.get(i).blockHeightProperty.getValue() > this.localBlockCount) {
                 transactionList.add(transactionListNew.get(i));
                 updateTransactionList.add(transactionListNew.get(i));
-                if(!this.accountAddresses.contains(transactionListNew.get(i).ownerProperty.getValue())) this.accountAddresses.add(transactionListNew.get(i).ownerProperty.getValue());
                 //if (!transactionListNew.get(i).getTypeValue().equals("UtxosToAccount") | !transactionListNew.get(i).getTypeValue().equals("AccountToUtxos"))
                 // addBalanceModel(transactionListNew.get(i));
                 //
@@ -696,6 +696,8 @@ public class TransactionController {
 
         if (updateTransactionList.size() > 0) {
             try {
+
+                updateTransactionList.sort(Comparator.comparing(TransactionModel::getBlockTime));
                 PrintWriter writer = new PrintWriter(new FileWriter(this.strTransactionData, true));
                 String exportSplitter = ";";
                 counter = 0;
@@ -878,11 +880,11 @@ public class TransactionController {
         return pool;
     }
 
-    public void getCoinAndTokenBalances() {
+    public List<BalanceModel> getCoinAndTokenBalances() {
         List<BalanceModel> balanceModelList = new ArrayList<>();
         JSONArray jsonArray = new JSONArray();
         for (String address:
-                this.accountAddresses) {
+                SettingsController.getInstance().listAddresses) {
              jsonArray = getAddressBalances(address);
             for (int i = 0; i < jsonArray.size(); i++) {
                 String tokenName = jsonArray.get(i).toString().split("@")[1];
@@ -939,9 +941,9 @@ public class TransactionController {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                this.balanceList = balanceModelList;
-            }
 
+            }
+        return balanceModelList;
     }
 
     public List<TransactionModel> getTransactionsInTime(List<TransactionModel> transactions, long startTime, long endTime) {
