@@ -213,7 +213,7 @@ public class MainViewController {
 
     public boolean updateTransactionData() {
 
-        transactionController.getCoinAndTokenBalances();
+        this.transactionController.getCoinAndTokenBalances();
         if (new File(this.settingsController.DEFI_PORTFOLIO_HOME + this.settingsController.strTransactionData).exists()) {
             int depth = Integer.parseInt(this.transactionController.getBlockCount()) - this.transactionController.getLocalBlockCount();
             return transactionController.updateTransactionData(depth);
