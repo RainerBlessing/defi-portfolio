@@ -1,11 +1,14 @@
 package portfolio.views;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import portfolio.controllers.SettingsController;
+import portfolio.models.Addresses;
 
 import java.io.*;
 import java.net.URL;
@@ -17,56 +20,50 @@ public class AddAdressView implements Initializable {
     public Button btnAddAddress;
     public TextField txtUserAddress;
     public Label lblAddress;
-    public Label lblAddedAddresses;
 
     public Button btnClose;
     public Button btnClearList;
     public Button btnSaveAndClose;
-    public TextArea txtArea;
-    ArrayList<String> listAdresses = new ArrayList();
+
+    @FXML
+    public TableView<Addresses> table;
+    @FXML
+    public TableColumn<Addresses,String> tableAddedAddresses;
+    public ObservableList<Addresses> listAdresses =
+            FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.loadAddresses();
-        this.updateTextArea();
 
         this.lblAddress.setText(SettingsController.getInstance().translationList.getValue().get("address").toString());
         this.txtUserAddress.promptTextProperty().setValue(SettingsController.getInstance().translationList.getValue().get("typeYourAddress").toString());
         this.btnAddAddress.setText(SettingsController.getInstance().translationList.getValue().get("add").toString());
-        this.lblAddedAddresses.setText(SettingsController.getInstance().translationList.getValue().get("addedAddresses").toString());
-        this.txtArea.promptTextProperty().setValue(SettingsController.getInstance().translationList.getValue().get("noAddressAdded").toString());
-        this.btnClearList.setText(SettingsController.getInstance().translationList.getValue().get("clearList").toString());
+        this.tableAddedAddresses.setText(SettingsController.getInstance().translationList.getValue().get("addedAddresses").toString());
+        this.btnClearList.setText(SettingsController.getInstance().translationList.getValue().get("removeEntry").toString());
         this.btnSaveAndClose.setText(SettingsController.getInstance().translationList.getValue().get("saveAndClose").toString());
         this.btnClose.setText(SettingsController.getInstance().translationList.getValue().get("Close").toString());
+        table.setPlaceholder(new Label(""));
+
+
+        tableAddedAddresses.setCellValueFactory(new PropertyValueFactory<>("Address"));
+        table.setItems(listAdresses);
     }
 
     public void addAddress(){
         if(!this.txtUserAddress.getText().isEmpty() && !this.listAdresses.contains(this.txtUserAddress.getText())){
-            this.listAdresses.add(this.txtUserAddress.getText());
+            this.listAdresses.add(new Addresses(this.txtUserAddress.getText()));
         }
         this.txtUserAddress.clear();
-        this.updateTextArea();
     }
 
-    public void updateTextArea(){
-        if (this.listAdresses.size() == 0){
-            this.txtArea.setText("");
-        }
-        else{
-            StringBuilder addresses = new StringBuilder();
-            for (String listAdress : listAdresses) {
-                addresses.append(listAdress).append("\n");
-            }
-            txtArea.setText(addresses.toString());
-        }
-    }
     public void saveAddresses(){
         String savePath = SettingsController.getInstance().DEFI_PORTFOLIO_HOME + "Addresses.csv";
         FileWriter csvWriter;
         try {
             csvWriter = new FileWriter(savePath);
-            for (String listAdress : listAdresses) {
-                csvWriter.append(listAdress).append("\n");
+            for (Addresses listAdress : listAdresses) {
+                csvWriter.append(listAdress.getAddress()).append("\n");
             }
             csvWriter.flush();
             csvWriter.close();
@@ -76,8 +73,8 @@ public class AddAdressView implements Initializable {
 
         // Copy to SettingsController
         SettingsController.getInstance().listAddresses.clear();
-        for (String listAdress : this.listAdresses) {
-            SettingsController.getInstance().listAddresses.add(listAdress);
+        for (Addresses listAdress : this.listAdresses) {
+            SettingsController.getInstance().listAddresses.add(listAdress.getAddress());
         }
     }
     public void loadAddresses(){
@@ -88,7 +85,7 @@ public class AddAdressView implements Initializable {
             try (BufferedReader br = new BufferedReader(new FileReader(savePath))) {
                 String line;
                 while ((line = br.readLine()) != null) {
-                    this.listAdresses.add(line);
+                    this.listAdresses.add(new Addresses(line));
                 }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -110,10 +107,9 @@ public class AddAdressView implements Initializable {
         stage.close();
     }
 
-    public void clearList(){
-        this.listAdresses.clear();
-        this.updateTextArea();
+    public void removeEntry(){
+       this.listAdresses.remove(this.table.getSelectionModel().getSelectedItem());
+
+     //   this.listAdresses.clear();
     }
 }
-
-

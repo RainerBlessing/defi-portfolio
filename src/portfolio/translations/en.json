@@ -94,7 +94,7 @@
   "add": "Add",
   "addedAddresses": "Added addresses",
   "noAddressAdded": "No address added",
-  "clearList": "Clear list",
+  "removeEntry": "Remove entry",
   "saveAndClose": "Save & Close",
   "openAddressConfig": "Open address configuration",
   "NoAddressFoundGoToConfig": "No addresses found. Please add your addresses in the address configuration. You can find it in the settings menu or click on the button below.",
