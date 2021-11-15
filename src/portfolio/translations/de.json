@@ -93,7 +93,7 @@
   "add": "Hinzufügen",
   "addedAddresses": "Hinzugefügte Adressen",
   "noAddressAdded": "Keine Adressen hinzugefügt",
-  "clearList": "Lösche die Liste",
+  "removeEntry": "Eintrag löschen",
   "saveAndClose": "Speichern & Schließen",
   "openAddressConfig": "\u00D6ffne Adresskonfiguration",
   "NoAddressFoundGoToConfig": "Keine Adressen gefunden. Bitte f\u00fcgen Sie Ihre Adressen in der Adresskonfiguration hinzu. Sie finden diese im Men\u00fc Einstellungen oder klicken Sie auf die Schaltfl\u00e4che unten.",

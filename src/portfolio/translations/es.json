@@ -94,7 +94,7 @@
   "add": "A\u00F1adir",
   "addedAddresses": "Direcciones agregadas",
   "noAddressAdded": "No se agregaron direcciones",
-  "clearList": "Limpiar la lista",
+  "removeEntry": "Elimine la entrada\n",
   "saveAndClose": "Almacenamiento & cierre",
   "openAddressConfig": "Configuraci\u00F3n de la direcci\u00F3n abierta",
   "NoAddressFoundGoToConfig": "No se han encontrado direcciones. Por favor, a\u00F1ada sus direcciones en la configuraci\u00F3n de direcciones. Puede encontrarlo en el men\u00FA de configuraci\u00F3n o hacer clic en el botón de abajo.",
