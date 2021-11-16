@@ -51,6 +51,7 @@ public class AddAdressView implements Initializable {
         this.btnClearList.setText(SettingsController.getInstance().translationList.getValue().get("removeEntry").toString());
         this.btnSaveAndClose.setText(SettingsController.getInstance().translationList.getValue().get("saveAndClose").toString());
         this.btnClose.setText(SettingsController.getInstance().translationList.getValue().get("Close").toString());
+        this.lblNoValidAddress.setText(SettingsController.getInstance().translationList.getValue().get("noValidAddress").toString());
         table.setPlaceholder(new Label(""));
 
         lblNoValidAddress.setVisible(false);
@@ -59,7 +60,7 @@ public class AddAdressView implements Initializable {
     }
 
     public void addAddress(){
-        if(!this.txtUserAddress.getText().isEmpty() && !this.listAdresses.contains(this.txtUserAddress.getText())){
+        if(!this.txtUserAddress.getText().isEmpty() && !this.checkDuplicate()){
             try {
                 HttpURLConnection connection = (HttpURLConnection) new URL("https://ocean.defichain.com/v0/mainnet/address/"+this.txtUserAddress.getText()+"/balance").openConnection();
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
@@ -80,6 +81,14 @@ public class AddAdressView implements Initializable {
             }
         }
         this.txtUserAddress.clear();
+    }
+    public boolean checkDuplicate(){
+        for (Addresses listAdress : this.listAdresses) {
+            if (listAdress.getAddress().equals(this.txtUserAddress.getText())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void saveAddresses(){

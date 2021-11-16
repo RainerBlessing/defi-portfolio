@@ -97,6 +97,7 @@
   "removeEntry": "Remove entry",
   "saveAndClose": "Save & Close",
   "openAddressConfig": "Open address configuration",
+  "noValidAddress": "No valid address",
   "NoAddressFoundGoToConfig": "No addresses found. Please add your addresses in the address configuration. You can find it in the settings menu or click on the button below.",
   "MissingTransaction": "At least one transaction is skipped because it is incomplete and may cause deviations in the balance. \nAll transactions are saved in a list."
 }

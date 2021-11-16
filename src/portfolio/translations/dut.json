@@ -97,6 +97,7 @@
   "removeEntry": "Invoer verwijderen",
   "saveAndClose": "Opslaan & sluiten",
   "openAddressConfig": "Open adres configuratie",
+  "noValidAddress": "Geen geldig adres",
   "NoAddressFoundGoToConfig": "Geen adressen gevonden. Gelieve uw adressen toe te voegen in de adresconfiguratie. U kunt deze vinden in het instellingenmenu of klik op de knop hieronder.",
 
   "MissingTransaction": "Minstens één transactie is overgeslagen omdat deze onvolledig is en tot discrepanties in de balans kan leiden. \nAlle onvolledige transacties werden in een lijst opgeslagen."

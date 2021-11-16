@@ -96,6 +96,7 @@
   "noAddressAdded": "No se agregaron direcciones",
   "removeEntry": "Elimine la entrada\n",
   "saveAndClose": "Almacenamiento & cierre",
+  "noValidAddress": "Sin direcci\u00F3n valida",
   "openAddressConfig": "Configuraci\u00F3n de la direcci\u00F3n abierta",
   "NoAddressFoundGoToConfig": "No se han encontrado direcciones. Por favor, a\u00F1ada sus direcciones en la configuraci\u00F3n de direcciones. Puede encontrarlo en el men\u00FA de configuraci\u00F3n o hacer clic en el botón de abajo.",
   "MissingTransaction": "Al, menos una transacción ha sido omitida porque está incompleta y por tanto puede causar discrepancias en el balance. Todas las transacciones incompletas se han almacenado en una lista."
