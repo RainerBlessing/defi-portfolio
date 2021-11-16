@@ -1,4 +1,5 @@
 package portfolio.views;
+import javafx.animation.PauseTransition;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -7,10 +8,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONValue;
 import portfolio.controllers.SettingsController;
 import portfolio.models.Addresses;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -20,6 +27,7 @@ public class AddAdressView implements Initializable {
     public Button btnAddAddress;
     public TextField txtUserAddress;
     public Label lblAddress;
+    public Label lblNoValidAddress;
 
     public Button btnClose;
     public Button btnClearList;
@@ -45,14 +53,31 @@ public class AddAdressView implements Initializable {
         this.btnClose.setText(SettingsController.getInstance().translationList.getValue().get("Close").toString());
         table.setPlaceholder(new Label(""));
 
-
+        lblNoValidAddress.setVisible(false);
         tableAddedAddresses.setCellValueFactory(new PropertyValueFactory<>("Address"));
         table.setItems(listAdresses);
     }
 
     public void addAddress(){
         if(!this.txtUserAddress.getText().isEmpty() && !this.listAdresses.contains(this.txtUserAddress.getText())){
-            this.listAdresses.add(new Addresses(this.txtUserAddress.getText()));
+            try {
+                HttpURLConnection connection = (HttpURLConnection) new URL("https://ocean.defichain.com/v0/mainnet/address/"+this.txtUserAddress.getText()+"/balance").openConnection();
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                    this.listAdresses.add(new Addresses(this.txtUserAddress.getText()));
+                } catch (Exception ex) {
+                    lblNoValidAddress.setVisible(true);
+                    int delay = 5000;
+                    ActionListener taskPerfomer = new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            lblNoValidAddress.setVisible(false);
+                        }
+                    };
+                    new javax.swing.Timer(delay,taskPerfomer).start();
+                }
+            } catch (IOException e) {
+                SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+            }
         }
         this.txtUserAddress.clear();
     }

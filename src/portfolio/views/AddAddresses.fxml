@@ -27,5 +27,6 @@
           <TableColumn fx:id="tableAddedAddresses" editable="false" prefWidth="569.0" sortable="false" text="Added addresses" />
         </columns>
       </TableView>
+      <Label fx:id="lblNoValidAddress" layoutX="200.0" layoutY="103.0" prefHeight="17.0" prefWidth="264.0" text="No valid address" />
    </children>
 </AnchorPane>
