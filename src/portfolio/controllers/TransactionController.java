@@ -881,6 +881,7 @@ public class TransactionController {
     }
 
     public List<BalanceModel> getCoinAndTokenBalances() {
+        TreeMap<String, Double> balanceTreeMap = new TreeMap<>();
         List<BalanceModel> balanceModelList = new ArrayList<>();
         JSONArray jsonArray = new JSONArray();
         for (String address:
