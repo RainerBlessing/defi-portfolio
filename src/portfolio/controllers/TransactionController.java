@@ -192,7 +192,7 @@ public class TransactionController {
 
     public String getBlockCount() {
         try {
-            HttpURLConnection connection = (HttpURLConnection) new URL("https://api.defichain.io/v1/getblockcount").openConnection();
+            HttpURLConnection connection = (HttpURLConnection) new URL("https://ocean.defichain.com/v0/mainnet/stats").openConnection();
             String jsonText = "";
             try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 jsonText = br.readLine();
@@ -201,7 +201,9 @@ public class TransactionController {
             }
             JSONObject obj = (JSONObject) JSONValue.parse(jsonText);
             if (obj.get("data") != null) {
-                return obj.get("data").toString();
+                JSONObject data =  (JSONObject)obj.get("data");
+                JSONObject count =  (JSONObject)data.get("count");
+                return count.get("blocks").toString();
             } else {
                 return "No connection";
             }
@@ -214,7 +216,7 @@ public class TransactionController {
 
     public String getPoolRatio(String poolID) {
         try {
-            HttpURLConnection connection = (HttpURLConnection) new URL("https://api.defichain.io/v1/listpoolpairs").openConnection();
+            HttpURLConnection connection = (HttpURLConnection) new URL("https://ocean.defichain.com/v0/mainnet/poolpairs").openConnection();
             String jsonText = "";
             try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 jsonText = br.readLine();
@@ -222,8 +224,18 @@ public class TransactionController {
                 this.settingsController.logger.warning("Exception occured: " + ex.toString());
             }
             JSONObject obj = (JSONObject) JSONValue.parse(jsonText);
-            if (obj.get(poolID) != null) {
-                return ((JSONObject) obj.get(poolID)).get("reserveA/reserveB").toString();
+            if (obj.get("data") != null) {
+
+                JSONArray data = (JSONArray) obj.get("data");
+
+                for (Object transaction : (JSONArray) data) {
+                    JSONObject jsonObject = (JSONObject)transaction;
+                    if(((JSONObject)transaction).get("id").toString().contains(poolID)){
+                        JSONObject ratio =(JSONObject)jsonObject.get("priceRatio");
+                        return ((JSONObject) ratio).get("ab").toString();
+                    }
+                }
+
             }
         } catch (IOException e) {
             this.settingsController.logger.warning("Exception occured: " + e.toString());
@@ -517,14 +529,16 @@ public class TransactionController {
     public JSONArray getAddressBalances(String address) {
 
         try {
-            HttpURLConnection connection = (HttpURLConnection) new URL("https://api.defichain.io/v1/getaccount?including_start=true&owner="+address).openConnection();
+            HttpURLConnection connection = (HttpURLConnection) new URL("https://ocean.defichain.com/v0/mainnet/address/"+address+"/tokens").openConnection();
             String jsonText = "";
             try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 jsonText = br.readLine();
             } catch (Exception ex) {
                 this.settingsController.logger.warning("Exception occured: " + ex.toString());
             }
-            JSONArray jsonArray = (JSONArray) JSONValue.parse(jsonText);
+
+            JSONObject jsonObject = (JSONObject) JSONValue.parse(jsonText);
+            JSONArray jsonArray = (JSONArray) jsonObject.get("data");
 
             return jsonArray;
         } catch (IOException e) {
@@ -887,9 +901,10 @@ public class TransactionController {
         for (String address:
                 SettingsController.getInstance().listAddresses) {
              jsonArray = getAddressBalances(address);
-            for (int i = 0; i < jsonArray.size(); i++) {
-                String tokenName = jsonArray.get(i).toString().split("@")[1];
-                double tokenValue = Double.parseDouble(jsonArray.get(i).toString().split("@")[0]);
+            for (Object token : jsonArray) {
+                JSONObject jsonToken = (JSONObject)token;
+                String tokenName = jsonToken.get("symbol").toString();
+                double tokenValue = Double.parseDouble(jsonToken.get("amount").toString());
                 if (!balanceTreeMap.containsKey(tokenName)) {
                     balanceTreeMap.put(tokenName,tokenValue);
                 } else {
