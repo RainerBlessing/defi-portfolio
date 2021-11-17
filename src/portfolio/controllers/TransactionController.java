@@ -306,17 +306,15 @@ public class TransactionController {
 
                 double percentage = Math.ceil((((double) (i) * blockDepth) / (double) (depth-firstBlock)) * 100);
                 if(percentage>100.0)percentage=100.0;
-                if (this.settingsController.getPlatform().equals("mac")) {
-                    try {
-                        FileWriter myWriter = new FileWriter(System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/" + "update.portfolio");
-                        myWriter.write(this.settingsController.translationList.getValue().get("UpdateData").toString() + percentage + "%");
-                        myWriter.close();
-                    } catch (IOException e) {
-                        this.settingsController.logger.warning("Could not write to update.portfolio.");
-                    }
-                } else {
-                    this.jl.setText(this.settingsController.translationList.getValue().get("UpdateData").toString() + percentage + "%");
+
+                try {
+                    FileWriter myWriter = new FileWriter(System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/" + "update.portfolio");
+                    myWriter.write(this.settingsController.translationList.getValue().get("UpdateData").toString() + percentage + "%");
+                    myWriter.close();
+                } catch (IOException e) {
+                    this.settingsController.logger.warning("Could not write to update.portfolio.");
                 }
+
                 if((blockCount - (i * blockDepth) - i) < firstBlock) break;
 
                 for(Object address: SettingsController.getInstance().listAddresses){
@@ -689,20 +687,17 @@ public class TransactionController {
                 if (transactionListNew.get(i).typeProperty.getValue().equals("Rewards") | transactionListNew.get(i).typeProperty.getValue().equals("Commission"))
                     addToPortfolioModel(transactionListNew.get(i));
 
-                if (this.settingsController.getPlatform().equals("mac")) {
-                    try {
-                        if (counter > 1000) {
-                            FileWriter myWriter = new FileWriter(System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/" + "update.portfolio");
-                            myWriter.write(this.settingsController.translationList.getValue().get("PreparingData").toString() + Math.ceil((((double) transactionListNew.size() - i) / (double) transactionListNew.size()) * 100) + "%");
-                            myWriter.close();
-                            counter = 0;
-                        }
-                    } catch (IOException e) {
-                        this.settingsController.logger.warning("Could not write to update.portfolio.");
+                try {
+                    if (counter > 1000) {
+                        FileWriter myWriter = new FileWriter(System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/" + "update.portfolio");
+                        myWriter.write(this.settingsController.translationList.getValue().get("PreparingData").toString() + Math.ceil((((double) transactionListNew.size() - i) / (double) transactionListNew.size()) * 100) + "%");
+                        myWriter.close();
+                        counter = 0;
                     }
-                } else {
-                    jl.setText(this.settingsController.translationList.getValue().get("PreparingData").toString() + Math.ceil((((double) transactionListNew.size() - i) / (double) transactionListNew.size()) * 100) + "%");
+                } catch (IOException e) {
+                    this.settingsController.logger.warning("Could not write to update.portfolio.");
                 }
+
                 counter++;
             }
         }
@@ -731,27 +726,24 @@ public class TransactionController {
                         sb.append(transactionModel.txIDProperty.getValue());
 
                     sb.append("\n");
-                    if (this.settingsController.getPlatform().equals("mac")) {
-                        try {
-                            if (counter > 1000) {
-                                FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
-                                myWriter.write(this.settingsController.translationList.getValue().get("SaveData").toString() + Math.ceil(((double) i / updateTransactionList.size()) * 100) + "%");
-                                myWriter.close();
-                                counter = 0;
-                            }
-                        } catch (IOException e) {
-                            this.settingsController.logger.warning("Could not write to update.portfolio.");
+
+                    try {
+                        if (counter > 1000) {
+                            FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
+                            myWriter.write(this.settingsController.translationList.getValue().get("SaveData").toString() + Math.ceil(((double) i / updateTransactionList.size()) * 100) + "%");
+                            myWriter.close();
+                            counter = 0;
                         }
-                    } else {
-                        jl.setText(this.settingsController.translationList.getValue().get("SaveData").toString() + Math.ceil(((double) i / updateTransactionList.size()) * 100) + "%");
+                    } catch (IOException e) {
+                        this.settingsController.logger.warning("Could not write to update.portfolio.");
                     }
+
                     i++;
                     writer.write(sb.toString());
                     sb = null;
                 }
                 writer.close();
                 calcImpermanentLoss();
-                if (!this.settingsController.getPlatform().equals("mac")) this.frameUpdate.dispose();
                 this.localBlockCount = transactionList.get(transactionList.size() - 1).blockHeightProperty.getValue();
                 stopServer();
                 transactionListNew = null;
@@ -763,7 +755,6 @@ public class TransactionController {
         } else {
             MainView.getInstance().showNoDataWindow();
         }
-        if (!this.settingsController.getPlatform().equals("mac")) this.frameUpdate.dispose();
         stopServer();
         return false;
 
@@ -1063,24 +1054,30 @@ public class TransactionController {
         MainViewController.getInstance().transactionController.startServer();
         MainViewController.getInstance().settingsController.runCheckTimer = true;
         Timer checkTimer = new Timer("");
-        if (SettingsController.getInstance().getPlatform().equals("mac")) {
+
+        try {
+            FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
+            myWriter.write(MainViewController.getInstance().settingsController.translationList.getValue().get("ConnectNode").toString());
+            myWriter.close();
+
+            if(SettingsController.getInstance().getPlatform().contains("mac")){
             try {
-                FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
-                myWriter.write(MainViewController.getInstance().settingsController.translationList.getValue().get("ConnectNode").toString());
-                myWriter.close();
+                Process ps = null;
+                ps = Runtime.getRuntime().exec("./jre/bin/java -Xdock:icon=icons.icns -jar UpdateData.jar " + MainViewController.getInstance().settingsController.selectedStyleMode.getValue().replace(" ", ""));
+            } catch (IOException r) {
+                SettingsController.getInstance().logger.warning("Exception occured: " + r.toString());
+            }}else{
                 try {
                     Process ps = null;
-                    ps = Runtime.getRuntime().exec("./jre/bin/java -Xdock:icon=icons.icns -jar UpdateData.jar " + MainViewController.getInstance().settingsController.selectedStyleMode.getValue().replace(" ", ""));
+                    ps = Runtime.getRuntime().exec("./jre/bin/java -jar UpdateData.jar " + MainViewController.getInstance().settingsController.selectedStyleMode.getValue().replace(" ", ""));
                 } catch (IOException r) {
                     SettingsController.getInstance().logger.warning("Exception occured: " + r.toString());
                 }
-            } catch (IOException h) {
-                SettingsController.getInstance().logger.warning("Could not write to update.portfolio.");
             }
-        } else {
-            MainViewController.getInstance().transactionController.updateJFrame();
-            MainViewController.getInstance().transactionController.jl.setText(MainViewController.getInstance().settingsController.translationList.getValue().get("ConnectNode").toString());
+        } catch (IOException h) {
+            SettingsController.getInstance().logger.warning("Could not write to update.portfolio.");
         }
+
         checkTimer.scheduleAtFixedRate(new CheckConnection(MainViewController.getInstance()), 0, 30000);
     }
 
@@ -1119,11 +1116,9 @@ public class TransactionController {
     //public ObservableList<TransactionModel> getLocalWalletCSVList(String filePath) {
     public void getLocalWalletCSVList(List<File> files) {
         int iFile = 1;
-        this.updateJFrame();
         this.frameUpdate.setAlwaysOnTop(true);
 
         for (File strPortfolioData : files) {
-            this.jl.setText(MainViewController.getInstance().settingsController.translationList.getValue().get("LoadingWalletCSV").toString()+ "("+iFile+"/"+files.size()+")");
             File file = new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME+"\\CSVMerge.cookie");
             if(!file.exists()){
                 try {
@@ -1171,13 +1166,11 @@ public class TransactionController {
                     }
 
                 } catch (Exception e) {
-                    this.frameUpdate.dispose();
                     this.settingsController.logger.warning("Exception occured: " + e.toString());
                 }
             }
             iFile++;
         }
-        this.frameUpdate.dispose();
 
         File f = new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME.replace("/","\\")+"MergingErrorOccured.txt");
         if (f.exists()){

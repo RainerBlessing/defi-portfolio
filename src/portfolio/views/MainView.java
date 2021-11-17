@@ -166,6 +166,7 @@ public class MainView implements Initializable {
     public PieChart plotPortfolio11;
     public Label fieldTotal,fieldTotalYield,fieldTotalYieldRewards,fieldTotalYieldCommissions, tokenLabel,tokenLabelLM;
     MainViewController mainViewController = MainViewController.getInstance();
+    private Stage AddressConfigStage;
 
     public MainView() {
     }
@@ -403,6 +404,53 @@ public class MainView implements Initializable {
         }
     }
 
+    public void btnOpenAdressConfig() throws IOException {
+        if (AddressConfigStage != null) AddressConfigStage.close();
+        final SettingsView.Delta dragDelta = new SettingsView.Delta();
+        Parent root = FXMLLoader.load(getClass().getResource("AddAddresses.fxml"));
+        Scene scene = new Scene(root);
+        AddressConfigStage = new Stage();
+        AddressConfigStage.initStyle(StageStyle.UNDECORATED);
+        scene.setOnMousePressed(mouseEvent -> {
+            // record a delta distance for the drag and drop operation.
+            dragDelta.x = AddressConfigStage.getX() - mouseEvent.getScreenX();
+            dragDelta.y = AddressConfigStage.getY() - mouseEvent.getScreenY();
+        });
+        scene.setOnMouseDragged(mouseEvent -> {
+            AddressConfigStage.setX(mouseEvent.getScreenX() + dragDelta.x);
+            AddressConfigStage.setY(mouseEvent.getScreenY() + dragDelta.y);
+        });
+        //AddressConfigStage.getIcons().add(new Image(new File(System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/icons/settings.png").toURI().toString()));
+        //AddressConfigStage.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Settings").toString());
+        AddressConfigStage.setScene(scene);
+
+//        ChangeListener<Number> widthListener = (observable, oldValue, newValue) -> {
+//            double stageWidth = newValue.doubleValue();
+//            AddressConfigStage.setX(mainAnchorPane.getScene().getWindow().getX() + mainAnchorPane.getScene().getWindow().getWidth() / 2 - stageWidth / 2);
+//        };
+//        ChangeListener<Number> heightListener = (observable, oldValue, newValue) -> {
+//            double stageHeight = newValue.doubleValue();
+//            AddressConfigStage.setY(mainAnchorPane.getScene().getWindow().getY() + mainAnchorPane.getScene().getWindow().getHeight() / 2 - stageHeight / 2);
+//        };
+
+        //     AddressConfigStage.widthProperty().addListener(widthListener);
+        //   AddressConfigStage.heightProperty().addListener(heightListener);
+
+        AddressConfigStage.setOnShown(e -> {
+            //    AddressConfigStage.widthProperty().removeListener(widthListener);
+            //   AddressConfigStage.heightProperty().removeListener(heightListener);
+        });
+
+        AddressConfigStage.show();
+
+        java.io.File darkMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/darkMode.css");
+        java.io.File lightMode = new File(System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/styles/lightMode.css");
+        if (SettingsController.getInstance().selectedStyleMode.getValue().equals("Dark Mode")) {
+            AddressConfigStage.getScene().getStylesheets().add(darkMode.toURI().toString());
+        } else {
+            AddressConfigStage.getScene().getStylesheets().add(lightMode.toURI().toString());
+        }
+    }
 
     static class Delta {
         double x, y;
@@ -421,7 +469,6 @@ public class MainView implements Initializable {
         this.mainViewController.settingsController.selectedStyleMode.addListener(style -> updateStylesheet());
         final Delta dragDelta = new Delta();
 
-        this.btnConnect.disableProperty().bind(this.mainViewController.bDataBase.not());
         this.tokenLabel.textProperty().bindBidirectional(this.mainViewController.settingsController.tokenBalance);
         this.tokenLabelLM.textProperty().bindBidirectional(this.mainViewController.settingsController.tokenBalanceLM);
 
@@ -1340,7 +1387,7 @@ public class MainView implements Initializable {
             this.cmbPlotCurrencyCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Individual").toString());
             this.cmbPlotCurrencyCom.getItems().add(this.mainViewController.settingsController.translationList.getValue().get("Cumulated").toString());
         }
-        this.btnConnect.setText(this.mainViewController.settingsController.translationList.getValue().get("ConnectNode").toString());
+        this.btnConnect.setText(this.mainViewController.settingsController.translationList.getValue().get("openAddressConfig").toString());
 //        this.connectionLabel.getTooltip().setText(this.mainViewController.settingsController.translationList.getValue().get("UpdateTooltip").toString());
         this.blockTimeColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Date").toString());
         this.timeStampColumn.setText(this.mainViewController.settingsController.translationList.getValue().get("Date").toString());

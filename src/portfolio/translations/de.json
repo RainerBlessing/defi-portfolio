@@ -95,7 +95,7 @@
   "noAddressAdded": "Keine Adressen hinzugefügt",
   "removeEntry": "Eintrag löschen",
   "saveAndClose": "Speichern & Schließen",
-  "openAddressConfig": "\u00D6ffne Adresskonfiguration",
+  "openAddressConfig": "Adressen",
   "noValidAddress": "Keine gültige Adresse",
   "NoAddressFoundGoToConfig": "Keine Adressen gefunden. Bitte f\u00fcgen Sie Ihre Adressen in der Adresskonfiguration hinzu. Sie finden diese im Men\u00fc Einstellungen oder klicken Sie auf die Schaltfl\u00e4che unten.",
   "MissingTransaction": "Mindestens eine Transaktion wurde \u00FCbersprungen, weil sie unvollst\u00e4ndig ist und Abweichungen in der Bilanz verursachen kann. \nAlle unvollständige Transaktionen wurden in einer Liste gespeichert."

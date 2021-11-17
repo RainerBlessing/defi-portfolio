@@ -9,7 +9,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import portfolio.controllers.MainViewController;
 import portfolio.controllers.SettingsController;
+import portfolio.controllers.TransactionController;
 
 import java.io.File;
 import java.io.IOException;

@@ -11,7 +11,9 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
+import portfolio.controllers.MainViewController;
 import portfolio.controllers.SettingsController;
+import portfolio.controllers.TransactionController;
 import portfolio.models.Addresses;
 
 import java.awt.event.ActionEvent;
@@ -110,6 +112,8 @@ public class AddAdressView implements Initializable {
         for (Addresses listAdress : this.listAdresses) {
             SettingsController.getInstance().listAddresses.add(listAdress.getAddress());
         }
+        MainViewController.getInstance().plotUpdate("Rewards");
+        MainViewController.getInstance().plotUpdate("Portfolio");
     }
     public void loadAddresses(){
         String savePath = SettingsController.getInstance().DEFI_PORTFOLIO_HOME + "Addresses.csv";

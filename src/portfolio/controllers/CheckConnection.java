@@ -41,16 +41,13 @@ public class CheckConnection extends TimerTask {
                                 double progress = Math.floor(((double)currentBlockCount*10000.0/(double)maxBlockCount))/100.0;
                                 if(progress > 100)progress=100;
                                 if(currentBlockCount>maxBlockCount)currentBlockCount=maxBlockCount;
-                                if(SettingsController.getInstance().getPlatform().equals("mac")){
-                                    try {
-                                        FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio");
-                                        myWriter.write("<html><body>"+SettingsController.getInstance().translationList.getValue().get("SyncData").toString() + progress+ "% <br>("+currentBlockCount+"/"+maxBlockCount+")</body></html>");
-                                        myWriter.close();
-                                    } catch (IOException e) {
-                                        SettingsController.getInstance().logger.warning("Could not write to update.portfolio."); }
-                                }else{
-                                    TransactionController.getInstance().jl.setText("<html><body>"+SettingsController.getInstance().translationList.getValue().get("SyncData").toString() + progress+ "% <br>("+currentBlockCount+"/"+maxBlockCount+")</body></html>");
-                                }
+                                try {
+                                    FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio");
+                                    myWriter.write("<html><body>"+SettingsController.getInstance().translationList.getValue().get("SyncData").toString() + progress+ "% <br>("+currentBlockCount+"/"+maxBlockCount+")</body></html>");
+                                    myWriter.close();
+                                } catch (IOException e) {
+                                    SettingsController.getInstance().logger.warning("Could not write to update.portfolio."); }
+
 
                                 this.mainViewController.settingsController.selectedLaunchSync = currentBlockCount<maxBlockCount;
 
