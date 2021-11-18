@@ -18,7 +18,7 @@ if __name__ == '__main__':
    # credentials = var[1]
    # listAdresses = var[2]
 
-    # In Zukunft als übergabeparamter von java
+    # In Zukunt über Übergabeparamter
     credentials = {}
     credentials['rpc_username'] = 'bla'
     credentials['rpc_password'] = 'blabla'
@@ -54,12 +54,9 @@ if __name__ == '__main__':
     data = data.drop(columns=['Amount','Coin'])
     data = data.reset_index()
 
-    # data['blockTime'][0].timestamp()
-    #
-    # date_series = pd.to_datetime( data['blockTime'], format="%d/%m/%Y")
-    # index = pd.DatetimeIndex(date_series)
-    # index = index.astype(np.int64).to_series() / 1000000000
+    index = pd.DatetimeIndex(data['blockTime'])
+    index = index.astype(np.int64).to_series() / 1000000000
+    index = index.reset_index(drop="True")
+    data['blockTime'] = index.astype(int)
 
     data.to_csv(os.environ.get("APPDATA")+'\\defi-portfolio\\transaction.portfolio', sep=';')
-
-    a=0
