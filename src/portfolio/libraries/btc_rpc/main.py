@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
 
     data = pd.DataFrame(poolpairs)
-  #  data = pd.read_json('C:/Users/Arthur/Desktop/test.json')
+#    data = pd.read_json('C:/Users/Arthur/Desktop/test.json')
 
     # Umwanldung in dataframe
     data['blockTime'] = pd.to_datetime(data['blockTime'], unit='s').dt.date
@@ -77,4 +77,13 @@ if __name__ == '__main__':
 
     # save to transaction.portfolio
     data = data.fillna('_')
+    data = data.sort_values(by=['blockTime'],ascending=True)
+
+
+    oldTransactions = pd.read_csv(os.environ.get("APPDATA")+'/defi-portfolio/transactionData.portfolio',sep=';',header=None)
+    oldTransactions.columns=["blockTime","owner", "type", "amounts","blockHash","blockHeight","poolID","txid"]
+    oldTransactions = pd.DataFrame(oldTransactions)
+
+    data.merge(oldTransactions,how='outer')
+
     data.to_csv(os.environ.get("APPDATA")+'\\defi-portfolio\\transactionData.portfolio', sep=';',header=False, index=False)
