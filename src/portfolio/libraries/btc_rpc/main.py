@@ -10,7 +10,7 @@ def create_connection_rpc(cred):
     return AuthServiceProxy(url)
 
 def get_history(address,maxBlockHeight,depth,limit):
-    poolpairs = rpc_connection.listaccounthistory("dFDKi7d4nHpSqG3vJjPtQ7AmGLaHkH3Fto",{"maxBlockHeight": 900000,"depth":2000,"no_rewards":False,"limit":2000})
+    poolpairs = rpc_connection.listaccounthistory(address,{"maxBlockHeight": maxBlockHeight,"depth":depth,"no_rewards":False,"limit":limit})
     return poolpairs
 
 if __name__ == '__main__':
@@ -38,6 +38,7 @@ if __name__ == '__main__':
 
 
     data = pd.DataFrame(poolpairs)
+   # data = pd.read_json('C:/Users/Arthur/Desktop/test.json')
 
     # Umwanldung in dataframe
     data['blockTime'] = pd.to_datetime(data['blockTime'], unit='s').dt.date
@@ -49,14 +50,12 @@ if __name__ == '__main__':
         splitted = i[0].split('@')
         splittedAmount.append(float(splitted[0]))
         splittedCoin.append(splitted[1])
-    splittedCoin = splittedCoin.pop(0)
-    splittedAmount = splittedAmount.pop(0)
     data.insert(len(data.columns), 'Amount', splittedAmount)
     data.insert(len(data.columns), 'Coin', splittedCoin)
     data=data.drop(columns='amounts')
 
     # sum amounts by date
-    data = data.groupby(data['blockTime']).agg({'owner':'last','blockHeight':'first','blockHash':'first','type':'first','poolID':'first','Amount': 'sum','Coin':'first'})
+    data = data.groupby(['blockTime','type','poolID','Coin'], as_index=False).agg({'owner':'last','blockHeight':'first','blockHash':'first','Amount': 'sum'})
     data["amounts"] = data["Amount"].astype(str)+"@"+data['Coin']
     data = data.drop(columns=['Amount','Coin'])
     data = data.reset_index()
