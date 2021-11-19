@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
 
     data = pd.DataFrame(poolpairs)
-   # data = pd.read_json('C:/Users/Arthur/Desktop/test.json')
+  #  data = pd.read_json('C:/Users/Arthur/Desktop/test.json')
 
     # Umwanldung in dataframe
     data['blockTime'] = pd.to_datetime(data['blockTime'], unit='s').dt.date
@@ -54,8 +54,14 @@ if __name__ == '__main__':
     data.insert(len(data.columns), 'Coin', splittedCoin)
     data=data.drop(columns='amounts')
 
+    # split dataFrame into rewards & commissions  and  rest
+    dataRewCom = data.query('type == "Rewards" or type == "Commission"')
+    dataRest = data.query('type != "Rewards" and type != "Commission"')
     # sum amounts by date
-    data = data.groupby(['blockTime','type','poolID','Coin'], as_index=False).agg({'owner':'last','blockHeight':'first','blockHash':'first','Amount': 'sum'})
+    dataRewCom = dataRewCom.groupby(['blockTime','type','poolID','Coin'], as_index=False).agg({'owner':'last','blockHeight':'first','blockHash':'first','Amount': 'sum'})
+
+    data = dataRewCom.append(dataRest)
+
     data["amounts"] = data["Amount"].astype(str)+"@"+data['Coin']
     data = data.drop(columns=['Amount','Coin'])
     data = data.reset_index()
@@ -67,7 +73,8 @@ if __name__ == '__main__':
     data['blockTime'] = index.astype(int)
 
     # reorder columns
-    data = data[["blockTime","owner", "type", "amounts","blockHash","blockHeight","poolID"]]
+    data = data[["blockTime","owner", "type", "amounts","blockHash","blockHeight","poolID","txid"]]
 
     # save to transaction.portfolio
-    data.to_csv(os.environ.get("APPDATA")+'\\defi-portfolio\\transaction.portfolio', sep=';')
+    data = data.fillna('_')
+    data.to_csv(os.environ.get("APPDATA")+'\\defi-portfolio\\transactionData.portfolio', sep=';',header=False, index=False)
