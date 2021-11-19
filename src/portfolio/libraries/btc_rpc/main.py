@@ -22,12 +22,19 @@ if __name__ == '__main__':
 
     pathConfig = str(Path.home())+'\\.defi\\defi.conf'
     confFile = pd.read_csv(open(pathConfig),header=None,sep='=')
-    confFile.set_index('0')
+    confFile=confFile.set_index(0)
     credentials = {}
     credentials['rpc_username'] = confFile.at['rpcuser',1]
     credentials['rpc_password'] = confFile.at['rpcpassword',1]
-    credentials['rpc_port'] = confFile.at['rpcport',1]
-    credentials['rpc_hostname'] = confFile.at['rpcbind',1]
+    if len(confFile.at['rpcport',1][0]) > 1:
+        credentials['rpc_port'] = confFile.at['rpcport',1][0]
+    else:
+        credentials['rpc_port'] = confFile.at['rpcport', 1]
+    if len(confFile.at['rpcbind',1][0]) > 1:
+        credentials['rpc_hostname'] = confFile.at['rpcbind',1][0]
+    else:
+        credentials['rpc_hostname'] = confFile.at['rpcbind',1]
+
 
     address = "dFDKi7d4nHpSqG3vJjPtQ7AmGLaHkH3Fto"
 
@@ -40,12 +47,15 @@ if __name__ == '__main__':
     local = 0
 
     if local == 0:
-        data = pd.DataFrame
+        data = pd.DataFrame()
         rpc_connection = create_connection_rpc(credentials)
         maxBlockHeight = rpc_connection.getblockcount()
-        for iAddress in range(0, addresses.__len__()-1):
+        for iAddress in range(0, addresses.__len__()):
             poolpairs = get_history(addresses.at[iAddress,0], maxBlockHeight, depth, limit)
-            data.append(pd.DataFrame(poolpairs))
+            if data.__len__() == 0:
+                data = pd.DataFrame(poolpairs)
+            else:
+                 data.append(pd.DataFrame(poolpairs))
 
     else:
         data = pd.read_json('C:/Users/Arthur/Desktop/test.json')
@@ -83,7 +93,10 @@ if __name__ == '__main__':
     data = data.reset_index()
 
     # reorder columns
-    data = data[["blockTime","owner", "type", "amounts","blockHash","blockHeight","poolID","txid"]]
+    if 'txid' in list(data.columns.values):
+         data = data[["blockTime","owner", "type", "amounts","blockHash","blockHeight","poolID","txid"]]
+    else:
+        data = data[["blockTime", "owner", "type", "amounts", "blockHash", "blockHeight", "poolID"]]
 
     # save to transaction.portfolio
     data = data.fillna('_')
