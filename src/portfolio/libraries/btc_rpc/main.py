@@ -4,6 +4,9 @@ from bitcoinrpc.authproxy import AuthServiceProxy
 import pandas as pd
 import os
 import numpy as np
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+pd.options.mode.chained_assignment = None
 
 def create_connection_rpc(cred):
     url = "http://%s:%s@%s:%s/"%(cred['rpc_username'], cred['rpc_password'], cred['rpc_hostname'], cred['rpc_port'])
@@ -15,9 +18,16 @@ def get_history(address,maxBlockHeight,depth,limit):
 
 if __name__ == '__main__':
 ######In Zukunt über Übergabeparamter von Java
-    # var = sys.argv[1:]
-    # credentials = var[1]
-    # listAdresses = var[2]
+#     credentials = {}
+#     credentials['rpc_username'] = sys.argv[1]
+#     credentials['rpc_password'] = sys.argv[2]
+#     credentials['rpc_port'] = sys.argv[3]
+#     credentials['rpc_hostname'] = sys.argv[4]
+#     address = sys.argv[5]
+#     maxBlockHeight = sys.argv[6]
+#     depth = sys.argv[7]
+#     limit = sys.argv[8]
+#     addresses tbd. sys.argv[9]...sys.argv[n]
 
     credentials = {}
     credentials['rpc_username'] = 'bla'
@@ -40,9 +50,6 @@ if __name__ == '__main__':
     data = pd.DataFrame(poolpairs)
 #    data = pd.read_json('C:/Users/Arthur/Desktop/test.json')
 
-    # Umwanldung in dataframe
-    data['blockTime'] = pd.to_datetime(data['blockTime'], unit='s').dt.date
-
     # Aufsplittung dfi und betrag
     splittedAmount = []
     splittedCoin = []
@@ -57,8 +64,17 @@ if __name__ == '__main__':
     # split dataFrame into rewards & commissions  and  rest
     dataRewCom = data.query('type == "Rewards" or type == "Commission"')
     dataRest = data.query('type != "Rewards" and type != "Commission"')
+
+    # Umwanldung in dataframe
+    dataRewCom['blockTime'] = pd.to_datetime(dataRewCom['blockTime'], unit='s').dt.date
     # sum amounts by date
     dataRewCom = dataRewCom.groupby(['blockTime','type','poolID','Coin'], as_index=False).agg({'owner':'last','blockHeight':'first','blockHash':'first','Amount': 'sum'})
+
+    # date time to unix timestamp
+    index = pd.DatetimeIndex(dataRewCom['blockTime'])
+    index = index.astype(np.int64).to_series() / 1000000000
+    index = index.reset_index(drop="True")
+    dataRewCom['blockTime'] = index.astype(int)
 
     data = dataRewCom.append(dataRest)
 
@@ -66,19 +82,12 @@ if __name__ == '__main__':
     data = data.drop(columns=['Amount','Coin'])
     data = data.reset_index()
 
-    # date time to unix timestamp
-    index = pd.DatetimeIndex(data['blockTime'])
-    index = index.astype(np.int64).to_series() / 1000000000
-    index = index.reset_index(drop="True")
-    data['blockTime'] = index.astype(int)
-
     # reorder columns
     data = data[["blockTime","owner", "type", "amounts","blockHash","blockHeight","poolID","txid"]]
 
     # save to transaction.portfolio
     data = data.fillna('_')
     data = data.sort_values(by=['blockTime'],ascending=True)
-
 
     oldTransactions = pd.read_csv(os.environ.get("APPDATA")+'/defi-portfolio/transactionData.portfolio',sep=';',header=None)
     oldTransactions.columns=["blockTime","owner", "type", "amounts","blockHash","blockHeight","poolID","txid"]
