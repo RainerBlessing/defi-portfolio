@@ -1,6 +1,8 @@
+import csv
 import sys
 
 from bitcoinrpc.authproxy import AuthServiceProxy
+from pathlib import Path
 import pandas as pd
 import os
 import numpy as np
@@ -17,38 +19,33 @@ def get_history(address,maxBlockHeight,depth,limit):
     return poolpairs
 
 if __name__ == '__main__':
-######In Zukunt über Übergabeparamter von Java
-#     credentials = {}
-#     credentials['rpc_username'] = sys.argv[0]
-#     credentials['rpc_password'] = sys.argv[1]
-#     credentials['rpc_port'] = sys.argv[2]
-#     credentials['rpc_hostname'] = sys.argv[3]
-#     address = sys.argv[4]
-#     maxBlockHeight = sys.argv[5]
-#     depth = sys.argv[6]
-#     limit = sys.argv[7]
-#     numberAddresses = len(sys.argv)
-#     addresses tbd. sys.argv[9]...sys.argv[n]
 
+    pathConfig = str(Path.home())+'\\.defi\\defi.conf'
+    confFile = pd.read_csv(open(pathConfig),header=None,sep='=')
+    confFile.set_index('0')
     credentials = {}
-    credentials['rpc_username'] = 'bla'
-    credentials['rpc_password'] = 'blabla'
-    credentials['rpc_port'] = '8555'
-    credentials['rpc_hostname'] = '127.0.0.1'
+    credentials['rpc_username'] = confFile.at['rpcuser',1]
+    credentials['rpc_password'] = confFile.at['rpcpassword',1]
+    credentials['rpc_port'] = confFile.at['rpcport',1]
+    credentials['rpc_hostname'] = confFile.at['rpcbind',1]
 
     address = "dFDKi7d4nHpSqG3vJjPtQ7AmGLaHkH3Fto"
-    maxBlockHeight = 900000
+
     depth = 2000
     limit = 2000
+
+    # Addresse
+    addresses = pd.read_csv(open(os.environ.get("APPDATA")+'/defi-portfolio/Addresses.csv'),header=None)
 #################
     local = 0
 
     if local == 0:
+        data = pd.DataFrame
         rpc_connection = create_connection_rpc(credentials)
-        new_block = rpc_connection.getblockcount()
-      # ToDo: Loop über adressen
-        poolpairs = get_history(address, maxBlockHeight, depth, limit)
-        data = pd.DataFrame(poolpairs)
+        maxBlockHeight = rpc_connection.getblockcount()
+        for iAddress in range(0, addresses.__len__()-1):
+            poolpairs = get_history(addresses.at[iAddress,0], maxBlockHeight, depth, limit)
+            data.append(pd.DataFrame(poolpairs))
 
     else:
         data = pd.read_json('C:/Users/Arthur/Desktop/test.json')
@@ -94,5 +91,3 @@ if __name__ == '__main__':
 
     # add to transactio.portfolio
     data.to_csv(os.environ.get("APPDATA")+'/defi-portfolio/transactionData.portfolio', mode='a', header=False,sep=';',index = False)
-
-
