@@ -19,14 +19,15 @@ def get_history(address,maxBlockHeight,depth,limit):
 if __name__ == '__main__':
 ######In Zukunt über Übergabeparamter von Java
 #     credentials = {}
-#     credentials['rpc_username'] = sys.argv[1]
-#     credentials['rpc_password'] = sys.argv[2]
-#     credentials['rpc_port'] = sys.argv[3]
-#     credentials['rpc_hostname'] = sys.argv[4]
-#     address = sys.argv[5]
-#     maxBlockHeight = sys.argv[6]
-#     depth = sys.argv[7]
-#     limit = sys.argv[8]
+#     credentials['rpc_username'] = sys.argv[0]
+#     credentials['rpc_password'] = sys.argv[1]
+#     credentials['rpc_port'] = sys.argv[2]
+#     credentials['rpc_hostname'] = sys.argv[3]
+#     address = sys.argv[4]
+#     maxBlockHeight = sys.argv[5]
+#     depth = sys.argv[6]
+#     limit = sys.argv[7]
+#     numberAddresses = len(sys.argv)
 #     addresses tbd. sys.argv[9]...sys.argv[n]
 
     credentials = {}
@@ -40,15 +41,17 @@ if __name__ == '__main__':
     depth = 2000
     limit = 2000
 #################
+    local = 0
 
-    rpc_connection = create_connection_rpc(credentials)
-    new_block = rpc_connection.getblockcount()
-   # ToDo: Loop über adressen
-    poolpairs = get_history(address, maxBlockHeight, depth, limit)
+    if local == 0:
+        rpc_connection = create_connection_rpc(credentials)
+        new_block = rpc_connection.getblockcount()
+      # ToDo: Loop über adressen
+        poolpairs = get_history(address, maxBlockHeight, depth, limit)
+        data = pd.DataFrame(poolpairs)
 
-
-    data = pd.DataFrame(poolpairs)
-#    data = pd.read_json('C:/Users/Arthur/Desktop/test.json')
+    else:
+        data = pd.read_json('C:/Users/Arthur/Desktop/test.json')
 
     # Aufsplittung dfi und betrag
     splittedAmount = []
@@ -89,10 +92,7 @@ if __name__ == '__main__':
     data = data.fillna('_')
     data = data.sort_values(by=['blockTime'],ascending=True)
 
-    oldTransactions = pd.read_csv(os.environ.get("APPDATA")+'/defi-portfolio/transactionData.portfolio',sep=';',header=None)
-    oldTransactions.columns=["blockTime","owner", "type", "amounts","blockHash","blockHeight","poolID","txid"]
-    oldTransactions = pd.DataFrame(oldTransactions)
+    # add to transactio.portfolio
+    data.to_csv(os.environ.get("APPDATA")+'/defi-portfolio/transactionData.portfolio', mode='a', header=False,sep=';',index = False)
 
-    data.merge(oldTransactions,how='outer')
 
-    data.to_csv(os.environ.get("APPDATA")+'\\defi-portfolio\\transactionData.portfolio', sep=';',header=False, index=False)
