@@ -65,6 +65,7 @@ public class SettingsController {
     public boolean selectedLaunchDefid = false;
     public boolean selectedLaunchSync = true;
     public boolean checkCointracking = false;
+    public boolean updatePython = false;
     public ArrayList<String> listAddresses = new ArrayList();
 
     public StringProperty lastUpdate = new SimpleStringProperty("-");

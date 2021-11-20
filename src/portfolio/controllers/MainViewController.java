@@ -26,6 +26,7 @@ import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -221,36 +222,70 @@ public class MainViewController {
     public boolean updateTransactionData() {
 
         this.transactionController.getCoinAndTokenBalances();
-        if (new File(this.settingsController.DEFI_PORTFOLIO_HOME + this.settingsController.strTransactionData).exists()) {
+
+
+        try {
+            FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio");
+            myWriter.write("<html><body>"+SettingsController.getInstance().translationList.getValue().get("UpdateData").toString()+" </body></html>");
+            myWriter.close();
+        } catch (IOException e) {
+            SettingsController.getInstance().logger.warning("Could not write to update.portfolio."); }
+        //Start Python update
+
+        try {
+            File f = new File(System.getProperty("user.dir") + "/PortfolioData/"+"pythonUpdate.portfolio");
+            f.createNewFile();
+
+        } catch (Exception e) {
+            SettingsController.getInstance().logger.warning("Could not write python update file."); }
+
+       /* if (new File(this.settingsController.DEFI_PORTFOLIO_HOME + this.settingsController.strTransactionData).exists()) {
             int depth = Integer.parseInt(this.transactionController.getBlockCount()) - this.transactionController.getLocalBlockCount();
             return transactionController.updateTransactionData(depth);
         } else {
             return transactionController.updateTransactionData(Integer.parseInt(transactionController.getBlockCount()));
         }
+*/
+        return true;
 
+    }
 
+    public void finishedUpdate(){
+
+        try {
+            FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio");
+            myWriter.write("<html><body>"+SettingsController.getInstance().translationList.getValue().get("PreparingData").toString()+"</body></html>");
+            myWriter.close();
+        } catch (IOException e) {
+            SettingsController.getInstance().logger.warning("Could not write to update.portfolio."); }
+
+        this.transactionController.updateTransactionList(this.transactionController.getLocalTransactionList());
+        int localBlockCount = this.transactionController.getLocalBlockCount();
+        int blockCount = Integer.parseInt(this.transactionController.getBlockCount());
+        this.strCurrentBlockLocally.set(Integer.toString(localBlockCount));
+        if (localBlockCount > blockCount) {
+            this.strCurrentBlockOnBlockchain.set(Integer.toString(localBlockCount));
+        } else {
+            this.strCurrentBlockOnBlockchain.set(Integer.toString(blockCount));
+        }
+        this.transactionController.calcImpermanentLoss();
+        Date date = new Date(System.currentTimeMillis());
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        this.settingsController.lastUpdate.setValue(dateFormat.format(date));
+        this.settingsController.saveSettings();
+        this.bDataBase.setValue(this.updateSingleton = true);
+        this.plotUpdate(this.mainView.tabPane.getSelectionModel().getSelectedItem().getId());
+        File file = new File(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
+        if (file.exists()) file.delete();
     }
 
     public void btnUpdateDatabasePressed() {
 
         if (this.updateSingleton) {
             this.bDataBase.setValue(this.updateSingleton = false);
-            if (updateTransactionData()) {
-                int localBlockCount = this.transactionController.getLocalBlockCount();
-                int blockCount = Integer.parseInt(this.transactionController.getBlockCount());
-                this.strCurrentBlockLocally.set(Integer.toString(localBlockCount));
-                if (localBlockCount > blockCount) {
-                    this.strCurrentBlockOnBlockchain.set(Integer.toString(localBlockCount));
-                } else {
-                    this.strCurrentBlockOnBlockchain.set(Integer.toString(blockCount));
-                }
-                Date date = new Date(System.currentTimeMillis());
-                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-                this.settingsController.lastUpdate.setValue(dateFormat.format(date));
-                this.settingsController.saveSettings();
-            }
+            updateTransactionData();
         }
-        this.bDataBase.setValue(this.updateSingleton = true);
+
     }
 
     public void plotUpdate(String openedTab) {

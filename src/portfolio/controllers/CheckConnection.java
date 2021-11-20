@@ -32,9 +32,7 @@ public class CheckConnection extends TimerTask {
                                 SettingsController.getInstance().runCheckTimer = false;
                                 SettingsController.getInstance().errorBouncer = 0;
                                 this.mainViewController.btnUpdateDatabasePressed();
-                                this.mainViewController.plotUpdate(this.mainViewController.mainView.tabPane.getSelectionModel().getSelectedItem().getId());
-                                File file = new File(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
-                                if (file.exists()) file.delete();
+                                SettingsController.getInstance().updatePython = true;
                             }else{
                                 int currentBlockCount = Integer.parseInt(this.mainViewController.transactionController.getBlockCountRpc());
                                 int maxBlockCount = Integer.parseInt(this.mainViewController.transactionController.getBlockCount());
@@ -55,12 +53,17 @@ public class CheckConnection extends TimerTask {
                                     SettingsController.getInstance().runCheckTimer = false;
                                     SettingsController.getInstance().errorBouncer = 0;
                                     this.mainViewController.btnUpdateDatabasePressed();
-                                    this.mainViewController.plotUpdate(this.mainViewController.mainView.tabPane.getSelectionModel().getSelectedItem().getId());
-                                    File file = new File(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
-                                    if (file.exists()) file.delete();
+                                    SettingsController.getInstance().updatePython = true;
                                 }
 
                             }
+                        }
+                    }else if(SettingsController.getInstance().updatePython){
+                        this.mainViewController.plotUpdate(this.mainViewController.mainView.tabPane.getSelectionModel().getSelectedItem().getId());
+                        File file = new File(System.getProperty("user.dir") + "/PortfolioData/" + "pythonUpdate.portfolio");
+                        if (!file.exists()){
+                            SettingsController.getInstance().updatePython = false;
+                            MainViewController.getInstance().finishedUpdate();
                         }
                     }
                 }

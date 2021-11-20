@@ -54,7 +54,7 @@ public class TransactionController {
     public TransactionController() {
         if (classSingleton) {
             classSingleton = false;
-            transactionList = getLocalTransactionList();
+            updateTransactionList(getLocalTransactionList());
             this.localBlockCount = getLocalBlockCount();
             getLocalBalanceList();
             calcImpermanentLoss();
@@ -188,6 +188,16 @@ public class TransactionController {
 
     public ObservableList<TransactionModel> getTransactionList() {
         return transactionList;
+    }
+
+    public void updateTransactionList(List<TransactionModel> transactionList) {
+
+        if(this.transactionList == null){
+            this.transactionList= FXCollections.observableArrayList(transactionList);
+        }else{
+        this.transactionList.clear();
+        this.transactionList.addAll(transactionList);
+        }
     }
 
     public String getBlockCount() {
@@ -478,7 +488,7 @@ public class TransactionController {
         }
     }
 
-    public ObservableList<TransactionModel> getLocalTransactionList() {
+        public List<TransactionModel> getLocalTransactionList() {
 
         File strPortfolioData = new File(this.strTransactionData);
         List<TransactionModel> transactionList = new ArrayList<>();
@@ -503,12 +513,12 @@ public class TransactionController {
                 }
 
                 reader.close();
-                return FXCollections.observableArrayList(transactionList);
+                return transactionList;
             } catch (IOException e) {
                 this.settingsController.logger.warning("Exception occured: " + e.toString());
             }
         }
-        return FXCollections.observableArrayList(transactionList);
+        return transactionList;
     }
 
     public String getTokenFromID(String id) {

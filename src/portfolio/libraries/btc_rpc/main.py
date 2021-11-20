@@ -38,8 +38,8 @@ if __name__ == '__main__':
 
     address = "dFDKi7d4nHpSqG3vJjPtQ7AmGLaHkH3Fto"
 
-    depth = 2000
-    limit = 2000
+    depth = 10000
+    limit =depth* 2000
 
     # Addresse
     addresses = pd.read_csv(open(os.environ.get("APPDATA")+'/defi-portfolio/Addresses.csv'),header=None)
