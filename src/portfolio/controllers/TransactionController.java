@@ -771,7 +771,11 @@ public class TransactionController {
     }
 
     public String getPoolPairFromId(String poolID) {
-        String pool;
+        String pool= "-";
+
+        if(!poolID.isEmpty()){
+        if(Integer.parseInt(poolID)<=14){
+
         switch (poolID) {
             case "0":
             case "0.0":
@@ -837,11 +841,39 @@ public class TransactionController {
                 pool = "-";
                 break;
         }
+        }else{
+
+            try {
+                HttpURLConnection connection = (HttpURLConnection) new URL("https://ocean.defichain.com/v0/mainnet/tokens").openConnection();
+                String jsonText = "";
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                    jsonText = br.readLine();
+                } catch (Exception ex) {
+                    this.settingsController.logger.warning("Exception occured: " + ex.toString());
+                }
+                JSONObject obj = (JSONObject) JSONValue.parse(jsonText);
+                if (obj.get("data") != null) {
+                    JSONArray data = (JSONArray) obj.get("data");
+
+                    for (Object token : data) {
+                        JSONObject jsonToken = (JSONObject) token;
+                        if (jsonToken.get("id").toString().contains(poolID)) {
+                            pool = jsonToken.get("symbol").toString();
+                        }
+
+                    }
+                }
+            } catch (IOException e) {
+                this.settingsController.logger.warning("Exception occured: " + e.toString());
+            }
+        }}
         return pool;
     }
 
     public String getIdFromPoolPair(String poolID) {
-        String pool;
+        String pool= "-";
+
+        if(!poolID.contains("DUSD")){
         switch (poolID) {
             case "DFI":
                 pool = "0";
@@ -892,6 +924,32 @@ public class TransactionController {
                 pool = "-";
                 break;
         }
+    }else{
+
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URL("https://ocean.defichain.com/v0/mainnet/tokens").openConnection();
+            String jsonText = "";
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                jsonText = br.readLine();
+            } catch (Exception ex) {
+                this.settingsController.logger.warning("Exception occured: " + ex.toString());
+            }
+            JSONObject obj = (JSONObject) JSONValue.parse(jsonText);
+            if (obj.get("data") != null) {
+                JSONArray data = (JSONArray) obj.get("data");
+
+                for (Object token : data) {
+                    JSONObject jsonToken = (JSONObject) token;
+                    if (jsonToken.get("symbol").toString().contains(poolID)) {
+                        pool = jsonToken.get("id").toString();
+                    }
+
+                }
+            }
+        } catch (IOException e) {
+            this.settingsController.logger.warning("Exception occured: " + e.toString());
+        }
+    }
         return pool;
     }
 
