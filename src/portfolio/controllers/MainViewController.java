@@ -271,6 +271,7 @@ public class MainViewController {
         this.transactionController.calcImpermanentLoss();
         Date date = new Date(System.currentTimeMillis());
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         this.settingsController.lastUpdate.setValue(dateFormat.format(date));
         this.settingsController.saveSettings();
         this.bDataBase.setValue(this.updateSingleton = true);

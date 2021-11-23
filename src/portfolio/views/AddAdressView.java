@@ -10,7 +10,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import portfolio.controllers.MainViewController;
 import portfolio.controllers.SettingsController;
 import portfolio.controllers.TransactionController;
@@ -22,6 +25,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class AddAdressView implements Initializable {
@@ -68,6 +72,41 @@ public class AddAdressView implements Initializable {
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                     this.listAdresses.add(new Addresses(this.txtUserAddress.getText()));
                 } catch (Exception ex) {
+
+                    JSONObject obj = new JSONObject();
+                    obj.put("query", "query {userByKey (key: \""+this.txtUserAddress.getText()+"\"){addresses}}");
+                    byte[] postDataBytes = obj.toString().getBytes("UTF-8");
+
+                    HttpURLConnection connectionGraph = (HttpURLConnection) new URL("https://graphql.defichain-income.com/graphql").openConnection();
+                    connectionGraph.setDoOutput( true );
+                    connectionGraph.setInstanceFollowRedirects( false );
+                    connectionGraph.setRequestMethod( "POST" );
+                    connectionGraph.setRequestProperty("Content-Type", "application/json");
+                    try( DataOutputStream wr = new DataOutputStream( connectionGraph.getOutputStream())) {
+                        wr.write( postDataBytes );
+                    }
+
+
+                    String jsonText="";
+                    try (BufferedReader br = new BufferedReader(new InputStreamReader(connectionGraph.getInputStream()))) {
+                        jsonText = br.readLine();
+                    } catch (Exception exc) {
+                        SettingsController.getInstance().logger.warning("Exception occured: " + ex.toString());
+                    }
+
+                    JSONObject response =   (JSONObject) JSONValue.parse(jsonText);
+                    JSONObject data = (JSONObject)response.get("data");
+
+                    if(!data.get("userByKey").toString().contains("null")){
+
+                        JSONObject addresses = (JSONObject)data.get("userByKey");
+                        List<String> addressList = (List) addresses.get("addresses");
+
+                        for(String address : addressList){
+                            this.listAdresses.add(new Addresses(address));
+                        }
+                    }else{
+
                     lblNoValidAddress.setVisible(true);
                     int delay = 5000;
                     ActionListener taskPerfomer = new ActionListener() {
@@ -77,6 +116,8 @@ public class AddAdressView implements Initializable {
                         }
                     };
                     new javax.swing.Timer(delay,taskPerfomer).start();
+
+                    }
                 }
             } catch (IOException e) {
                 SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());

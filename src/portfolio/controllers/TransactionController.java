@@ -613,6 +613,7 @@ public class TransactionController {
     public String getDate(String blockTime, String intervall) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(Long.parseLong(blockTime) * 1000L);
+        cal.setTimeZone(TimeZone.getTimeZone("UTC"));
         int year = cal.get(Calendar.YEAR);
         int month = cal.get(Calendar.MONTH) + 1;
         int week = cal.get(Calendar.WEEK_OF_YEAR);
@@ -773,7 +774,7 @@ public class TransactionController {
     public String getPoolPairFromId(String poolID) {
         String pool= "-";
 
-        if(!poolID.isEmpty()){
+        if(!poolID.isEmpty() &&  !poolID.contains("_")){
         if(Integer.parseInt(poolID)<=14){
 
         switch (poolID) {
@@ -1064,6 +1065,7 @@ public class TransactionController {
     public String convertTimeStampToString(long timeStamp) {
         Date date = new Date(timeStamp * 1000L);
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         return dateFormat.format(date);
     }
 

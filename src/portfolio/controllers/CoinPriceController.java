@@ -31,7 +31,6 @@ public class CoinPriceController {
 
         CoinPriceModel coinPrice = getCoinPriceLocal(this.strCoinPriceData);
         CoinGeckoApiClient client = new CoinGeckoApiClientImpl();
-
         long currentTimeStamp = new Timestamp(System.currentTimeMillis()).getTime() / 1000L;
         try {
 

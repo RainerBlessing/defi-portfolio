@@ -1236,8 +1236,9 @@ public class MainView implements Initializable {
                 if (empty) {
                     setText(null);
                 } else {
-                    Date date = new Date(blockTime * 1000L);
+                    Date date = new Date(blockTime*1000L );
                     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                    dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
                     setText(dateFormat.format(date));
                 }
             }

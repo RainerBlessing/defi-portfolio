@@ -19,6 +19,8 @@ def get_history(address,maxBlockHeight,depth,limit):
     return poolpairs
 
 if __name__ == '__main__':
+    #pfad = sys.argv[1]
+    pfad = os.environ.get("APPDATA")+'\\defi-portfolio'
 
     pathConfig = str(Path.home())+'\\.defi\\defi.conf'
     confFile = pd.read_csv(open(pathConfig),header=None,sep='=')
@@ -36,13 +38,18 @@ if __name__ == '__main__':
         credentials['rpc_hostname'] = confFile.at['rpcbind',1]
 
 
-    address = "dFDKi7d4nHpSqG3vJjPtQ7AmGLaHkH3Fto"
-
-    depth = 10000
-    limit =depth* 2000
+    # get local block count
+    if os.path.isfile(pfad +'/transactionData.portfolio'):
+        transactions = pd.read_csv(open(pfad + '/transactionData.portfolio'),sep=';')
+        if transactions.__len__() > 0:
+             firstBlock = transactions.iloc[transactions.__len__() - 1, 5]
+        else:
+            firstBlock = 468146
+    else:
+        firstBlock = 468146
 
     # Addresse
-    addresses = pd.read_csv(open(os.environ.get("APPDATA")+'/defi-portfolio/Addresses.csv'),header=None)
+    addresses = pd.read_csv(open(pfad + '/Addresses.csv'),header = None)
 #################
     local = 0
 
@@ -50,26 +57,64 @@ if __name__ == '__main__':
         data = pd.DataFrame()
         rpc_connection = create_connection_rpc(credentials)
         maxBlockHeight = rpc_connection.getblockcount()
+        depth = 10000
+        limit = depth * 2000
+        numAddress = 1
         for iAddress in range(0, addresses.__len__()):
-            poolpairs = get_history(addresses.at[iAddress,0], maxBlockHeight, depth, limit)
-            if data.__len__() == 0:
-                data = pd.DataFrame(poolpairs)
-            else:
-                 data.append(pd.DataFrame(poolpairs))
+            depth = 10000
+            limit = depth * 2000
+
+            # for schleife über blöcke in 10.000 Schritten
+            for iBlocks in range(maxBlockHeight, firstBlock, -depth):
+                print(((maxBlockHeight-iBlocks)/(maxBlockHeight-firstBlock)))
+                f = open(pfad+'/update.portfolio', 'w')
+                f.write('Data Update:\n'+addresses.at[iAddress,0]+' ('+str(numAddress)+'/'+str(addresses.__len__())+')\n'+str(round(((maxBlockHeight-iBlocks)/(maxBlockHeight-firstBlock))*100,0))+'%')
+                f.close()
+                if iBlocks - firstBlock >= depth:
+                    poolpairs = get_history(addresses.at[iAddress,0], iBlocks, depth, limit)
+                    if data.__len__() == 0:
+                        data = pd.DataFrame(poolpairs)
+                    else:
+                        data = data.append(pd.DataFrame(poolpairs),ignore_index = True)
+
+                if iBlocks - firstBlock < depth:
+                    poolpairs = get_history(addresses.at[iAddress, 0], iBlocks, int(iBlocks - firstBlock), limit)
+                    if data.__len__() == 0:
+                        data = pd.DataFrame(poolpairs)
+                    else:
+                        data.append(pd.DataFrame(poolpairs))
+            numAddress = numAddress +1
 
     else:
         data = pd.read_json('C:/Users/Arthur/Desktop/test.json')
 
+
+
     # Aufsplittung dfi und betrag
     splittedAmount = []
     splittedCoin = []
+    rawDataAmount = []
+    rawData = data
     for i in data['amounts']:
         splitted = i[0].split('@')
         splittedAmount.append(float(splitted[0]))
         splittedCoin.append(splitted[1])
+        rawDataAmount.append( str(i).replace('[\'', '').replace('\']', ''))
+    # export all single data
+    rawData['amounts']=rawDataAmount
+    rawData = rawData.sort_values(by=['blockTime'],ascending=True)
+    rawData = rawData.fillna('_')
+    if 'txid' in list(rawData.columns.values):
+         rawData = rawData[["blockTime","owner", "type", "amounts","blockHash","blockHeight","poolID","txid"]]
+    else:
+        rawData = rawData[["blockTime", "owner", "type", "amounts", "blockHash", "blockHeight", "poolID"]]
+    rawData.to_csv(pfad+'/rawData.portfolio', mode='a', header=False,sep=';',index = False)
+    ###############
+
     data.insert(len(data.columns), 'Amount', splittedAmount)
     data.insert(len(data.columns), 'Coin', splittedCoin)
     data=data.drop(columns='amounts')
+
 
     # split dataFrame into rewards & commissions  and  rest
     dataRewCom = data.query('type == "Rewards" or type == "Commission"')
@@ -85,6 +130,7 @@ if __name__ == '__main__':
     index = index.astype(np.int64).to_series() / 1000000000
     index = index.reset_index(drop="True")
     dataRewCom['blockTime'] = index.astype(int)
+    dataRewCom['blockTime'] = dataRewCom['blockTime'] + (24*60*60)-1
 
     data = dataRewCom.append(dataRest)
 
@@ -103,4 +149,6 @@ if __name__ == '__main__':
     data = data.sort_values(by=['blockTime'],ascending=True)
 
     # add to transactio.portfolio
-    data.to_csv(os.environ.get("APPDATA")+'/defi-portfolio/transactionData.portfolio', mode='a', header=False,sep=';',index = False)
+    data.to_csv(pfad+'/transactionData.portfolio', mode='a', header=False,sep=';',index = False)
+
+    os.remove(pfad+'/update.portfolio')
