@@ -22,6 +22,8 @@ import portfolio.Main;
 import portfolio.models.*;
 import portfolio.services.ExportService;
 import portfolio.views.MainView;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -56,7 +58,7 @@ public class MainViewController {
     public ExportService expService;
     public boolean updateSingleton = true;
     final Delta dragDelta = new Delta();
-
+    public Process defidProcess;
     private static MainViewController OBJ = null;
 
     static {
@@ -231,6 +233,41 @@ public class MainViewController {
         } catch (IOException e) {
             SettingsController.getInstance().logger.warning("Could not write to update.portfolio."); }
         //Start Python update
+        try {
+            // Start skript
+            switch (this.settingsController.getPlatform()) {
+                case "mac":
+
+                    defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/./" + "defi.sh");
+                    break;
+                case "win":
+                    String path = System.getProperty("user.dir")+"\\defi-portfolio\\src\\portfolio\\libraries\\updatePortfolio.exe";
+                    String[] commands = {"cmd", "/c", "start", "\"Update Portfolio\"", path,SettingsController.getInstance().DEFI_PORTFOLIO_HOME.replace("/","\\")+"transactionData.portfolio"};
+                    defidProcess = Runtime.getRuntime().exec(commands);
+                    break;
+                case "linux":
+                    int notfound = 0;
+                    try {
+                        defidProcess = Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                    } catch (Exception e) {
+                        notfound++;
+                    }
+                    try {
+                        defidProcess = Runtime.getRuntime().exec("/usr/bin/konsole -e " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                    } catch (Exception e) {
+                        notfound++;
+                    }
+                    if (notfound == 2) {
+                        JOptionPane.showMessageDialog(null, "Could not found /usr/bin/x-terminal-emulator or\n /usr/bin/konsole", "Terminal not found", JOptionPane.ERROR_MESSAGE);
+                    }
+                    break;
+            }
+
+
+        } catch (Exception e) {
+            this.settingsController.logger.warning("Exception occured: " + e.toString());
+        }
+
 
         try {
             File f = new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + "pythonUpdate.portfolio");
