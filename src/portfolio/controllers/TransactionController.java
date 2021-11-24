@@ -318,7 +318,7 @@ public class TransactionController {
                 if(percentage>100.0)percentage=100.0;
 
                 try {
-                    FileWriter myWriter = new FileWriter(System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/" + "update.portfolio");
+                    FileWriter myWriter = new FileWriter(SettingsController.getInstance().DEFI_PORTFOLIO_HOME +  "update.portfolio");
                     myWriter.write(this.settingsController.translationList.getValue().get("UpdateData").toString() + percentage + "%");
                     myWriter.close();
                 } catch (IOException e) {
@@ -683,94 +683,6 @@ public class TransactionController {
         }
     }
 
-    public boolean updateTransactionData(int depth) {
-
-        List<TransactionModel> transactionListNew = getListAccountHistoryRpc(depth);
-        List<TransactionModel> updateTransactionList = new ArrayList<>();
-        int counter = 0;
-        for (int i = transactionListNew.size() - 1; i >= 0; i--) {
-            if (transactionListNew.get(i).blockHeightProperty.getValue() > this.localBlockCount) {
-                transactionList.add(transactionListNew.get(i));
-                updateTransactionList.add(transactionListNew.get(i));
-                //if (!transactionListNew.get(i).getTypeValue().equals("UtxosToAccount") | !transactionListNew.get(i).getTypeValue().equals("AccountToUtxos"))
-                // addBalanceModel(transactionListNew.get(i));
-                //
-                if (transactionListNew.get(i).typeProperty.getValue().equals("Rewards") | transactionListNew.get(i).typeProperty.getValue().equals("Commission"))
-                    addToPortfolioModel(transactionListNew.get(i));
-
-                try {
-                    if (counter > 1000) {
-                        FileWriter myWriter = new FileWriter(System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/" + "update.portfolio");
-                        myWriter.write(this.settingsController.translationList.getValue().get("PreparingData").toString() + Math.ceil((((double) transactionListNew.size() - i) / (double) transactionListNew.size()) * 100) + "%");
-                        myWriter.close();
-                        counter = 0;
-                    }
-                } catch (IOException e) {
-                    this.settingsController.logger.warning("Could not write to update.portfolio.");
-                }
-
-                counter++;
-            }
-        }
-        int i = 1;
-
-        if (updateTransactionList.size() > 0) {
-            try {
-
-                updateTransactionList.sort(Comparator.comparing(TransactionModel::getBlockTime));
-                PrintWriter writer = new PrintWriter(new FileWriter(this.strTransactionData, true));
-                String exportSplitter = ";";
-                counter = 0;
-                for (TransactionModel transactionModel : updateTransactionList) {
-                    counter++;
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(transactionModel.blockTimeProperty.getValue()).append(exportSplitter);
-                    sb.append(transactionModel.ownerProperty.getValue()).append(exportSplitter);
-                    sb.append(transactionModel.typeProperty.getValue()).append(exportSplitter);
-                    sb.append(transactionModel.amountProperty.getValue()).append(exportSplitter);
-                    sb.append(transactionModel.blockHashProperty.getValue()).append(exportSplitter);
-                    sb.append(transactionModel.blockHeightProperty.getValue()).append(exportSplitter);
-                    sb.append(transactionModel.poolIDProperty.getValue()).append(exportSplitter);
-                    if (transactionModel.txIDProperty.getValue().equals(""))
-                        sb.append("\"\"");
-                    else
-                        sb.append(transactionModel.txIDProperty.getValue());
-
-                    sb.append("\n");
-
-                    try {
-                        if (counter > 1000) {
-                            FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
-                            myWriter.write(this.settingsController.translationList.getValue().get("SaveData").toString() + Math.ceil(((double) i / updateTransactionList.size()) * 100) + "%");
-                            myWriter.close();
-                            counter = 0;
-                        }
-                    } catch (IOException e) {
-                        this.settingsController.logger.warning("Could not write to update.portfolio.");
-                    }
-
-                    i++;
-                    writer.write(sb.toString());
-                    sb = null;
-                }
-                writer.close();
-                calcImpermanentLoss();
-                this.localBlockCount = transactionList.get(transactionList.size() - 1).blockHeightProperty.getValue();
-                stopServer();
-                transactionListNew = null;
-                updateTransactionList = null;
-                return true;
-            } catch (IOException e) {
-                this.settingsController.logger.warning("Exception occured: " + e.toString());
-            }
-        } else {
-            MainView.getInstance().showNoDataWindow();
-        }
-        stopServer();
-        return false;
-
-    }
-
     public String getPoolPairFromId(String poolID) {
         String pool= "-";
 
@@ -1126,7 +1038,7 @@ public class TransactionController {
         Timer checkTimer = new Timer("");
 
         try {
-            FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
+            FileWriter myWriter = new FileWriter(SettingsController.getInstance().DEFI_PORTFOLIO_HOME +  "update.portfolio");
             myWriter.write(MainViewController.getInstance().settingsController.translationList.getValue().get("ConnectNode").toString());
             myWriter.close();
 

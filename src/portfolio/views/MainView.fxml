@@ -209,17 +209,17 @@
     <AnchorPane id="AnchorPanelRawData" fx:id="anchorPanelRawData" layoutX="194.0" layoutY="27.0" prefHeight="438.0" prefWidth="556.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <TableView fx:id="rawDataTable" prefHeight="409.0" prefWidth="550.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <columns>
-                <TableColumn fx:id="blockTimeColumn" sortable="false" text="Date" />
-                <TableColumn fx:id="typeColumn" sortable="false" text="Operation" />
-                <TableColumn fx:id="cryptoValueColumn" sortable="false" text="Amount" />
-                <TableColumn fx:id="cryptoCurrencyColumn" sortable="false" text="Cryptocurrency" />
-                <TableColumn fx:id="fiatValueColumn" sortable="false" text="FIAT value" />
-                <TableColumn fx:id="fiatCurrencyColumn" sortable="false" text="FIAT currency" />
-                <TableColumn fx:id="poolIDColumn" sortable="false" text="Pool Pair" />
-                <TableColumn fx:id="blockHeightColumn" sortable="false" text="Block Height" />
-                <TableColumn fx:id="blockHashColumn" sortable="false" text="Block Hash" />
-                <TableColumn fx:id="ownerColumn" sortable="false" text="Owner" />
-                <TableColumn fx:id="transactionColumn" sortable="false" text="Transaction Hash" />
+                <TableColumn fx:id="blockTimeColumn" text="Date" />
+                <TableColumn fx:id="typeColumn" text="Operation" />
+                <TableColumn fx:id="cryptoValueColumn" text="Amount" />
+                <TableColumn fx:id="cryptoCurrencyColumn" text="Cryptocurrency" />
+                <TableColumn fx:id="fiatValueColumn" text="FIAT value" />
+                <TableColumn fx:id="fiatCurrencyColumn" text="FIAT currency" />
+                <TableColumn fx:id="poolIDColumn" text="Pool Pair" />
+                <TableColumn fx:id="blockHeightColumn" text="Block Height" />
+                <TableColumn fx:id="blockHashColumn" text="Block Hash" />
+                <TableColumn fx:id="ownerColumn" text="Owner" />
+                <TableColumn fx:id="transactionColumn"  text="Transaction Hash" />
             </columns>
         </TableView>
         <padding>

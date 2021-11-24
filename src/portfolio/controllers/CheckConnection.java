@@ -24,7 +24,7 @@ public class CheckConnection extends TimerTask {
                             } else {
                                 SettingsController.getInstance().runCheckTimer = false;
                                 SettingsController.getInstance().errorBouncer = 0;
-                                File file = new File(System.getProperty("user.dir".replace("\\","/")) + "/PortfolioData/" + "update.portfolio");
+                                File file = new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + "update.portfolio");
                                 if (file.exists()) file.delete();
                             }
                         } else {
@@ -40,7 +40,7 @@ public class CheckConnection extends TimerTask {
                                 if(progress > 100)progress=100;
                                 if(currentBlockCount>maxBlockCount)currentBlockCount=maxBlockCount;
                                 try {
-                                    FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio");
+                                    FileWriter myWriter = new FileWriter(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + "/transactionData.portfolio"+"update.portfolio");
                                     myWriter.write("<html><body>"+SettingsController.getInstance().translationList.getValue().get("SyncData").toString() + progress+ "% <br>("+currentBlockCount+"/"+maxBlockCount+")</body></html>");
                                     myWriter.close();
                                 } catch (IOException e) {
@@ -60,7 +60,7 @@ public class CheckConnection extends TimerTask {
                         }
                     }else if(SettingsController.getInstance().updatePython){
                         this.mainViewController.plotUpdate(this.mainViewController.mainView.tabPane.getSelectionModel().getSelectedItem().getId());
-                        File file = new File(System.getProperty("user.dir") + "/PortfolioData/" + "pythonUpdate.portfolio");
+                        File file = new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + "pythonUpdate.portfolio");
                         if (!file.exists()){
                             SettingsController.getInstance().updatePython = false;
                             MainViewController.getInstance().finishedUpdate();

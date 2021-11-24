@@ -225,7 +225,7 @@ public class MainViewController {
 
 
         try {
-            FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio");
+            FileWriter myWriter = new FileWriter(SettingsController.getInstance().DEFI_PORTFOLIO_HOME +"update.portfolio");
             myWriter.write("<html><body>"+SettingsController.getInstance().translationList.getValue().get("UpdateData").toString()+" </body></html>");
             myWriter.close();
         } catch (IOException e) {
@@ -233,7 +233,7 @@ public class MainViewController {
         //Start Python update
 
         try {
-            File f = new File(System.getProperty("user.dir") + "/PortfolioData/"+"pythonUpdate.portfolio");
+            File f = new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + "pythonUpdate.portfolio");
             f.createNewFile();
 
         } catch (Exception e) {
@@ -253,7 +253,7 @@ public class MainViewController {
     public void finishedUpdate(){
 
         try {
-            FileWriter myWriter = new FileWriter(System.getProperty("user.dir") + "/PortfolioData/"+"update.portfolio");
+            FileWriter myWriter = new FileWriter(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + "update.portfolio");
             myWriter.write("<html><body>"+SettingsController.getInstance().translationList.getValue().get("PreparingData").toString()+"</body></html>");
             myWriter.close();
         } catch (IOException e) {
@@ -276,7 +276,7 @@ public class MainViewController {
         this.settingsController.saveSettings();
         this.bDataBase.setValue(this.updateSingleton = true);
         this.plotUpdate(this.mainView.tabPane.getSelectionModel().getSelectedItem().getId());
-        File file = new File(System.getProperty("user.dir") + "/PortfolioData/" + "update.portfolio");
+        File file = new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME +  "update.portfolio");
         if (file.exists()) file.delete();
     }
 
@@ -457,11 +457,10 @@ public class MainViewController {
         });
 
         this.poolPairModelList.sort(Comparator.comparing(PoolPairModel::getBlockTimeValue));
-        boolean checkValues = true;
-        if (poolPairModelList.size() == 0) checkValues = false;
+
         this.poolPairList.clear();
 
-        if (checkValues & TransactionController.getInstance().impermanentLossList.size()>0) {
+        if (poolPairModelList.size() > 0 & TransactionController.getInstance().impermanentLossList.size()>0) {
 
             // add Impermanent Loss
             this.poolPairModelList.add(new PoolPairModel("", 0.0, 0.0, 0.0, "", 0.0, 0.0, 0.0, 0.0, ""));

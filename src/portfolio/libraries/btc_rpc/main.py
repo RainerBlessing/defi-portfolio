@@ -51,7 +51,7 @@ if __name__ == '__main__':
     # Addresse
     addresses = pd.read_csv(open(pfad + '/Addresses.csv'),header = None)
 #################
-    local = 0
+    local = 1
 
     if local == 0:
         data = pd.DataFrame()
@@ -82,13 +82,31 @@ if __name__ == '__main__':
                     if data.__len__() == 0:
                         data = pd.DataFrame(poolpairs)
                     else:
-                        data.append(pd.DataFrame(poolpairs))
+                        data = data.append(pd.DataFrame(poolpairs))
             numAddress = numAddress +1
 
     else:
         data = pd.read_json('C:/Users/Arthur/Desktop/test.json')
 
+    # Aufsplittung add/remove Pool und poolswap
+    swap = data.loc[data['type'] == 'PoolSwap']
+    data.drop(data.loc[data['type'] == 'PoolSwap'].index, inplace=True)
+    addPool = data.loc[data['type'] == 'AddPoolLiquidity']
+    data.drop(data.loc[data['type'] == 'AddPoolLiquidity'].index, inplace=True)
+    removePool = data.loc[data['type'] == 'RemovePoolLiquidity']
+    data.drop(data.loc[data['type'] == 'RemovePoolLiquidity'].index, inplace=True)
+    swapAdd = swap.append(addPool)
+    swapAddRemove = swapAdd.append(removePool)
+    swapAddRemoveSingles = pd.DataFrame()
+    for i in range(0,swapAddRemove.__len__()):
+        amounts = swapAddRemove.iloc[i]['amounts']
+        for iAmount in range(0,amounts.__len__()):
+            swapAddRemove.iloc[i,7]=amounts[iAmount]
+            swapAddRemoveSingles = swapAddRemoveSingles.append(swapAddRemove.iloc[i])
+    data = data.append(swapAddRemoveSingles)
 
+    data['blockTime'] = data['blockTime'].astype(int)
+    data['blockHeight'] = data['blockHeight'].astype(int)
 
     # Aufsplittung dfi und betrag
     splittedAmount = []
@@ -96,7 +114,10 @@ if __name__ == '__main__':
     rawDataAmount = []
     rawData = data
     for i in data['amounts']:
-        splitted = i[0].split('@')
+        if isinstance(i, list):
+            splitted = i[0].split('@')
+        else:
+            splitted = i.split('@')
         splittedAmount.append(float(splitted[0]))
         splittedCoin.append(splitted[1])
         rawDataAmount.append( str(i).replace('[\'', '').replace('\']', ''))
@@ -151,4 +172,4 @@ if __name__ == '__main__':
     # add to transactio.portfolio
     data.to_csv(pfad+'/transactionData.portfolio', mode='a', header=False,sep=';',index = False)
 
-    os.remove(pfad+'/update.portfolio')
+    os.remove(pfad+'/pythonUpdate.portfolio')
