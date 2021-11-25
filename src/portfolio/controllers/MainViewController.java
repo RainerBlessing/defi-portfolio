@@ -242,7 +242,7 @@ public class MainViewController {
                     break;
                 case "win":
                     String path = System.getProperty("user.dir")+"\\defi-portfolio\\src\\portfolio\\libraries\\updatePortfolio.exe";
-                    String[] commands = {"cmd", "/c", "start", "\"Update Portfolio\"", path,SettingsController.getInstance().DEFI_PORTFOLIO_HOME.replace("/","\\")+"transactionData.portfolio"};
+                    String[] commands = {"cmd", "/c", "start", "\"Update Portfolio\"", path,SettingsController.getInstance().DEFI_PORTFOLIO_HOME,SettingsController.getInstance().PORTFOLIO_CONFIG_FILE_PATH};
                     defidProcess = Runtime.getRuntime().exec(commands);
                     break;
                 case "linux":
