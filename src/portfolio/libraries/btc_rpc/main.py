@@ -19,10 +19,12 @@ def get_history(address,maxBlockHeight,depth,limit):
     return poolpairs
 
 if __name__ == '__main__':
-    #pfad = sys.argv[1]
-    pfad = os.environ.get("APPDATA")+'\\defi-portfolio'
+    pathPortfolioData = sys.argv[1]
+    pathConfig = sys.argv[2]
+   # pathPortfolioData = os.environ.get("APPDATA") + '\\defi-portfolio'
+   # pathConfig = 'C:\\Users\\Arthur\\Desktop\\defiJava\\PortfolioData\\defi.conf'
 
-    pathConfig = str(Path.home())+'\\.defi\\defi.conf'
+
     confFile = pd.read_csv(open(pathConfig),header=None,sep='=')
     confFile=confFile.set_index(0)
     credentials = {}
@@ -39,8 +41,8 @@ if __name__ == '__main__':
 
 
     # get local block count
-    if os.path.isfile(pfad +'/transactionData.portfolio'):
-        transactions = pd.read_csv(open(pfad + '/transactionData.portfolio'),sep=';')
+    if os.path.isfile(pathPortfolioData + '/transactionData.portfolio'):
+        transactions = pd.read_csv(open(pathPortfolioData + '/transactionData.portfolio'), sep=';')
         if transactions.__len__() > 0:
              firstBlock = transactions.iloc[transactions.__len__() - 1, 5]
         else:
@@ -49,9 +51,9 @@ if __name__ == '__main__':
         firstBlock = 468146
 
     # Addresse
-    addresses = pd.read_csv(open(pfad + '/Addresses.csv'),header = None)
+    addresses = pd.read_csv(open(pathPortfolioData + '/Addresses.csv'), header = None)
 #################
-    local = 1
+    local = 0
 
     if local == 0:
         data = pd.DataFrame()
@@ -67,7 +69,7 @@ if __name__ == '__main__':
             # for schleife über blöcke in 10.000 Schritten
             for iBlocks in range(maxBlockHeight, firstBlock, -depth):
                 print(((maxBlockHeight-iBlocks)/(maxBlockHeight-firstBlock)))
-                f = open(pfad+'/update.portfolio', 'w')
+                f = open(pathPortfolioData + '/update.portfolio', 'w')
                 f.write('Data Update:\n'+addresses.at[iAddress,0]+' ('+str(numAddress)+'/'+str(addresses.__len__())+')\n'+str(round(((maxBlockHeight-iBlocks)/(maxBlockHeight-firstBlock))*100,0))+'%')
                 f.close()
                 if iBlocks - firstBlock >= depth:
@@ -108,6 +110,7 @@ if __name__ == '__main__':
     data['blockTime'] = data['blockTime'].astype(int)
     data['blockHeight'] = data['blockHeight'].astype(int)
 
+
     # Aufsplittung dfi und betrag
     splittedAmount = []
     splittedCoin = []
@@ -125,11 +128,17 @@ if __name__ == '__main__':
     rawData['amounts']=rawDataAmount
     rawData = rawData.sort_values(by=['blockTime'],ascending=True)
     rawData = rawData.fillna('_')
-    if 'txid' in list(rawData.columns.values):
-         rawData = rawData[["blockTime","owner", "type", "amounts","blockHash","blockHeight","poolID","txid"]]
-    else:
-        rawData = rawData[["blockTime", "owner", "type", "amounts", "blockHash", "blockHeight", "poolID"]]
-    rawData.to_csv(pfad+'/rawData.portfolio', mode='a', header=False,sep=';',index = False)
+
+    if 'txid' in list(rawData.columns.values) and 'poolID' not in list(rawData.columns.values):
+        rawData['poolID'] = '_'
+    elif 'txid' not in list(rawData.columns.values) and 'poolID' in list(rawData.columns.values):
+        rawData['txid'] = '_'
+    elif 'txid' not in list(rawData.columns.values) and 'poolID' not in list(rawData.columns.values):
+        rawData['poolID'] = '_'
+        rawData['txid'] = '_'
+    rawData = rawData[["blockTime", "owner", "type", "amounts", "blockHash", "blockHeight", "poolID", "txid"]]
+
+    rawData.to_csv(pathPortfolioData + '/rawData.portfolio', mode='a', header=False, sep=';', index = False)
     ###############
 
     data.insert(len(data.columns), 'Amount', splittedAmount)
@@ -144,9 +153,15 @@ if __name__ == '__main__':
     # Umwanldung in dataframe
     dataRewCom['blockTime'] = pd.to_datetime(dataRewCom['blockTime'], unit='s').dt.date
     # sum amounts by date
-    dataRewCom = dataRewCom.groupby(['blockTime','type','poolID','Coin'], as_index=False).agg({'owner':'last','blockHeight':'first','blockHash':'first','Amount': 'sum'})
+    if 'poolID' in list(dataRewCom.columns.values):
+        dataRewCom = dataRewCom.groupby(['blockTime','type','poolID','Coin'], as_index=False).agg({'owner':'last','blockHeight':'first','blockHash':'first','Amount': 'sum'})
+    else:
+        dataRewCom = dataRewCom.groupby(['blockTime', 'type', 'Coin'], as_index=False).agg({'owner': 'last', 'blockHeight': 'first', 'blockHash': 'first', 'Amount': 'sum'})
 
-    # date time to unix timestamp
+
+
+
+   # date time to unix timestamp
     index = pd.DatetimeIndex(dataRewCom['blockTime'])
     index = index.astype(np.int64).to_series() / 1000000000
     index = index.reset_index(drop="True")
@@ -160,16 +175,22 @@ if __name__ == '__main__':
     data = data.reset_index()
 
     # reorder columns
-    if 'txid' in list(data.columns.values):
-         data = data[["blockTime","owner", "type", "amounts","blockHash","blockHeight","poolID","txid"]]
-    else:
-        data = data[["blockTime", "owner", "type", "amounts", "blockHash", "blockHeight", "poolID"]]
+
+    if 'txid' in list(data.columns.values) and 'poolID' not in list(data.columns.values):
+        data['poolID'] = '_'
+    elif 'txid' not in list(data.columns.values) and 'poolID' in list(data.columns.values):
+        data['txid'] = '_'
+    elif 'txid' not in list(data.columns.values) and 'poolID' not in list(data.columns.values):
+        data['poolID'] = '_'
+        data['txid'] = '_'
+    data = data[["blockTime", "owner", "type", "amounts", "blockHash", "blockHeight", "poolID", "txid"]]
+
 
     # save to transaction.portfolio
     data = data.fillna('_')
     data = data.sort_values(by=['blockTime'],ascending=True)
 
     # add to transactio.portfolio
-    data.to_csv(pfad+'/transactionData.portfolio', mode='a', header=False,sep=';',index = False)
+    data.to_csv(pathPortfolioData + '/transactionData.portfolio', mode='a', header=False, sep=';', index = False)
 
-    os.remove(pfad+'/pythonUpdate.portfolio')
+    os.remove(pathPortfolioData + '/pythonUpdate.portfolio')
