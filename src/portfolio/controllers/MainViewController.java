@@ -248,12 +248,12 @@ public class MainViewController {
                 case "linux":
                     int notfound = 0;
                     try {
-                        defidProcess = Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                        defidProcess = Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " + SettingsController.getInstance().DEFI_PORTFOLIO_HOME + SettingsController.getInstance().PORTFOLIO_CONFIG_FILE_PATH);
                     } catch (Exception e) {
                         notfound++;
                     }
                     try {
-                        defidProcess = Runtime.getRuntime().exec("/usr/bin/konsole -e " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                        defidProcess = Runtime.getRuntime().exec("/usr/bin/konsole -e " + SettingsController.getInstance().DEFI_PORTFOLIO_HOME + SettingsController.getInstance().PORTFOLIO_CONFIG_FILE_PATH);
                     } catch (Exception e) {
                         notfound++;
                     }
@@ -288,7 +288,6 @@ public class MainViewController {
     }
 
     public void finishedUpdate(){
-
         try {
             FileWriter myWriter = new FileWriter(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + "update.portfolio");
             myWriter.write("<html><body>"+SettingsController.getInstance().translationList.getValue().get("PreparingData").toString()+"</body></html>");
