@@ -40,7 +40,7 @@ public class CheckConnection extends TimerTask {
                                 if(progress > 100)progress=100;
                                 if(currentBlockCount>maxBlockCount)currentBlockCount=maxBlockCount;
                                 try {
-                                    FileWriter myWriter = new FileWriter(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + "/transactionData.portfolio"+"update.portfolio");
+                                    FileWriter myWriter = new FileWriter(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + "update.portfolio");
                                     myWriter.write("<html><body>"+SettingsController.getInstance().translationList.getValue().get("SyncData").toString() + progress+ "% <br>("+currentBlockCount+"/"+maxBlockCount+")</body></html>");
                                     myWriter.close();
                                 } catch (IOException e) {
@@ -64,6 +64,7 @@ public class CheckConnection extends TimerTask {
                         if (!file.exists()){
                             SettingsController.getInstance().updatePython = false;
                             MainViewController.getInstance().finishedUpdate();
+                            TransactionController.getInstance().stopServer();
                         }
                     }
                 }

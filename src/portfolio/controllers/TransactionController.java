@@ -18,6 +18,9 @@ import java.net.URL;
 import java.net.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -1181,8 +1184,12 @@ public class TransactionController {
         FileChooser.ExtensionFilter extFilter =
                 new FileChooser.ExtensionFilter("DeFi Wallet CSV (*.csv)", "*.csv");
         fileChooser.getExtensionFilters().add(extFilter);
-        if(this.settingsController.lastWalletCSVImportPath != null && !this.settingsController.lastWalletCSVImportPath.isEmpty()){
+        Path path = Paths.get(this.settingsController.lastWalletCSVImportPath);
+
+        if(this.settingsController.lastWalletCSVImportPath != null && !this.settingsController.lastWalletCSVImportPath.isEmpty() && Files.exists(path)){
             fileChooser.setInitialDirectory(new File(this.settingsController.lastWalletCSVImportPath));
+        }else{
+            fileChooser.setInitialDirectory(new File(this.settingsController.DEFI_PORTFOLIO_HOME));
         }
 
         Label fileLabel = new Label();
