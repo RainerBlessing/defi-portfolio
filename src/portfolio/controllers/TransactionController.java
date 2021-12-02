@@ -56,6 +56,7 @@ public class TransactionController {
             classSingleton = false;
             updateTransactionList(getLocalTransactionList());
             this.localBlockCount = getLocalBlockCount();
+            updateBalanceList();
             getLocalBalanceList();
             calcImpermanentLoss();
         }
@@ -74,7 +75,7 @@ public class TransactionController {
 
                     if (transactionList.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue()) && !transactionList.get(i).cryptoCurrencyProperty.getValue().contains("-")) {
 
-                        if (coin1 == null && transactionList.get(i).cryptoCurrencyProperty.getValue().equals("DFI")) {
+                        if (coin1 == null && (transactionList.get(i).cryptoCurrencyProperty.getValue().equals("DFI")||transactionList.get(i).cryptoCurrencyProperty.getValue().equals("DUSD"))) {
                             coin1 = transactionList.get(i);
                         } else if (coin2 == null) {
                             coin2 = transactionList.get(i);
@@ -173,9 +174,13 @@ public class TransactionController {
         return portfolioList;
     }
 
-    public List<BalanceModel> getBalanceList() {
+    public List<BalanceModel> updateBalanceList() {
 
         return this.balanceList = getCoinAndTokenBalances();
+    }
+
+    public List<BalanceModel> getBalanceList() {
+        return this.balanceList;
     }
 
     public void clearPortfolioList() {
@@ -224,7 +229,7 @@ public class TransactionController {
         return "No connection";
     }
 
-    public String getPoolRatio(String poolID) {
+    public String getPoolRatio(String poolID,String priceRatio) {
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL("https://ocean.defichain.com/v0/mainnet/poolpairs").openConnection();
             String jsonText = "";
@@ -242,11 +247,77 @@ public class TransactionController {
                     JSONObject jsonObject = (JSONObject)transaction;
                     if(((JSONObject)transaction).get("id").toString().contains(poolID)){
                         JSONObject ratio =(JSONObject)jsonObject.get("priceRatio");
-                        return ((JSONObject) ratio).get("ab").toString();
+                        return ((JSONObject) ratio).get(priceRatio).toString();
                     }
                 }
 
             }
+        } catch (IOException e) {
+            this.settingsController.logger.warning("Exception occured: " + e.toString());
+        }
+
+        return "No connection";
+    }
+
+    public double getCurrencyFactor(){
+
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URL("https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/usd/"+SettingsController.getInstance().selectedFiatCurrency.getValue().toLowerCase()+".json").openConnection();
+            String jsonText = "";
+            String line = "";
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                 while((line=br.readLine()) != null){
+                     jsonText = jsonText+line;
+                 }
+            } catch (Exception ex) {
+                this.settingsController.logger.warning("Exception occured: " + ex.toString());
+            }
+            JSONObject obj = (JSONObject) JSONValue.parse(jsonText);
+            if (obj.get(SettingsController.getInstance().selectedFiatCurrency.getValue().toLowerCase()) != null) {
+
+                return Double.parseDouble(obj.get(SettingsController.getInstance().selectedFiatCurrency.getValue().toLowerCase()).toString());
+
+            }
+
+        } catch (IOException e) {
+            this.settingsController.logger.warning("Exception occured: " + e.toString());
+        }
+
+        return 1;
+
+    }
+
+    public String getPrice(String pool) {
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URL("https://ocean.defichain.com/v0/mainnet/prices?size=1000").openConnection();
+            String jsonText = "";
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                jsonText = br.readLine();
+            } catch (Exception ex) {
+                this.settingsController.logger.warning("Exception occured: " + ex.toString());
+            }
+            JSONObject obj = (JSONObject) JSONValue.parse(jsonText);
+            if (obj.get("data") != null) {
+
+                JSONArray data = (JSONArray) obj.get("data");
+
+                for (Object transaction : (JSONArray) data) {
+                    JSONObject jsonObject = (JSONObject)transaction;
+
+                    if(!pool.contains("DUSD-DFI")){
+                        if(((JSONObject)transaction).get("id").toString().contains(pool.replace("DUSD","USD"))){
+                            JSONObject price =(JSONObject)jsonObject.get("price");
+                            JSONObject aggregated =(JSONObject)price.get("aggregated");
+                            String amount =aggregated.get("amount").toString();
+                            return amount;
+                        }
+                    }else{
+                        return "1";
+                    }
+                }
+
+            }
+
         } catch (IOException e) {
             this.settingsController.logger.warning("Exception occured: " + e.toString());
         }
@@ -534,7 +605,7 @@ public class TransactionController {
         return jsonObject.get("result").toString();
     }
 
-    public JSONArray getAddressBalances(String address) {
+    public JSONArray getAddressTokenBalance(String address) {
 
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL("https://ocean.defichain.com/v0/mainnet/address/"+address+"/tokens").openConnection();
@@ -549,6 +620,30 @@ public class TransactionController {
             JSONArray jsonArray = (JSONArray) jsonObject.get("data");
 
             return jsonArray;
+        } catch (IOException e) {
+            this.settingsController.logger.warning("Exception occured: " + e.toString());
+        }
+        return null;
+
+    }
+
+    public String getAddressUtxoBalance(String address) {
+
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URL("https://ocean.defichain.com/v0/mainnet/address/"+address+"/balance").openConnection();
+            String jsonText = "";
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                jsonText = br.readLine();
+            } catch (Exception ex) {
+                this.settingsController.logger.warning("Exception occured: " + ex.toString());
+            }
+
+            JSONObject jsonObject = (JSONObject) JSONValue.parse(jsonText);
+
+            if(jsonObject == null) return null;
+            String balance = jsonObject.get("data").toString();
+
+            return balance;
         } catch (IOException e) {
             this.settingsController.logger.warning("Exception occured: " + e.toString());
         }
@@ -686,7 +781,7 @@ public class TransactionController {
     public String getPoolPairFromId(String poolID) {
         String pool= "-";
 
-        if(!poolID.isEmpty() &&  !poolID.contains("_")){
+        if(!poolID.isEmpty() &&  !poolID.contains("_") && !poolID.contains("-")){
         if(Integer.parseInt(poolID)<=14){
 
         switch (poolID) {
@@ -757,20 +852,22 @@ public class TransactionController {
         }else{
 
             try {
-                HttpURLConnection connection = (HttpURLConnection) new URL("https://ocean.defichain.com/v0/mainnet/tokens").openConnection();
+                HttpURLConnection connection = (HttpURLConnection) new URL("https://ocean.defichain.com/v0/mainnet/tokens?size=1000").openConnection();
                 String jsonText = "";
+
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                     jsonText = br.readLine();
                 } catch (Exception ex) {
                     this.settingsController.logger.warning("Exception occured: " + ex.toString());
                 }
+
                 JSONObject obj = (JSONObject) JSONValue.parse(jsonText);
                 if (obj.get("data") != null) {
                     JSONArray data = (JSONArray) obj.get("data");
 
                     for (Object token : data) {
                         JSONObject jsonToken = (JSONObject) token;
-                        if (jsonToken.get("id").toString().contains(poolID)) {
+                        if (jsonToken.get("id").toString().equals(poolID)) {
                             pool = jsonToken.get("symbol").toString();
                         }
 
@@ -840,7 +937,7 @@ public class TransactionController {
     }else{
 
         try {
-            HttpURLConnection connection = (HttpURLConnection) new URL("https://ocean.defichain.com/v0/mainnet/tokens").openConnection();
+            HttpURLConnection connection = (HttpURLConnection) new URL("https://ocean.defichain.com/v0/mainnet/tokens?size=1000").openConnection();
             String jsonText = "";
             try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 jsonText = br.readLine();
@@ -872,11 +969,13 @@ public class TransactionController {
         JSONArray jsonArray = new JSONArray();
         for (String address:
                 SettingsController.getInstance().listAddresses) {
-             jsonArray = getAddressBalances(address);
+             jsonArray = getAddressTokenBalance(address);
+
             for (Object token : jsonArray) {
                 JSONObject jsonToken = (JSONObject)token;
                 String tokenName = jsonToken.get("symbol").toString();
                 double tokenValue = Double.parseDouble(jsonToken.get("amount").toString());
+
                 if (!balanceTreeMap.containsKey(tokenName)) {
                     balanceTreeMap.put(tokenName,tokenValue);
                 } else {
@@ -884,6 +983,14 @@ public class TransactionController {
                     balanceTreeMap.put(tokenName, oldValue+tokenValue);
                 }
             }
+
+            if(!balanceTreeMap.containsKey("DFI")){
+                balanceTreeMap.put("DFI",0.0);
+            }
+            double oldValue = balanceTreeMap.get("DFI").doubleValue();
+            double bakanceValue = Double.parseDouble(getAddressUtxoBalance(address));
+            balanceTreeMap.put("DFI", oldValue+bakanceValue);
+
         }
 
 
@@ -891,17 +998,17 @@ public class TransactionController {
 
 
                 if (entry.getKey().contains("-")) {
-                    Double poolRatio = Double.parseDouble(getPoolRatio(this.getIdFromPoolPair(entry.getKey())));
+                    Double poolRatio = Double.parseDouble(getPoolRatio(this.getIdFromPoolPair(entry.getKey()),"ab"));
                     Double token1 = Math.sqrt(poolRatio * entry.getValue() * entry.getValue());
                     Double token2 = Math.sqrt(entry.getValue() * entry.getValue() / poolRatio);
                     try {
-                        balanceModelList.add(new BalanceModel(entry.getKey().split("-")[0], coinPriceController.getPriceFromTimeStamp(entry.getKey().split("-")[0] + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * token1, token1, entry.getKey().split("-")[1], coinPriceController.getPriceFromTimeStamp(entry.getKey().split("-")[1] + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * token2, token2, entry.getValue()));
+                        balanceModelList.add(new BalanceModel(entry.getKey().split("-")[0], coinPriceController.getPriceFromTimeStamp(entry.getKey().contains("DUSD"),entry.getKey().split("-")[0] + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * token1, token1, entry.getKey().split("-")[1], coinPriceController.getPriceFromTimeStamp(entry.getKey().contains("-"),entry.getKey().split("-")[1] + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * token2, token2, entry.getValue()));
                     } catch (Exception e) {
                         this.settingsController.logger.warning("Exception occured: " + e.toString());
                     }
                 } else {
-                    if (coinPriceController.getPriceFromTimeStamp(entry.getKey() + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) > 0) {
-                        balanceModelList.add(new BalanceModel(entry.getKey(), coinPriceController.getPriceFromTimeStamp(entry.getKey() + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * entry.getValue(), entry.getValue() ,
+                    if (coinPriceController.getPriceFromTimeStamp(entry.getKey().contains("-"),entry.getKey() + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) > 0) {
+                        balanceModelList.add(new BalanceModel(entry.getKey(), coinPriceController.getPriceFromTimeStamp(entry.getKey().contains("DUSD"),entry.getKey() + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * entry.getValue(), entry.getValue() ,
                                 "-", 0.0, 0.0, 0.0));
                     }
                 }
@@ -1088,7 +1195,7 @@ public class TransactionController {
 
             // import csv data
             getLocalWalletCSVList(list);
-            //getCoinAndTokenBalances();
+            //updateBalanceList();
             //getLocalBalanceList();
             //calcImpermanentLoss();
             //MainViewController.getInstance().plotUpdate(MainViewController.getInstance().mainView.tabPane.getSelectionModel().getSelectedItem().getId());

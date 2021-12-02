@@ -41,7 +41,7 @@ public class TransactionModel {
         this.txIDProperty.set(txid);
         this.fiatCurrencyProperty.set(transactionController.getSettingsController().selectedFiatCurrency.getValue());
         if (this.amountProperty.getValue().split("@")[1].length() == 3 | this.amountProperty.getValue().split("@")[1].length() == 4)
-            this.fiatValueProperty.set(this.cryptoValueProperty.getValue() * transactionController.getCoinPriceController().getPriceFromTimeStamp(this.amountProperty.getValue().split("@")[1] + transactionController.getSettingsController().selectedFiatCurrency.getValue(), this.blockTimeProperty.getValue() * 1000L));
+            this.fiatValueProperty.set(this.cryptoValueProperty.getValue() * transactionController.getCoinPriceController().getPriceFromTimeStamp(this.amountProperty.getValue().split("@")[1].contains("DUSD"),this.amountProperty.getValue().split("@")[1] + transactionController.getSettingsController().selectedFiatCurrency.getValue(), this.blockTimeProperty.getValue() * 1000L));
 
     }
 
