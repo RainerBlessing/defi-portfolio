@@ -335,10 +335,10 @@
                                         <Pane layoutX="241.0" layoutY="129.0" prefHeight="43.0" prefWidth="78.0" AnchorPane.bottomAnchor="409.0" AnchorPane.leftAnchor="241.0" AnchorPane.rightAnchor="283.0" AnchorPane.topAnchor="129.0">
                                             <HBox alignment="CENTER" prefHeight="43.0" prefWidth="81.0">
                                                 <children>
-                                                    <ImageView fx:id="coinImageRewards" fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
+                                                    <ImageView fx:id="coinImageRewards1" fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
                                                         <Image url="@../../icons/btc-icon.png" />
                                                     </ImageView>
-                                                    <ImageView fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
+                                                    <ImageView fx:id="coinImageRewards2"  fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
                                                         <Image url="@../../icons/dfi-icon.png" />
                                                     </ImageView>
                                                 </children>
@@ -356,12 +356,12 @@
                                             <children>
                                                 <HBox alignment="CENTER" prefHeight="43.0" prefWidth="81.0">
                                                     <children>
-                                                        <ImageView fx:id="coinImageCommissions" fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
+                                                        <ImageView fx:id="coinImageCommissions1" fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
                                                             <image>
                                                                 <Image url="@../../icons/btc-icon.png" />
                                                             </image>
                                                         </ImageView>
-                                                        <ImageView fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
+                                                        <ImageView fx:id="coinImageCommissions2" fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
                                                             <image>
                                                                 <Image url="@../../icons/dfi-icon.png" />
                                                             </image>

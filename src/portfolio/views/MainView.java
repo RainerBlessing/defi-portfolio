@@ -58,7 +58,7 @@ public class MainView implements Initializable {
     @FXML
     public ComboBox<String> cmbCoins, cmbIntervall, cmbFiat, cmbPlotCurrency, cmbCoinsCom, cmbIntervallCom, cmbFiatCom, cmbPlotCurrencyCom, cmbIntervallOver;
     @FXML
-    public ImageView coinImageRewards, coinImageCommissions;
+    public ImageView coinImageRewards1,coinImageRewards2, coinImageCommissions1,coinImageCommissions2;
     @FXML
     public DatePicker dateFrom = new DatePicker();
     @FXML
@@ -462,8 +462,10 @@ public class MainView implements Initializable {
         this.mainViewController.mainView = this;
         updateLanguage();
 
-        coinImageRewards.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
-        coinImageCommissions.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
+        coinImageRewards1.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
+        coinImageRewards2.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[1].toLowerCase() + "-icon.png").toURI().toString()));
+        coinImageCommissions1.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
+        coinImageCommissions2.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[1].toLowerCase() + "-icon.png").toURI().toString()));
         updateStylesheet();
 
         this.mainViewController.settingsController.selectedStyleMode.addListener(style -> updateStylesheet());
@@ -635,9 +637,10 @@ public class MainView implements Initializable {
 
             this.updateHeader();
             this.mainViewController.settingsController.saveSettings();
-            coinImageRewards.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
-            coinImageCommissions.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
-        });
+            coinImageRewards1.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
+            coinImageRewards2.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[1].toLowerCase() + "-icon.png").toURI().toString()));
+            coinImageCommissions1.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
+            coinImageCommissions2.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + mainViewController.settingsController.selectedCoin.getValue().split("-")[1].toLowerCase() + "-icon.png").toURI().toString()));        });
 
         this.cmbCoinsCom.getItems().addAll(this.mainViewController.settingsController.cryptoCurrencies);
         this.cmbCoinsCom.valueProperty().bindBidirectional(this.mainViewController.settingsController.selectedCoin);

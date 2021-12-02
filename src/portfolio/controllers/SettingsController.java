@@ -70,7 +70,7 @@ public class SettingsController {
 
     public StringProperty lastUpdate = new SimpleStringProperty("-");
     //Combo box filling
-    public String[] cryptoCurrencies = new String[]{"BTC-DFI", "ETH-DFI", "USDT-DFI", "LTC-DFI", "BCH-DFI", "DOGE-DFI", "USDC-DFI"};
+    public String[] cryptoCurrencies = new String[]{"BTC-DFI", "ETH-DFI", "USDT-DFI", "LTC-DFI", "BCH-DFI", "DOGE-DFI", "USDC-DFI","DUSD-DFI","TSLA-DUSD","SPY-DUSD","QQQ-DUSD","PLTR-DUSD","AAPL-DUSD","GME-DUSD","GOOGL-DUSD","BABA-DUSD","ARKK-DUSD","TLT-DUSD","GLD-DUSD","SLV-DUSD","PDBC-DUSD","URTH-DUSD","VNQ-DUSD"};
     public String[] plotCurrency = new String[]{"Coin", "Daily Fiat", "Current Fiat"};
     public String[] styleModes = new String[]{"Light Mode", "Dark Mode"};
     public String[] datasources = new String[]{"Active Wallet", "All Wallets"};

@@ -1007,7 +1007,7 @@ public class TransactionController {
                         this.settingsController.logger.warning("Exception occured: " + e.toString());
                     }
                 } else {
-                    if (coinPriceController.getPriceFromTimeStamp(entry.getKey().contains("-"),entry.getKey() + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) > 0) {
+                    if (entry.getValue()>0) {
                         balanceModelList.add(new BalanceModel(entry.getKey(), coinPriceController.getPriceFromTimeStamp(entry.getKey().contains("DUSD"),entry.getKey() + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * entry.getValue(), entry.getValue() ,
                                 "-", 0.0, 0.0, 0.0));
                     }

@@ -408,7 +408,7 @@ public class MainViewController {
             localeDecimal = Locale.US;
         }
         for (BalanceModel balanceModel : this.transactionController.getBalanceList()) {
-            if (balanceModel.getToken1NameValue().equals("DUSD") || balanceModel.getToken2NameValue().equals("DUSD")) {
+            if ((balanceModel.getToken1NameValue().equals("DUSD") || balanceModel.getToken2NameValue().equals("DUSD")) &&  !balanceModel.getToken2NameValue().equals("-")) {
                 double factor = 1.0;
 
                 if(!SettingsController.getInstance().selectedFiatCurrency.getValue().contains("USD")) factor = this.transactionController.getCurrencyFactor();
