@@ -5,8 +5,8 @@ import numpy
 import os
 
 if __name__ == '__main__':
-    # pathPortfolioData = sys.argv[1]
-    pathPortfolioData = os.environ.get("APPDATA") + '\\defi-portfolio'
+    pathPortfolioData = sys.argv[1]
+    #pathPortfolioData = os.environ.get("APPDATA") + '\\defi-portfolio'
 
     today = date.today()
     strDate = today.strftime("%Y-%m-%d")
@@ -46,4 +46,4 @@ if __name__ == '__main__':
 
     result.to_csv(pathPortfolioData + '/stockTockenPrices.portfolio', mode='a', header=True, sep=';', index=False)
 
-    os.remove(pathPortfolioData + '/StockPricenPythonUpdate.portfolio')
+    os.remove(pathPortfolioData + '/StockPricesPythonUpdate.portfolio')
