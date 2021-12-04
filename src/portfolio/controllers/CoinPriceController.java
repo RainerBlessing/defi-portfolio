@@ -2,6 +2,7 @@ package portfolio.controllers;
 
 import com.litesoftwares.coingecko.CoinGeckoApiClient;
 import com.litesoftwares.coingecko.impl.CoinGeckoApiClientImpl;
+import portfolio.models.BalanceModel;
 import portfolio.models.CoinPriceModel;
 import java.io.*;
 import java.sql.Timestamp;
@@ -13,7 +14,8 @@ public class CoinPriceController {
 
     private CoinPriceModel coinPriceModel;
     String strCoinPriceData = SettingsController.getInstance().DEFI_PORTFOLIO_HOME + SettingsController.getInstance().strCoinPriceData;
-
+    String strStockPriceData = SettingsController.getInstance().DEFI_PORTFOLIO_HOME + SettingsController.getInstance().strStockPriceData;
+    public TreeMap<String, TreeMap<Long, Double>> stockPriceMap = new TreeMap<>();
         private static CoinPriceController OBJ;
 
         static {
@@ -25,6 +27,54 @@ public class CoinPriceController {
         }
     public CoinPriceController() {
         getCoinPriceLocal(this.strCoinPriceData);
+    }
+
+    public void updateStockPriceData(){
+        if (new File(this.strStockPriceData).exists()) {
+            try {
+                this.stockPriceMap = new TreeMap<>();
+
+
+                BufferedReader reader;
+                reader = new BufferedReader(new FileReader(
+                        this.strStockPriceData));
+                String line = reader.readLine();
+                int row = 1;
+                while (line != null) {
+                    String[] transactionSplit = line.split(";");
+                    if(row == 1){
+                        row = row+1;
+                        for(String pools:transactionSplit){
+                            if(!pools.contains("Date")) this.stockPriceMap.put(pools.replace("USD",""),new TreeMap<>());
+                        }
+                    }else{
+                        this.stockPriceMap.get("TSLA").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[1]));
+                        this.stockPriceMap.get("GME").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[2]));
+                        this.stockPriceMap.get("GOOGL").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[3]));
+                        this.stockPriceMap.get("BABA").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[4]));
+                        this.stockPriceMap.get("PLTR").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[5]));
+                        this.stockPriceMap.get("AAPL").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[6]));
+                        this.stockPriceMap.get("SPY").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[7]));
+                        this.stockPriceMap.get("QQQ").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[8]));
+                        this.stockPriceMap.get("PDBC").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[9]));
+                        this.stockPriceMap.get("VNQ").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[10]));
+                        this.stockPriceMap.get("ARKK").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[11]));
+                        this.stockPriceMap.get("GLD").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[12]));
+                        this.stockPriceMap.get("URTH").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[13]));
+                        this.stockPriceMap.get("TLT").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[14]));
+                        this.stockPriceMap.get("SLV").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[15]));
+                    }
+
+                    line = reader.readLine();
+                }
+
+                reader.close();
+            } catch (IOException e) {
+                SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+            }
+        }
+
+
     }
 
     public void updateCoinPriceData() {
@@ -275,50 +325,6 @@ public class CoinPriceController {
         }
     }
 
-    public String getCoinGeckoName(String tokenName){
-        switch (tokenName) {
-            case "DFI":
-                tokenName = "defichain";
-                break;
-            case "ETH-DFI":
-            case "ETH":
-                tokenName = "ethereum";
-                break;
-            case "BTC":
-            case "BTC-DFI":
-                tokenName = "bitcoin";
-                break;
-            case "USDT":
-            case "USDT-DFI":
-                tokenName = "tether";
-                break;
-            case "DOGE":
-            case "DOGE-DFI":
-                tokenName = "dogecoin";
-                break;
-            case "LTC":
-            case "LTC-DFI":
-                tokenName = "litecoin";
-                break;
-            case "BCH":
-            case "BCH-DFI":
-                tokenName = "bitcoin-cash";
-                break;
-            case "USDC":
-            case "USDC-DFI":
-                tokenName = "usd-coin";
-                break;
-            default:
-                tokenName = "-";
-                break;
-        }
-        return tokenName;
-    }
-
-    public String getLastTimeStamp(String strCoinPricePath) {
-        return getCoinPriceLocal(strCoinPricePath).lastTimeStamp;
-    }
-
     public CoinPriceModel getCoinPriceLocal(String strCoinPricePath) {
         CoinPriceModel coinPrice = new CoinPriceModel();
         if (new File(strCoinPricePath).exists()) {
@@ -343,14 +349,26 @@ public class CoinPriceController {
     public double getPriceFromTimeStamp(boolean isLoan,String coinFiatPair, Long timeStamp) {
         double price = 0;
 
-        if(this.coinPriceModel != null){
-                if( this.coinPriceModel.GetKeyMap().containsKey(coinFiatPair)){
-                    for (int i = this.coinPriceModel.GetKeyMap().get(coinFiatPair).size() - 1; i >= 0; i--)
-                        if (timeStamp > Long.parseLong(this.coinPriceModel.GetKeyMap().get(coinFiatPair).get(i).get(0))) {
-                            return Double.parseDouble(this.coinPriceModel.GetKeyMap().get(coinFiatPair).get(i).get(1));
-                        }
+        if(!isLoan){
+            if(this.coinPriceModel != null){
+                    if( this.coinPriceModel.GetKeyMap().containsKey(coinFiatPair)){
+                        for (int i = this.coinPriceModel.GetKeyMap().get(coinFiatPair).size() - 1; i >= 0; i--)
+                            if (timeStamp > Long.parseLong(this.coinPriceModel.GetKeyMap().get(coinFiatPair).get(i).get(0))) {
+                                return Double.parseDouble(this.coinPriceModel.GetKeyMap().get(coinFiatPair).get(i).get(1));
+                            }
+                    }
+            }
+        }else{
+            if(this.stockPriceMap.size() >0){
+                if(coinFiatPair.equals("DUSDEUR")){
+                    double factor = 1.0;
+                    if(!SettingsController.getInstance().selectedFiatCurrency.getValue().contains("USD")) factor = TransactionController.getInstance().getCurrencyFactor();
+                    return factor;
                 }
-        }
+            if( this.stockPriceMap.containsKey(coinFiatPair.replace(SettingsController.getInstance().selectedFiatCurrency.getValue(),""))){
+                return this.stockPriceMap.get(coinFiatPair.replace(SettingsController.getInstance().selectedFiatCurrency.getValue(),"")).lowerEntry(timeStamp).getValue();
+            }
+        }}
         return price;
     }
 }

@@ -98,6 +98,7 @@ public class SettingsController {
     public String INCOMPLETE_FILE_PATH = DEFI_PORTFOLIO_HOME + "incompleteList.portfolio";
     public String strTransactionData = "transactionData.portfolio";
     public String strCoinPriceData = "coinPriceData.portfolio";
+    public String strStockPriceData = "stockTockenPrices.portfolio";
     public String[] languages = new String[]{"English", "Deutsch","Espa\u00F1ol","Bokm\u00E5l","Nederlands"};
     public String[] currencies = new String[]{"EUR", "USD", "CHF"};
     public String[] decSeperators = new String[]{".", ","};

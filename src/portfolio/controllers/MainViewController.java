@@ -76,10 +76,14 @@ public class MainViewController {
             if (!this.transactionController.checkRpc()) this.transactionController.startServer();
         }
 
+        this.startStockUpdate();
+
         // init all relevant lists for tables and plots
         this.poolPairList = FXCollections.observableArrayList(this.poolPairModelList);
         this.expService = new ExportService(this);
         this.coinPriceController.updateCoinPriceData();
+        this.coinPriceController.updateStockPriceData();
+        Object a = this.coinPriceController.stockPriceMap;
         this.transactionController.updateBalanceList();
         // get last block locally
         this.strCurrentBlockLocally.set(Integer.toString(transactionController.getLocalBlockCount()));
@@ -105,6 +109,55 @@ public class MainViewController {
                 }
         );
         startTimer();
+    }
+
+    public void startStockUpdate(){
+        //Start Python update
+
+        try {
+            File f = new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME +"StockPricesPythonUpdate.portfolio");
+            f.createNewFile();
+
+        } catch (Exception e) {
+            SettingsController.getInstance().logger.warning("Could not write python update file."); }
+
+        try {
+            // Start skript
+            switch (this.settingsController.getPlatform()) {
+                case "mac":
+
+                    defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/./" + "defi.sh");
+                    break;
+                case "win":
+                    String path = System.getProperty("user.dir")+"\\defi-portfolio\\src\\portfolio\\libraries\\StockTokenPrices.exe";
+                    String[] commands = {"cmd", "/c", "start", "\"Update Portfolio\"", path,SettingsController.getInstance().DEFI_PORTFOLIO_HOME};
+                    defidProcess = Runtime.getRuntime().exec(commands);
+                    break;
+                case "linux":
+                    int notfound = 0;
+                    try {
+                        defidProcess = Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " + SettingsController.getInstance().DEFI_PORTFOLIO_HOME + SettingsController.getInstance().PORTFOLIO_CONFIG_FILE_PATH);
+                    } catch (Exception e) {
+                        notfound++;
+                    }
+                    try {
+                        defidProcess = Runtime.getRuntime().exec("/usr/bin/konsole -e " + SettingsController.getInstance().DEFI_PORTFOLIO_HOME + SettingsController.getInstance().PORTFOLIO_CONFIG_FILE_PATH);
+                    } catch (Exception e) {
+                        notfound++;
+                    }
+                    if (notfound == 2) {
+                        JOptionPane.showMessageDialog(null, "Could not found /usr/bin/x-terminal-emulator or\n /usr/bin/konsole", "Terminal not found", JOptionPane.ERROR_MESSAGE);
+                    }
+                    break;
+            }
+
+
+        } catch (Exception e) {
+            this.settingsController.logger.warning("Exception occured: " + e.toString());
+        }
+
+
+
     }
 
     public void startTimer() {
@@ -418,7 +471,7 @@ public class MainViewController {
 
             if (balanceModel.getToken2NameValue().equals("-")) {
                 pieChartData.add(new PieChart.Data(balanceModel.getToken1NameValue(), balanceModel.getFiat1Value()));
-                this.poolPairModelList.add(new PoolPairModel(balanceModel.getToken1NameValue() + " (" + String.format(localeDecimal, "%1.2f", CoinPriceController.getInstance().getPriceFromTimeStamp(balanceModel.getToken2NameValue().contains("DUSD"), balanceModel.getToken1Name().getValue() + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis() * 1000L)) + currency + ")", 0.0, 0.0, 0.0, String.format(localeDecimal, "%1.8f", balanceModel.getCrypto1Value()), 0.0, 0.0, 0.0, 0.0, String.format(localeDecimal, "%,.2f", balanceModel.getFiat1Value())));
+                this.poolPairModelList.add(new PoolPairModel(balanceModel.getToken1NameValue() + " (" + String.format(localeDecimal, "%1.2f", CoinPriceController.getInstance().getPriceFromTimeStamp(Integer.parseInt(this.transactionController.getIdFromPoolPair(balanceModel.getToken1NameValue()))>14, balanceModel.getToken1Name().getValue() + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis() * 1000L)) + currency + ")", 0.0, 0.0, 0.0, String.format(localeDecimal, "%1.8f", balanceModel.getCrypto1Value()), 0.0, 0.0, 0.0, 0.0, String.format(localeDecimal, "%,.2f", balanceModel.getFiat1Value())));
                 calculatedPortfolio += balanceModel.getFiat1Value() + balanceModel.getFiat2Value();
 
             } else {
