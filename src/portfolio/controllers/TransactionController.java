@@ -55,6 +55,7 @@ public class TransactionController {
     public TreeMap<String, Double> balanceTreeMap = new TreeMap<>();
     public String poolPairs="";
     public String tokens="";
+    public Process ps;
 
     public TransactionController() {
         if (classSingleton) {
@@ -1107,23 +1108,23 @@ public class TransactionController {
 
             if(SettingsController.getInstance().getPlatform().contains("mac")){
             try {
-                Process ps = null;
-                ps = Runtime.getRuntime().exec("./jre/bin/java -Xdock:icon=icons.icns -jar UpdateData.jar " + MainViewController.getInstance().settingsController.selectedStyleMode.getValue().replace(" ", ""));
+                this.ps = null;
+                this.ps = Runtime.getRuntime().exec("./jre/bin/java -Xdock:icon=icons.icns -jar UpdateData.jar " + MainViewController.getInstance().settingsController.selectedStyleMode.getValue().replace(" ", ""));
             } catch (IOException r) {
                 SettingsController.getInstance().logger.warning("Exception occured: " + r.toString());
             }}
             if(SettingsController.getInstance().getPlatform().contains("linux")) {
                 try {
-                    Process ps = null;
-                    ps = Runtime.getRuntime().exec("jre/bin/java -jar UpdateData.jar " + MainViewController.getInstance().settingsController.selectedStyleMode.getValue().replace(" ", ""));
+                    this.ps = null;
+                    this.ps = Runtime.getRuntime().exec("jre/bin/java -jar UpdateData.jar " + MainViewController.getInstance().settingsController.selectedStyleMode.getValue().replace(" ", ""));
                 } catch (IOException r) {
                     SettingsController.getInstance().logger.warning("Exception occured: " + r.toString());
                 }
             }
             else{
                 try {
-                    Process ps = null;
-                    ps = Runtime.getRuntime().exec("./jre/bin/java -jar UpdateData.jar " + MainViewController.getInstance().settingsController.selectedStyleMode.getValue().replace(" ", ""));
+                    this.ps = null;
+                    this.ps = Runtime.getRuntime().exec("./jre/bin/java -jar UpdateData.jar " + MainViewController.getInstance().settingsController.selectedStyleMode.getValue().replace(" ", ""));
                 } catch (IOException r) {
                     SettingsController.getInstance().logger.warning("Exception occured: " + r.toString());
                 }

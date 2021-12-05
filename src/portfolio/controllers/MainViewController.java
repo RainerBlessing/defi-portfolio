@@ -277,7 +277,8 @@ public class MainViewController {
     }
 
     public boolean updateTransactionData() {
-
+        TransactionController.getInstance().clearTransactionList();
+        TransactionController.getInstance().clearPortfolioList();
         this.transactionController.updateBalanceList();
 
 
@@ -372,6 +373,7 @@ public class MainViewController {
         this.plotUpdate(this.mainView.tabPane.getSelectionModel().getSelectedItem().getId());
         File file = new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME +  "update.portfolio");
         if (file.exists()) file.delete();
+        TransactionController.getInstance().ps.destroy();
     }
 
     public void btnUpdateDatabasePressed() {
