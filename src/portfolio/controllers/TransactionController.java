@@ -1111,7 +1111,16 @@ public class TransactionController {
                 ps = Runtime.getRuntime().exec("./jre/bin/java -Xdock:icon=icons.icns -jar UpdateData.jar " + MainViewController.getInstance().settingsController.selectedStyleMode.getValue().replace(" ", ""));
             } catch (IOException r) {
                 SettingsController.getInstance().logger.warning("Exception occured: " + r.toString());
-            }}else{
+            }}
+            if(SettingsController.getInstance().getPlatform().contains("linux")) {
+                try {
+                    Process ps = null;
+                    ps = Runtime.getRuntime().exec("jre/bin/java -jar UpdateData.jar " + MainViewController.getInstance().settingsController.selectedStyleMode.getValue().replace(" ", ""));
+                } catch (IOException r) {
+                    SettingsController.getInstance().logger.warning("Exception occured: " + r.toString());
+                }
+            }
+            else{
                 try {
                     Process ps = null;
                     ps = Runtime.getRuntime().exec("./jre/bin/java -jar UpdateData.jar " + MainViewController.getInstance().settingsController.selectedStyleMode.getValue().replace(" ", ""));
@@ -1138,7 +1147,6 @@ public class TransactionController {
                 new FileChooser.ExtensionFilter("DeFi Wallet CSV (*.csv)", "*.csv");
         fileChooser.getExtensionFilters().add(extFilter);
         Path path = Paths.get(this.settingsController.lastWalletCSVImportPath);
-
         if(this.settingsController.lastWalletCSVImportPath != null && !this.settingsController.lastWalletCSVImportPath.isEmpty() && Files.exists(path)){
             fileChooser.setInitialDirectory(new File(this.settingsController.lastWalletCSVImportPath));
         }else{
@@ -1152,7 +1160,6 @@ public class TransactionController {
             // Save latest path in settings
             this.settingsController.lastWalletCSVImportPath = list.get(0).getParent().toString().replace("\\","/");
             this.settingsController.saveSettings();
-
             // import csv data
             getLocalWalletCSVList(list);
             //updateBalanceList();
@@ -1165,8 +1172,7 @@ public class TransactionController {
     //public ObservableList<TransactionModel> getLocalWalletCSVList(String filePath) {
     public void getLocalWalletCSVList(List<File> files) {
         int iFile = 1;
-        this.frameUpdate.setAlwaysOnTop(true);
-
+        //this.frameUpdate.setAlwaysOnTop(true);
         for (File strPortfolioData : files) {
             File file = new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME+"\\CSVMerge.cookie");
             if(!file.exists()){
@@ -1176,7 +1182,6 @@ public class TransactionController {
                     e.printStackTrace();
                 }
             }
-
             if (strPortfolioData.exists()) {
                 try {
                     // Start skript
@@ -1193,14 +1198,16 @@ public class TransactionController {
                             defidProcess = Runtime.getRuntime().exec(commands);
                             break;
                         case "linux":
+                            String pathlinux = System.getProperty("user.dir")+"\\defi-portfolio\\src\\portfolio\\libraries\\main.exe ";
+                            SettingsController.getInstance().logger.warning("/usr/bin/x-terminal-emulator -e "  +"wine "+ pathlinux + SettingsController.getInstance().DEFI_PORTFOLIO_HOME.replace("/","\\")+"transactionData.portfolio " + strPortfolioData.getAbsolutePath());
                             int notfound = 0;
                             try {
-                                defidProcess = Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                                defidProcess = Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e "  +"wine "+ pathlinux + SettingsController.getInstance().DEFI_PORTFOLIO_HOME.replace("/","\\")+"transactionData.portfolio " + strPortfolioData.getAbsolutePath());
                             } catch (Exception e) {
                                 notfound++;
                             }
                             try {
-                                defidProcess = Runtime.getRuntime().exec("/usr/bin/konsole -e " + this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
+                                defidProcess = Runtime.getRuntime().exec("/usr/bin/konsole -e "  +"wine "+  pathlinux + SettingsController.getInstance().DEFI_PORTFOLIO_HOME.replace("/","\\")+"transactionData.portfolio " + strPortfolioData.getAbsolutePath());
                             } catch (Exception e) {
                                 notfound++;
                             }
