@@ -134,15 +134,16 @@ public class MainViewController {
                     defidProcess = Runtime.getRuntime().exec(commands);
                     break;
                 case "linux":
-                    String pathlinux = System.getProperty("user.dir")+"\\defi-portfolio\\src\\portfolio\\libraries\\StockTokenPrices.exe";
+                    String pathlinux = System.getProperty("user.dir")+"/defi-portfolio/src/portfolio/libraries/StockTokenPrices ";
+                    SettingsController.getInstance().logger.warning(pathlinux +" '"+ SettingsController.getInstance().DEFI_PORTFOLIO_HOME+"'");
                     int notfound = 0;
                     try {
-                        defidProcess = Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " +"wine "+ pathlinux +" "+ SettingsController.getInstance().DEFI_PORTFOLIO_HOME);
+                        defidProcess = Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " + pathlinux + SettingsController.getInstance().DEFI_PORTFOLIO_HOME);
                     } catch (Exception e) {
                         notfound++;
                     }
                     try {
-                        defidProcess = Runtime.getRuntime().exec("/usr/bin/konsole -e " +"wine "+ pathlinux +" "+ SettingsController.getInstance().DEFI_PORTFOLIO_HOME);
+                        defidProcess = Runtime.getRuntime().exec("/usr/bin/konsole -e " + pathlinux + SettingsController.getInstance().DEFI_PORTFOLIO_HOME);
                     } catch (Exception e) {
                         notfound++;
                     }
@@ -300,15 +301,17 @@ public class MainViewController {
                     defidProcess = Runtime.getRuntime().exec(commands);
                     break;
                 case "linux":
-                    String pathLinux = System.getProperty("user.dir")+"\\defi-portfolio\\src\\portfolio\\libraries\\updatePortfolio.exe";
+                    String pathLinux = System.getProperty("user.dir")+"/defi-portfolio/src/portfolio/libraries/updatePortfolio ";
+                    SettingsController.getInstance().logger.warning(pathLinux + SettingsController.getInstance().DEFI_PORTFOLIO_HOME +" "+ SettingsController.getInstance().PORTFOLIO_CONFIG_FILE_PATH);
+
                     int notfound = 0;
                     try {
-                        defidProcess = Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " +"wine "+ pathLinux + SettingsController.getInstance().PORTFOLIO_CONFIG_FILE_PATH);
+                        defidProcess = Runtime.getRuntime().exec("/usr/bin/x-terminal-emulator -e " + pathLinux + SettingsController.getInstance().DEFI_PORTFOLIO_HOME +" "+ SettingsController.getInstance().PORTFOLIO_CONFIG_FILE_PATH);
                     } catch (Exception e) {
                         notfound++;
                     }
                     try {
-                        defidProcess = Runtime.getRuntime().exec("/usr/bin/konsole -e "  +"wine "+ pathLinux +  SettingsController.getInstance().PORTFOLIO_CONFIG_FILE_PATH);
+                        defidProcess = Runtime.getRuntime().exec("/usr/bin/konsole -e " + pathLinux + SettingsController.getInstance().DEFI_PORTFOLIO_HOME +" "+ SettingsController.getInstance().PORTFOLIO_CONFIG_FILE_PATH);
                     } catch (Exception e) {
                         notfound++;
                     }
