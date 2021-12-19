@@ -80,8 +80,7 @@ public class TransactionController {
                         break;
 
                     if (transactionList.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue()) && !transactionList.get(i).cryptoCurrencyProperty.getValue().contains("-")) {
-
-                        if (coin1 == null && (transactionList.get(i).cryptoCurrencyProperty.getValue().equals("DFI")||transactionList.get(i).cryptoCurrencyProperty.getValue().equals("DUSD"))) {
+                        if (coin1 == null && ((transactionList.get(i).cryptoCurrencyProperty.getValue().equals("DFI") && !transactionList.get(i).rewardType.getValue().equals("LoanTokenDEXReward")) ||(transactionList.get(i).cryptoCurrencyProperty.getValue().equals("DUSD")&&transactionList.get(i).rewardType.getValue().equals("LoanTokenDEXReward") ))) {
                             coin1 = transactionList.get(i);
                         } else if (coin2 == null) {
                             coin2 = transactionList.get(i);
@@ -417,9 +416,9 @@ public class TransactionController {
                     JSONObject transactionJ = (JSONObject) transaction;
                     for (String amount : (transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", "")).split(",")) {
                         if (transactionJ.get("poolID") != null) {
-                            transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), amount, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), transactionJ.get("poolID").toString(), "", this));
+                            transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), amount, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), transactionJ.get("poolID").toString(), "", transactionJ.get("rewardType").toString() ,this));
                         } else {
-                            transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), amount, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), "", transactionJ.get("txid").toString(), this));
+                            transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), amount, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), "", transactionJ.get("txid").toString(),transactionJ.get("rewardType").toString(), this));
                         }
                     }
                 }
@@ -438,9 +437,9 @@ public class TransactionController {
                 for (String amount : (transactionJ.get("amounts").toString().replace("[", "").replace("]", "").replace("\"", "")).split(",")) {
 
                     if (transactionJ.get("poolID") != null) {
-                        transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), amount, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), transactionJ.get("poolID").toString(), "", this));
+                        transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), amount, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), transactionJ.get("poolID").toString(), "", transactionJ.get("rewardType").toString(),this));
                     } else {
-                        transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), amount, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), "", transactionJ.get("txid").toString(), this));
+                        transactionList.add(new TransactionModel(Long.parseLong(transactionJ.get("blockTime").toString()), transactionJ.get("owner").toString(), transactionJ.get("type").toString(), amount, transactionJ.get("blockHash").toString(), Integer.parseInt(transactionJ.get("blockHeight").toString()), "", transactionJ.get("txid").toString(), transactionJ.get("rewardType").toString(),this));
                     }
                 }
             }   }
@@ -582,7 +581,7 @@ public class TransactionController {
 
                 while (line != null) {
                     String[] transactionSplit = line.split(";");
-                    TransactionModel transAction = new TransactionModel(Long.parseLong(transactionSplit[0]), transactionSplit[1], transactionSplit[2], transactionSplit[3], transactionSplit[4], Integer.parseInt(transactionSplit[5]), transactionSplit[6], transactionSplit[7], this);
+                    TransactionModel transAction = new TransactionModel(Long.parseLong(transactionSplit[0]), transactionSplit[1], transactionSplit[2], transactionSplit[3], transactionSplit[4], Integer.parseInt(transactionSplit[5]), transactionSplit[6], transactionSplit[7], transactionSplit[8],this);
                     transactionList.add(transAction);
 
                     if (transAction.typeProperty.getValue().equals("Rewards") | transAction.typeProperty.getValue().equals("Commission")) {
@@ -1188,10 +1187,9 @@ public class TransactionController {
                     // Start skript
                     switch (this.settingsController.getPlatform()) {
                         case "mac":
-                            FileWriter myWriter = new FileWriter(System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/" + "defi.sh");
-                            myWriter.write(this.settingsController.BINARY_FILE_PATH + " -conf=" + this.settingsController.PORTFOLIO_CONFIG_FILE_PATH);
-                            myWriter.close();
-                            defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/./" + "defi.sh");
+                            String pathMac = System.getProperty("user.dir")+"\\defi-portfolio\\src\\portfolio\\libraries\\main ";
+                            String[] commandsMac = {"cmd", "/c", "start", "\"Merging data\"", pathMac,SettingsController.getInstance().DEFI_PORTFOLIO_HOME.replace("/","\\")+"transactionData.portfolio",strPortfolioData.getAbsolutePath()};
+                            defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " +pathMac + SettingsController.getInstance().DEFI_PORTFOLIO_HOME+"transactionData.portfolio " + strPortfolioData.getAbsolutePath());
                             break;
                         case "win":
                             String path = System.getProperty("user.dir")+"\\defi-portfolio\\src\\portfolio\\libraries\\main.exe";
