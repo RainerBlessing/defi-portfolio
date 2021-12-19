@@ -125,8 +125,8 @@ public class MainViewController {
             // Start skript
             switch (this.settingsController.getPlatform()) {
                 case "mac":
-
-                    defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/./" + "defi.sh");
+                    // defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/./" + "defi.sh");
+                    Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + SettingsController.getInstance().DEFI_PORTFOLIO_HOME + "StockTokenPrices");
                     break;
                 case "win":
                     String path = System.getProperty("user.dir")+"\\defi-portfolio\\src\\portfolio\\libraries\\StockTokenPrices.exe";
@@ -293,8 +293,9 @@ public class MainViewController {
             // Start skript
             switch (this.settingsController.getPlatform()) {
                 case "mac":
-
-                    defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/./" + "defi.sh");
+                    // String pathMac = System.getProperty("user.dir")+"/src/portfolio/libraries/updatePortfolio ";
+                    // Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + pathMac + SettingsController.getInstance().DEFI_PORTFOLIO_HOME +" "+ SettingsController.getInstance().PORTFOLIO_CONFIG_FILE_PATH);
+                    Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + SettingsController.getInstance().DEFI_PORTFOLIO_HOME + "updatePortfolio");
                     break;
                 case "win":
                     String path = System.getProperty("user.dir")+"\\defi-portfolio\\src\\portfolio\\libraries\\updatePortfolio.exe";

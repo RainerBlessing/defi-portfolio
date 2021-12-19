@@ -1197,7 +1197,7 @@ public class TransactionController {
                             defidProcess = Runtime.getRuntime().exec(commands);
                             break;
                         case "linux":
-                            String pathlinux = System.getProperty("user.dir")+"\\defi-portfolio\\src\\portfolio\\libraries\\main ";
+                            String pathlinux = System.getProperty("user.dir")+"/defi-portfolio/src/portfolio/libraries/main ";
                             SettingsController.getInstance().logger.warning("/usr/bin/x-terminal-emulator -e "  + pathlinux + SettingsController.getInstance().DEFI_PORTFOLIO_HOME+"transactionData.portfolio " + strPortfolioData.getAbsolutePath());
                             int notfound = 0;
                             try {
