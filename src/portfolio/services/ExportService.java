@@ -428,9 +428,6 @@ public class ExportService {
                             TransactionModel addPool = null;
 
                             if (transaction.typeProperty.getValue().equals("AddPoolLiquidity") && !transaction.exportCointracking) {
-                                if(transaction.txIDProperty.getValue().equals("bc01671e03ff719c657441439c2ef96b1b90a8fee2ff2b6c7c1f660505c39e5f")){
-                                    int a=2;
-                                }
                                 for (int i = transCounter; i < transactions.size(); i++) {
                                     if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
                                         break;

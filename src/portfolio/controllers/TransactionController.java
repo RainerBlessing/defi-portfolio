@@ -267,7 +267,7 @@ public class TransactionController {
             this.settingsController.logger.warning("Exception occured: " + e.toString());
         }
 
-        return "No pool found:"+poolID;
+        return "-";
     }
 
     public double getCurrencyFactor(){

@@ -23,7 +23,7 @@ public class TimerController extends TimerTask {
         Platform.runLater(() -> {
                     if (SettingsController.getInstance().runTimer) {
                         try {
-                            HttpURLConnection connection = (HttpURLConnection) new URL("https://api.defichain.io/v1/getblockcount").openConnection();
+                            HttpURLConnection connection = (HttpURLConnection) new URL("https://ocean.defichain.com/v0/mainnet/stats").openConnection();
                             String jsonText = "";
                             try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                                 jsonText = br.readLine();
@@ -32,10 +32,13 @@ public class TimerController extends TimerTask {
                             }
                             JSONObject obj = (JSONObject) JSONValue.parse(jsonText);
                             if (obj.get("data") != null) {
-                                if(Long.parseLong(mainViewController.strCurrentBlockLocally.getValue()) > Long.parseLong(obj.get("data").toString())){
-                                    mainViewController.strCurrentBlockLocally.set(obj.get("data").toString());
+                                JSONObject data = (JSONObject) obj.get("data");
+                                JSONObject count = (JSONObject) data.get("count");
+
+                                if(Long.parseLong(mainViewController.strCurrentBlockLocally.getValue()) > Long.parseLong(count.get("blocks").toString())){
+                                    mainViewController.strCurrentBlockLocally.set(count.get("blocks").toString());
                                 }
-                                mainViewController.strCurrentBlockOnBlockchain.set(obj.get("data").toString());
+                                mainViewController.strCurrentBlockOnBlockchain.set(count.get("blocks").toString());
                             }
                         } catch (IOException e) {
                             SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
