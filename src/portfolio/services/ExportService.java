@@ -887,8 +887,8 @@ public class ExportService {
                         sb.append((mainView.plotTable.getColumns().get(0).getId() + "," + mainView.plotTable.getColumns().get(2).getId() + "," + mainView.plotTable.getColumns().get(2).getId() + "," + mainView.plotTable.getColumns().get(9).getId()).replace(",", this.mainViewController.settingsController.selectedSeperator.getValue())).append("\n");
                         for (PoolPairModel poolPairModel : poolPairModelList) {
                             sb.append(poolPairModel.getBlockTime().getValue()).append(this.mainViewController.settingsController.selectedSeperator.getValue());
-                            sb.append(poolPairModel.getPoolPair().getValue()).append(this.mainViewController.settingsController.selectedSeperator.getValue());
-                            sb.append(poolPairModel.getBalanceFiatValue()).append(this.mainViewController.settingsController.selectedSeperator.getValue());
+                            sb.append(poolPairModel.getPoolPair().getValue().replace(",","")).append(this.mainViewController.settingsController.selectedSeperator.getValue());
+                            sb.append(poolPairModel.getBalanceFiatValue().replace(",","")).append(this.mainViewController.settingsController.selectedSeperator.getValue());
                             sb.append("\n");
                         }
                         break;

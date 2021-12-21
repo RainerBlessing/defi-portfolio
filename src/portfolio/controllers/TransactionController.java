@@ -73,6 +73,9 @@ public class TransactionController {
         impermanentLossList.clear();
         for (TransactionModel transaction : transactionList) {
             if ((transaction.typeProperty.getValue().equals("AddPoolLiquidity") | transaction.typeProperty.getValue().equals("RemovePoolLiquidity")) && transaction.cryptoCurrencyProperty.getValue().contains("-")) {
+
+                boolean isDUSDPool = transaction.cryptoCurrencyProperty.getValue().contains("DUSD-DFI");
+
                 TransactionModel coin1 = null;
                 TransactionModel coin2 = null;
                 for (int i = 0; i < transactionList.size(); i++) {
@@ -80,7 +83,7 @@ public class TransactionController {
                         break;
 
                     if (transactionList.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue()) && !transactionList.get(i).cryptoCurrencyProperty.getValue().contains("-")) {
-                        if (coin1 == null && ((transactionList.get(i).cryptoCurrencyProperty.getValue().equals("DFI") && !transactionList.get(i).rewardType.getValue().equals("LoanTokenDEXReward")) ||(transactionList.get(i).cryptoCurrencyProperty.getValue().equals("DUSD")&&transactionList.get(i).rewardType.getValue().equals("LoanTokenDEXReward") ))) {
+                        if (coin1 == null && (transactionList.get(i).cryptoCurrencyProperty.getValue().equals("DFI")) ||(transactionList.get(i).cryptoCurrencyProperty.getValue().equals("DUSD")&&!isDUSDPool)) {
                             coin1 = transactionList.get(i);
                         } else if (coin2 == null) {
                             coin2 = transactionList.get(i);
@@ -944,8 +947,8 @@ public class TransactionController {
                 balanceTreeMap.put("DFI",0.0);
             }
             double oldValue = balanceTreeMap.get("DFI").doubleValue();
-            double bakanceValue = Double.parseDouble(getAddressUtxoBalance(address));
-            balanceTreeMap.put("DFI", oldValue+bakanceValue);
+            double balanceValue = Double.parseDouble(getAddressUtxoBalance(address));
+            balanceTreeMap.put("DFI", oldValue+balanceValue);
 
         }
 
@@ -958,7 +961,7 @@ public class TransactionController {
                     Double token1 = Math.sqrt(poolRatio * entry.getValue() * entry.getValue());
                     Double token2 = Math.sqrt(entry.getValue() * entry.getValue() / poolRatio);
                     try {
-                        balanceModelList.add(new BalanceModel(entry.getKey().split("-")[0], coinPriceController.getPriceFromTimeStamp(entry.getKey().contains("DUSD"),entry.getKey().split("-")[0] + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * token1, token1, entry.getKey().split("-")[1], coinPriceController.getPriceFromTimeStamp(entry.getKey().contains("-"),entry.getKey().split("-")[1] + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * token2, token2, entry.getValue()));
+                        balanceModelList.add(new BalanceModel(entry.getKey().split("-")[0], coinPriceController.getPriceFromTimeStamp(entry.getKey().contains("DUSD"),entry.getKey().split("-")[0] + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * token1, token1, entry.getKey().split("-")[1], coinPriceController.getPriceFromTimeStamp(entry.getKey().split("-")[1].contains("DUSD"),entry.getKey().split("-")[1] + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * token2, token2, entry.getValue()));
                     } catch (Exception e) {
                         this.settingsController.logger.warning("Exception occured: " + e.toString());
                     }

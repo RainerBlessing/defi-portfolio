@@ -2,9 +2,13 @@ package portfolio.controllers;
 
 import com.litesoftwares.coingecko.CoinGeckoApiClient;
 import com.litesoftwares.coingecko.impl.CoinGeckoApiClientImpl;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import portfolio.models.BalanceModel;
 import portfolio.models.CoinPriceModel;
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -349,7 +353,7 @@ public class CoinPriceController {
     public double getPriceFromTimeStamp(boolean isLoan,String coinFiatPair, Long timeStamp) {
         double price = 0;
 
-        if(!isLoan){
+        if(this.isCrypto(coinFiatPair) && !isLoan){
             if(this.coinPriceModel != null){
                     if( this.coinPriceModel.GetKeyMap().containsKey(coinFiatPair)){
                         for (int i = this.coinPriceModel.GetKeyMap().get(coinFiatPair).size() - 1; i >= 0; i--)
@@ -359,10 +363,11 @@ public class CoinPriceController {
                     }
             }
         }else{
+            if(this.stockPriceMap.size() ==0) this.updateStockPriceData();
             if(this.stockPriceMap.size() >0){
                 if(coinFiatPair.equals("DUSDEUR")){
                     double factor = 1.0;
-                    if(!SettingsController.getInstance().selectedFiatCurrency.getValue().contains("USD")) factor = TransactionController.getInstance().getCurrencyFactor();
+                    if(!SettingsController.getInstance().selectedFiatCurrency.getValue().contains("USD")) factor = this.getCurrencyFactor();
                     return factor;
                 }
             if( this.stockPriceMap.containsKey(coinFiatPair.replace(SettingsController.getInstance().selectedFiatCurrency.getValue(),""))){
@@ -370,5 +375,42 @@ public class CoinPriceController {
             }
         }}
         return price;
+    }
+
+    public boolean isCrypto(String tokenName) {
+
+            if(tokenName.contains("DFI")||tokenName.contains("ETH")||tokenName.contains("BTC")||tokenName.contains("USDT")||tokenName.contains("DOGE")||tokenName.contains("LTC")||tokenName.contains("BCH")||tokenName.contains("USDC")){
+                  return true;
+            }else{
+                return false;
+            }
+        }
+
+    public double getCurrencyFactor(){
+
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URL("https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/usd/"+SettingsController.getInstance().selectedFiatCurrency.getValue().toLowerCase()+".json").openConnection();
+            String jsonText = "";
+            String line = "";
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                while((line=br.readLine()) != null){
+                    jsonText = jsonText+line;
+                }
+            } catch (Exception ex) {
+                SettingsController.getInstance().logger.warning("Exception occured: " + ex.toString());
+            }
+            JSONObject obj = (JSONObject) JSONValue.parse(jsonText);
+            if (obj.get(SettingsController.getInstance().selectedFiatCurrency.getValue().toLowerCase()) != null) {
+
+                return Double.parseDouble(obj.get(SettingsController.getInstance().selectedFiatCurrency.getValue().toLowerCase()).toString());
+
+            }
+
+        } catch (IOException e) {
+            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+        }
+
+        return 1;
+
     }
 }

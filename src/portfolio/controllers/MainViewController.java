@@ -84,7 +84,7 @@ public class MainViewController {
         this.coinPriceController.updateCoinPriceData();
         this.coinPriceController.updateStockPriceData();
         Object a = this.coinPriceController.stockPriceMap;
-        this.transactionController.updateBalanceList();
+        //this.transactionController.updateBalanceList();
         // get last block locally
         this.strCurrentBlockLocally.set(Integer.toString(transactionController.getLocalBlockCount()));
 
@@ -104,7 +104,7 @@ public class MainViewController {
                     }
                     for (BalanceModel balanceModel : this.transactionController.getBalanceList()) {
                         balanceModel.setFiat1(balanceModel.getCrypto1Value() * CoinPriceController.getInstance().getPriceFromTimeStamp(balanceModel.getToken1NameValue().contains("DUSD"),balanceModel.getToken1NameValue() + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()));
-                        balanceModel.setFiat2(balanceModel.getCrypto2Value() * CoinPriceController.getInstance().getPriceFromTimeStamp(balanceModel.getToken1NameValue().contains("DUSD"),balanceModel.getToken2NameValue() + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()));
+                        balanceModel.setFiat2(balanceModel.getCrypto2Value() * CoinPriceController.getInstance().getPriceFromTimeStamp(balanceModel.getToken2NameValue().contains("DUSD"),balanceModel.getToken2NameValue() + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()));
                     }
                 }
         );
@@ -279,7 +279,7 @@ public class MainViewController {
     public boolean updateTransactionData() {
         TransactionController.getInstance().clearTransactionList();
         TransactionController.getInstance().clearPortfolioList();
-        this.transactionController.updateBalanceList();
+        //this.transactionController.updateBalanceList();
 
 
         try {
@@ -468,17 +468,17 @@ public class MainViewController {
             localeDecimal = Locale.US;
         }
         for (BalanceModel balanceModel : this.transactionController.getBalanceList()) {
-            if ((balanceModel.getToken1NameValue().equals("DUSD") || balanceModel.getToken2NameValue().equals("DUSD")) &&  !balanceModel.getToken2NameValue().equals("-")) {
-                double factor = 1.0;
+           // if ((balanceModel.getToken1NameValue().equals("DUSD") || balanceModel.getToken2NameValue().equals("DUSD")) &&  !balanceModel.getToken2NameValue().equals("-")) {
+           //     double factor = 1.0;
 
-                if(!SettingsController.getInstance().selectedFiatCurrency.getValue().contains("USD")) factor = this.transactionController.getCurrencyFactor();
-                balanceModel.setFiat1(factor*balanceModel.getCrypto1Value()*Double.parseDouble(this.transactionController.getPrice(balanceModel.getToken1NameValue()+"-"+balanceModel.getToken2NameValue())));
-                balanceModel.setFiat2(factor*balanceModel.getCrypto2Value());
-            }
+             //   if(!SettingsController.getInstance().selectedFiatCurrency.getValue().contains("USD")) factor = this.transactionController.getCurrencyFactor();
+             //   balanceModel.setFiat1(factor*balanceModel.getCrypto1Value()*Double.parseDouble(this.transactionController.getPrice(balanceModel.getToken1NameValue()+"-"+balanceModel.getToken2NameValue())));
+             //   balanceModel.setFiat2(factor*balanceModel.getCrypto2Value());
+            //}
 
             if (balanceModel.getToken2NameValue().equals("-")) {
                 pieChartData.add(new PieChart.Data(balanceModel.getToken1NameValue(), balanceModel.getFiat1Value()));
-                this.poolPairModelList.add(new PoolPairModel(balanceModel.getToken1NameValue() + " (" + String.format(localeDecimal, "%1.2f", CoinPriceController.getInstance().getPriceFromTimeStamp(Integer.parseInt(this.transactionController.getIdFromPoolPair(balanceModel.getToken1NameValue()))>14, balanceModel.getToken1Name().getValue() + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis() * 1000L)) + currency + ")", 0.0, 0.0, 0.0, String.format(localeDecimal, "%1.8f", balanceModel.getCrypto1Value()), 0.0, 0.0, 0.0, 0.0, String.format(localeDecimal, "%,.2f", balanceModel.getFiat1Value())));
+                this.poolPairModelList.add(new PoolPairModel(balanceModel.getToken1NameValue() + " (" + String.format(localeDecimal, "%1.2f", CoinPriceController.getInstance().getPriceFromTimeStamp(balanceModel.getToken2NameValue().equals("DUSD"),balanceModel.getToken1NameValue() + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis())) + currency + ")", 0.0, 0.0, 0.0, String.format(localeDecimal, "%1.8f", balanceModel.getCrypto1Value()), 0.0, 0.0, 0.0, 0.0, String.format(localeDecimal, "%,.2f", balanceModel.getFiat1Value())));
                 calculatedPortfolio += balanceModel.getFiat1Value() + balanceModel.getFiat2Value();
 
             } else {
@@ -521,7 +521,6 @@ public class MainViewController {
 
         for (PieChart.Data data : this.mainView.plotPortfolio1.getData()
         ) {
-
             data.getNode().setStyle("-fx-pie-color: " + getColor(data.getName()) + ";");
         }
 
@@ -570,14 +569,22 @@ public class MainViewController {
             this.poolPairModelList.add(new PoolPairModel("Impermanent Loss", 0.0, 0.0, 0.0, "Value input coins" + " (" + SettingsController.getInstance().selectedFiatCurrency.getValue() + ")", 0.0, 0.0, 0.0, 0.0, "Value current coins" + " (" + SettingsController.getInstance().selectedFiatCurrency.getValue() + ")"));
 
             double currentDFIPrice = CoinPriceController.getInstance().getPriceFromTimeStamp(false,"DFI" + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
+            double currentDUSDPrice = CoinPriceController.getInstance().getPriceFromTimeStamp(true,"DUSD"+ this.settingsController.selectedFiatCurrency.getValue(),System.currentTimeMillis());
+            double currentCoin1Price  = currentDFIPrice;
             TreeMap<String, ImpermanentLossModel> ilList = TransactionController.getInstance().impermanentLossList;
             double inputTotal = 0.0;
             double currentTotal = 0.0;
             for (String key : ilList.keySet()) {
                 double currentCoin2Price = CoinPriceController.getInstance().getPriceFromTimeStamp(key.contains("DUSD"),key.split("-")[0] + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
 
-                double valueInputCoins = currentDFIPrice * ilList.get(key).PoolCoin1 + currentCoin2Price * ilList.get(key).PoolCoin2;
-                double valuePool = 1.0;
+                if(key.split("-")[1].equals("DFI")) {
+                    currentCoin1Price = currentDFIPrice;
+                }else{
+                    currentCoin1Price = currentDUSDPrice;
+                }
+
+                double valueInputCoins = currentCoin1Price * ilList.get(key).PoolCoin1 + currentCoin2Price * ilList.get(key).PoolCoin2;
+                double valuePool = 0.0;
                 for (BalanceModel balanceModel : this.transactionController.getBalanceList()) {
                     if (!balanceModel.getToken2NameValue().equals("-")) {
                         if (key.split("-")[0].equals(balanceModel.getToken1Name().getValue())) {
@@ -585,13 +592,25 @@ public class MainViewController {
                         }
                     }
                 }
-                double lossValue = ((valuePool / valueInputCoins) - 1) * 100;
-                if(lossValue > 0) {
-                    lossValue = lossValue * -1;
+
+                String lossValueString = "";
+                String valuePoolString = "";
+
+                if(valuePool == 0){
+                    lossValueString = "-";
+                    valuePoolString = "-";
+                }else{
+                    double lossValue = ((valuePool / valueInputCoins) - 1) * 100;
+                    if(lossValue > 0) {
+                        lossValue = lossValue * -1;
+                    }
+                    inputTotal += valueInputCoins;
+                    currentTotal += valuePool;
+
+                    lossValueString=  String.format(localeDecimal, "%,.2f", lossValue) + "%";
+                    valuePoolString= String.format(localeDecimal, "%,1.2f", valuePool);
                 }
-                inputTotal += valueInputCoins;
-                currentTotal += valuePool;
-                this.poolPairModelList.add(new PoolPairModel(String.format(localeDecimal, "%,.2f", lossValue) + "%" + " (" + key + ")", 0.0, 0.0, 0.0, String.format(localeDecimal, "%,1.2f", valueInputCoins), 0.0, 0.0, 0.0, 0.0, String.format(localeDecimal, "%,1.2f", valuePool)));
+                this.poolPairModelList.add(new PoolPairModel(lossValueString + " (" + key + ")", 0.0, 0.0, 0.0, String.format(localeDecimal, "%,1.2f", valueInputCoins), 0.0, 0.0, 0.0, 0.0, valuePoolString));
             }
 
             this.poolPairModelList.add(new PoolPairModel(String.format(localeDecimal, "%,.2f", ((currentTotal / inputTotal) - 1) * 100) + "%" + " (Total)", 0.0, 0.0, 0.0, String.format(localeDecimal, "%,1.2f", inputTotal), 0.0, 0.0, 0.0, 0.0, String.format(localeDecimal, "%,1.2f", currentTotal)));
@@ -810,11 +829,12 @@ public class MainViewController {
                             commissionsSeries1.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getCoinCommissions1Value() * poolPair1CurrentPrice));
                             commissionsSeries2.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getCoinCommissions2Value() * poolPair2CurrentPrice));
                         }
-                        if (this.settingsController.selectedPlotCurrency.getValue().equals("Current Fiat")) {
-                            double currentDFIPrice = CoinPriceController.getInstance().getPriceFromTimeStamp(false,"DFI" + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
-                            double currentPairPrice = CoinPriceController.getInstance().getPriceFromTimeStamp(this.settingsController.selectedCoin.getValue().contains("DUSD"),this.settingsController.selectedCoin.getValue().split("-")[0] + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
 
-                            this.poolPairModelList.add(new PoolPairModel(entry.getKey(), (entry.getValue().getCoinCommissions1Value() * currentDFIPrice) + (entry.getValue().getCoinCommissions2Value() * currentPairPrice), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue(), entry.getValue().getCoinCommissions1Value() * currentDFIPrice, entry.getValue().getCoinCommissions2Value() * currentPairPrice, 1.0, 1, ""));
+                        if (this.settingsController.selectedPlotCurrency.getValue().equals("Current Fiat")) {
+                            double poolPair1CurrentPrice = CoinPriceController.getInstance().getPriceFromTimeStamp(this.settingsController.selectedCoin.getValue().split("-")[1].equals("DUSD"),this.settingsController.selectedCoin.getValue().split("-")[1] + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
+                            double poolPair2CurrentPrice = CoinPriceController.getInstance().getPriceFromTimeStamp(this.settingsController.selectedCoin.getValue().split("-")[0].equals("DUSD"),this.settingsController.selectedCoin.getValue().split("-")[0] + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
+
+                            this.poolPairModelList.add(new PoolPairModel(entry.getKey(), (entry.getValue().getCoinCommissions1Value() * poolPair1CurrentPrice) + (entry.getValue().getCoinCommissions2Value() * poolPair2CurrentPrice), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue(), entry.getValue().getCoinCommissions1Value() * poolPair1CurrentPrice, entry.getValue().getCoinCommissions2Value() * poolPair2CurrentPrice, 1.0, 1, ""));
                         } else {
                             this.poolPairModelList.add(new PoolPairModel(entry.getKey(), entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value(), entry.getValue().getCoinCommissions1Value(), entry.getValue().getCoinCommissions2Value(), this.settingsController.selectedCoin.getValue(), entry.getValue().getFiatCommissions1Value(), entry.getValue().getFiatCommissions2Value(), 1.0, 1, ""));
                         }
