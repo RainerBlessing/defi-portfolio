@@ -521,29 +521,28 @@ public class MainViewController {
 
         for (PieChart.Data data : this.mainView.plotPortfolio1.getData()
         ) {
-            data.getNode().setStyle("-fx-pie-color: " + getColor(data.getName()) + ";");
+            if(!getColor(data.getName()).equals("-"))  data.getNode().setStyle("-fx-pie-color: " + getColor(data.getName()) + ";");
         }
 
         for (Node n : this.mainView.plotPortfolio1.getChildrenUnmodifiable()
         ) {
             if (n instanceof Legend) {
                 for (Legend.LegendItem legendItem : ((Legend) n).getItems()) {
-                    legendItem.getSymbol().setStyle("-fx-background-color: " + getColor(legendItem.getText()) + ";");
-
+                    if(!getColor(legendItem.getText()).equals("-")) legendItem.getSymbol().setStyle("-fx-background-color: " + getColor(legendItem.getText()) + ";");
                 }
             }
         }
 
         for (PieChart.Data data : this.mainView.plotPortfolio11.getData()
         ) {
-            data.getNode().setStyle("-fx-pie-color: " + getColor(data.getName()) + ";");
+           if(!getColor(data.getName()).equals("-")) data.getNode().setStyle("-fx-pie-color: " + getColor(data.getName()) + ";");
         }
 
         for (Node n : this.mainView.plotPortfolio11.getChildrenUnmodifiable()
         ) {
             if (n instanceof Legend) {
                 for (Legend.LegendItem legendItem : ((Legend) n).getItems()) {
-                    legendItem.getSymbol().setStyle("-fx-background-color: " + getColor(legendItem.getText()) + ";");
+                  if(!getColor(legendItem.getText()).equals("-"))  legendItem.getSymbol().setStyle("-fx-background-color: " + getColor(legendItem.getText()) + ";");
                 }
             }
         }

@@ -967,7 +967,7 @@ public class TransactionController {
                     }
                 } else {
                     if (entry.getValue()>0) {
-                        balanceModelList.add(new BalanceModel(entry.getKey(), coinPriceController.getPriceFromTimeStamp(Integer.parseInt(this.getIdFromPoolPair(entry.getKey()))>14 ,entry.getKey() + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * entry.getValue(), entry.getValue() ,
+                        balanceModelList.add(new BalanceModel(entry.getKey(), coinPriceController.getPriceFromTimeStamp(entry.getKey().contains("DUSD") ,entry.getKey() + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * entry.getValue(), entry.getValue() ,
                                 "-", 0.0, 0.0, 0.0));
                     }
                 }

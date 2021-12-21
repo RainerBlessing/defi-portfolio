@@ -153,6 +153,7 @@ public class AddAdressView implements Initializable {
         for (Addresses listAdress : this.listAdresses) {
             SettingsController.getInstance().listAddresses.add(listAdress.getAddress());
         }
+        TransactionController.getInstance().updateBalanceList();
         MainViewController.getInstance().plotUpdate("Rewards");
         MainViewController.getInstance().plotUpdate("Portfolio");
     }
