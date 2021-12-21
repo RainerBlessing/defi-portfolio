@@ -964,9 +964,19 @@ public class MainViewController {
             fileChooser.setInitialDirectory(new File(this.settingsController.lastExportPath));
         }
 
+        String exportPath = "";
         Date date = new Date(System.currentTimeMillis());
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        fileChooser.setInitialFileName(dateFormat.format(date) + "_Portfolio_Export_RawData");
+        if (filter.equals("DAILY")) {
+            exportPath = dateFormat.format(date) + "_Portfolio_Export_RawData";
+        } else if (filter.equals("")) {
+            exportPath = dateFormat.format(date) + "_Portfolio_Export_RawData";
+        }else {
+            exportPath = dateFormat.format(date) + "_Portfolio_Export_Cointracking";
+        }
+
+
+        fileChooser.setInitialFileName(exportPath);
         File selectedFile = fileChooser.showSaveDialog(new Stage());
 
         if (selectedFile != null) {

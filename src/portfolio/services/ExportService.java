@@ -428,17 +428,20 @@ public class ExportService {
                             TransactionModel addPool = null;
 
                             if (transaction.typeProperty.getValue().equals("AddPoolLiquidity") && !transaction.exportCointracking) {
-
+                                if(transaction.txIDProperty.getValue().equals("bc01671e03ff719c657441439c2ef96b1b90a8fee2ff2b6c7c1f660505c39e5f")){
+                                    int a=2;
+                                }
                                 for (int i = transCounter; i < transactions.size(); i++) {
                                     if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
                                         break;
 
                                     if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue()) && transactions.get(i).typeProperty.getValue().equals(transaction.typeProperty.getValue()) && transactions.get(i).typeProperty.getValue().equals(transaction.typeProperty.getValue())) {
-                                        if (transactions.get(i).cryptoCurrencyProperty.getValue().equals("DFI")) {
+
+                                        if (transactions.get(i).cryptoCurrencyProperty.getValue().equals("DFI")||(transactions.get(i).cryptoCurrencyProperty.getValue().equals("DUSD"))) {
                                             addPool1 = transactions.get(i);
                                             transactions.get(i).exportCointracking = true;
                                         }
-                                        if (!transactions.get(i).cryptoCurrencyProperty.getValue().equals("DFI") && !transactions.get(i).cryptoCurrencyProperty.getValue().contains("-")) {
+                                        if (!transactions.get(i).cryptoCurrencyProperty.getValue().equals("DFI")  && !transactions.get(i).cryptoCurrencyProperty.getValue().contains("-")) {
                                             addPool2 = transactions.get(i);
                                             transactions.get(i).exportCointracking = true;
                                         }
@@ -447,7 +450,7 @@ public class ExportService {
                                             transactions.get(i).exportCointracking = true;
                                         }
                                     }
-                                    if (addPool != null && addPool2 != null && addPool1 != null) break;
+                                    if (addPool != null && addPool2 != null && addPool1 != null && !addPool2.cryptoCurrencyProperty.getValue().equals("DUSD")) break;
                                 }
 
                                 if (addPool != null && addPool2 != null && addPool1 != null) {
@@ -516,7 +519,7 @@ public class ExportService {
                                     break;
 
                                 if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue()) && transactions.get(i).typeProperty.getValue().equals(transaction.typeProperty.getValue())) {
-                                    if (transactions.get(i).cryptoCurrencyProperty.getValue().equals("DFI")) {
+                                    if (transactions.get(i).cryptoCurrencyProperty.getValue().equals("DFI")||(transactions.get(i).cryptoCurrencyProperty.getValue().equals("DUSD"))) {
                                         addPool1 = transactions.get(i);
                                         transactions.get(i).exportCointracking = true;
                                     }
@@ -529,7 +532,7 @@ public class ExportService {
                                         transactions.get(i).exportCointracking = true;
                                     }
                                 }
-                                if (addPool != null && addPool2 != null && addPool1 != null) break;
+                                if (addPool != null && addPool2 != null && addPool1 != null&& !addPool2.cryptoCurrencyProperty.getValue().equals("DUSD")) break;
                             }
 
                             if (addPool != null && addPool2 != null && addPool1 != null) {

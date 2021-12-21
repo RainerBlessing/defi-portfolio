@@ -6,7 +6,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="108.0" prefWidth="716.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.2" fx:controller="portfolio.views.HelpView">
+<AnchorPane fx:id="anchorPane" prefHeight="108.0" prefWidth="716.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.HelpView">
    <HBox alignment="CENTER" fillHeight="false" prefHeight="139.0" prefWidth="760.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <children>
          <Button fx:id="btnGitHub" contentDisplay="TOP" layoutX="230.0" layoutY="25.0" mnemonicParsing="false" onMouseClicked="#github" prefHeight="80.0" prefWidth="90.0" text="GitHub">
