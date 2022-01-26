@@ -1,12 +1,21 @@
+import sys
 import yfinance as yf
 from datetime import date
 import pandas
 import numpy
 import os
+import pathlib
+import platform
 
 if __name__ == '__main__':
-  #  pathPortfolioData = sys.argv[1]
-    pathPortfolioData = os.environ.get("APPDATA") + '\\defi-portfolio'
+
+    if platform.system() == 'Linux' or platform.system() == 'Windows':
+        pathPortfolioData = sys.argv[1]
+    else:
+        pathPortfolioData = sys.argv[0]
+        pathPortfolioData = pathPortfolioData.replace("/StockTokenPrices", "")  # match mac os path
+    print("PATH: " + pathPortfolioData)
+   # pathPortfolioData = os.environ.get("APPDATA") + '\\defi-portfolio'
 
     today = date.today()
     strDate = today.strftime("%Y-%m-%d")
