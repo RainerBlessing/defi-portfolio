@@ -103,7 +103,7 @@ public class AddAdressView implements Initializable {
                         List<String> addressList = (List) addresses.get("addresses");
 
                         for(String address : addressList){
-                            this.listAdresses.add(new Addresses(address));
+                            this.listAdresses.add(new Addresses(address.replace(" ","")));
                         }
                     }else{
 

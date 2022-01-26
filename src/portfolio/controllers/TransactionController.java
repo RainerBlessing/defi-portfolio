@@ -628,7 +628,10 @@ public class TransactionController {
             }
 
             JSONObject jsonObject = (JSONObject) JSONValue.parse(jsonText);
-            JSONArray jsonArray = (JSONArray) jsonObject.get("data");
+            JSONArray jsonArray = null;
+            if(jsonObject != null){
+                jsonArray = (JSONArray) jsonObject.get("data");
+            }
 
             return jsonArray;
         } catch (IOException e) {
@@ -651,7 +654,7 @@ public class TransactionController {
 
             JSONObject jsonObject = (JSONObject) JSONValue.parse(jsonText);
 
-            if(jsonObject == null) return null;
+            if(jsonObject == null) return "0";
             String balance = jsonObject.get("data").toString();
 
             return balance;
@@ -930,26 +933,27 @@ public class TransactionController {
                 SettingsController.getInstance().listAddresses) {
              jsonArray = getAddressTokenBalance(address);
 
-            for (Object token : jsonArray) {
-                JSONObject jsonToken = (JSONObject)token;
-                String tokenName = jsonToken.get("symbol").toString();
-                double tokenValue = Double.parseDouble(jsonToken.get("amount").toString());
+             if(jsonArray!=null) {
+                 for (Object token : jsonArray) {
+                     JSONObject jsonToken = (JSONObject) token;
+                     String tokenName = jsonToken.get("symbol").toString();
+                     double tokenValue = Double.parseDouble(jsonToken.get("amount").toString());
 
-                if (!balanceTreeMap.containsKey(tokenName)) {
-                    balanceTreeMap.put(tokenName,tokenValue);
-                } else {
-                    double oldValue = balanceTreeMap.get(tokenName).doubleValue();
-                    balanceTreeMap.put(tokenName, oldValue+tokenValue);
-                }
-            }
+                     if (!balanceTreeMap.containsKey(tokenName)) {
+                         balanceTreeMap.put(tokenName, tokenValue);
+                     } else {
+                         double oldValue = balanceTreeMap.get(tokenName).doubleValue();
+                         balanceTreeMap.put(tokenName, oldValue + tokenValue);
+                     }
+                 }
 
-            if(!balanceTreeMap.containsKey("DFI")){
-                balanceTreeMap.put("DFI",0.0);
-            }
-            double oldValue = balanceTreeMap.get("DFI").doubleValue();
-            double balanceValue = Double.parseDouble(getAddressUtxoBalance(address));
-            balanceTreeMap.put("DFI", oldValue+balanceValue);
-
+                 if (!balanceTreeMap.containsKey("DFI")) {
+                     balanceTreeMap.put("DFI", 0.0);
+                 }
+                 double oldValue = balanceTreeMap.get("DFI").doubleValue();
+                 double balanceValue = Double.parseDouble(getAddressUtxoBalance(address));
+                 balanceTreeMap.put("DFI", oldValue + balanceValue);
+             }
         }
 
 
@@ -1049,7 +1053,7 @@ public class TransactionController {
 
     public String convertTimeStampYesterdayToString(long timeStamp) {
         Date date = new Date(timeStamp * 1000L);
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
         return dateFormat.format(date);
     }
 

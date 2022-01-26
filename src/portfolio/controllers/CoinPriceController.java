@@ -365,7 +365,7 @@ public class CoinPriceController {
         }else{
             if(this.stockPriceMap.size() ==0) this.updateStockPriceData();
             if(this.stockPriceMap.size() >0){
-                if(coinFiatPair.equals("DUSDEUR")){
+                if(coinFiatPair.contains("DUSD")){
                     double factor = 1.0;
                     if(!SettingsController.getInstance().selectedFiatCurrency.getValue().contains("USD")) factor = this.getCurrencyFactor();
                     return factor;
