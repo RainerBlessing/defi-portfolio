@@ -9,55 +9,26 @@ import numpy as np
 import warnings
 import platform
 import pathlib
+import requests
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 pd.options.mode.chained_assignment = None
 
-def create_connection_rpc(cred):
-    url = "http://%s:%s@%s:%s/"%(cred['rpc_username'], cred['rpc_password'], cred['rpc_hostname'], cred['rpc_port'])
-    return AuthServiceProxy(url)
-
-def get_history(address,maxBlockHeight,depth,limit):
-    poolpairs = rpc_connection.listaccounthistory(address,{"maxBlockHeight": maxBlockHeight,"depth":depth,"no_rewards":False,"limit":limit})
-    return poolpairs
-
 if __name__ == '__main__':
-    if platform.system() == 'Linux' or platform.system() == 'Windows':
-        pathPortfolioData = sys.argv[1]
-        pathConfig = sys.argv[2]
-    else:
-        pathPortfolioData = sys.argv[0]
-        pathConfig = sys.argv[0]
-        pathPortfolioData = pathPortfolioData.replace("/updatePortfolio", "")  # match mac os path
-        pathConfig = pathPortfolioData.replace("/updatePortfolio", "") + "/defi.conf"  # match mac os path
+
+    if False:
+        if platform.system() == 'Linux' or platform.system() == 'Windows':
+            pathPortfolioData = sys.argv[1]
+            pathConfig = sys.argv[2]
+        else:
+            pathPortfolioData = sys.argv[0]
+            pathConfig = sys.argv[0]
+            pathPortfolioData = pathPortfolioData.replace("/updatePortfolio", "")  # match mac os path
+            pathConfig = pathPortfolioData.replace("/updatePortfolio", "") + "/defi.conf"  # match mac os path
  #   pathPortfolioData = os.environ.get("APPDATA") + '\\defi-portfolio'
  #   pathConfig = 'C:\\Users\\Arthur\\Desktop\\defiJava\\PortfolioData\\defi.conf'
 
-    confFile = pd.read_csv(open(pathConfig), header=None, sep='=')
-    confFile = confFile.set_index(0)
-    credentials = {}
-    credentials['rpc_username'] = confFile.at['rpcuser',1]
-    credentials['rpc_password'] = confFile.at['rpcpassword',1]
-    if len(confFile.at['rpcport',1][0]) > 1:
-        credentials['rpc_port'] = confFile.at['rpcport',1][0]
-    else:
-        credentials['rpc_port'] = confFile.at['rpcport', 1]
-    if len(confFile.at['rpcbind',1][0]) > 1:
-        credentials['rpc_hostname'] = confFile.at['rpcbind',1][0]
-    else:
-        credentials['rpc_hostname'] = confFile.at['rpcbind',1]
-
-
-    # get local block count
-    if os.path.isfile(pathPortfolioData + '/transactionData.portfolio') and os.path.getsize(pathPortfolioData + '/transactionData.portfolio') > 0:
-        transactions = pd.read_csv(open(pathPortfolioData + '/transactionData.portfolio'), sep=';')
-        if transactions.__len__() > 0:
-             firstBlock = transactions.iloc[transactions.__len__() - 1, 5]
-        else:
-            firstBlock = 468146
-    else:
-        firstBlock = 468146
-
+    pathPortfolioData = "C:\\Users\\danie\\AppData\\Roaming\\defi-portfolio"
     # Addresse
     addresses = pd.read_csv(open(pathPortfolioData + '/Addresses.csv'), header = None)
 #################
@@ -65,36 +36,12 @@ if __name__ == '__main__':
 
     if local == 0:
         data = pd.DataFrame()
-        rpc_connection = create_connection_rpc(credentials)
-        maxBlockHeight = rpc_connection.getblockcount()
-        depth = 10000
-        limit = depth * 2000
-        numAddress = 1
+
         for iAddress in range(0, addresses.__len__()):
-            depth = 10000
-            limit = depth * 2000
-
-            # for schleife über blöcke in 10.000 Schritten
-            for iBlocks in range(maxBlockHeight, firstBlock, -depth):
-                print(((maxBlockHeight-iBlocks)/(maxBlockHeight-firstBlock)))
-                f = open(pathPortfolioData + '/update.portfolio', 'w')
-                f.write('Data Update:\n'+addresses.at[iAddress,0]+' ('+str(numAddress)+'/'+str(addresses.__len__())+')\n'+str(round(((maxBlockHeight-iBlocks)/(maxBlockHeight-firstBlock))*100,0))+'%')
-                f.close()
-                if iBlocks - firstBlock >= depth:
-                    poolpairs = get_history(addresses.at[iAddress,0], iBlocks, depth, limit)
-                    if data.__len__() == 0:
-                        data = pd.DataFrame(poolpairs)
-                    else:
-                        data = data.append(pd.DataFrame(poolpairs),ignore_index = True)
-
-                if iBlocks - firstBlock < depth:
-                    poolpairs = get_history(addresses.at[iAddress, 0], iBlocks, int(iBlocks - firstBlock), limit)
-                    if data.__len__() == 0:
-                        data = pd.DataFrame(poolpairs)
-                    else:
-                        data = data.append(pd.DataFrame(poolpairs))
-            numAddress = numAddress +1
-
+            rewards = pd.read_json(requests.get("https://api.dfi.tax/p01/rwd/"+addresses.at[iAddress, 0]+"/day/EUR").content)
+            transactions1 = pd.read_json(requests.get("https://api.dfi.tax/v01/hst/"+addresses.at[iAddress, 0]+"/2022/EUR").content)
+            transactions2 = pd.read_json(requests.get("https://api.dfi.tax/v01/hst/" + addresses.at[iAddress, 0] + "/2021/EUR").content)
+            transactions3 = pd.read_json(requests.get("https://api.dfi.tax/v01/hst/" + addresses.at[iAddress, 0] + "/2020/EUR").content)
     else:
         data = pd.read_json('C:/Users/Arthur/Desktop/test.json')
 
