@@ -439,15 +439,21 @@ public class ExportService {
                             TransactionModel addPool = null;
 
                             if (transaction.typeProperty.getValue().equals("AddPoolLiquidity") && !transaction.exportCointracking) {
+
+                                if(transaction.txIDProperty.getValue().equals("e579801c61701bd7a13dfca35f3770013e8f370c899c3b2991ee8019fcc1c25c")){
+                                    int a=2;
+                                }
+                                boolean isDUSDPool = false;
                                 for (int i = transCounter; i < transactions.size(); i++) {
                                     if (transactions.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
                                         break;
 
                                     if (transactions.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue()) && transactions.get(i).typeProperty.getValue().equals(transaction.typeProperty.getValue()) && transactions.get(i).typeProperty.getValue().equals(transaction.typeProperty.getValue())) {
-                                        boolean isDUSDPool = transaction.cryptoCurrencyProperty.getValue().contains("DUSD-DFI");
+
                                         if (transactions.get(i).cryptoCurrencyProperty.getValue().equals("DFI")||(transactions.get(i).cryptoCurrencyProperty.getValue().equals("DUSD")&&!isDUSDPool)) {
                                             addPool1 = transactions.get(i);
                                             transactions.get(i).exportCointracking = true;
+                                            if(transactions.get(i).cryptoCurrencyProperty.getValue().equals("DFI")) isDUSDPool = true;
                                         }
                                         if (!transactions.get(i).cryptoCurrencyProperty.getValue().equals("DFI")  && !transactions.get(i).cryptoCurrencyProperty.getValue().contains("-")) {
                                             addPool2 = transactions.get(i);
