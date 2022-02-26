@@ -67,6 +67,10 @@ public class CoinPriceController {
                         this.stockPriceMap.get("URTH").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[13]));
                         this.stockPriceMap.get("TLT").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[14]));
                         this.stockPriceMap.get("SLV").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[15]));
+                        this.stockPriceMap.get("COIN").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[16]));
+                        this.stockPriceMap.get("AMZN").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[17]));
+                        this.stockPriceMap.get("NVDA").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[18]));
+                        this.stockPriceMap.get("EEM").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[19]));
                     }
 
                     line = reader.readLine();
