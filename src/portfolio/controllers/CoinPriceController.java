@@ -71,6 +71,15 @@ public class CoinPriceController {
                         this.stockPriceMap.get("AMZN").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[17]));
                         this.stockPriceMap.get("NVDA").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[18]));
                         this.stockPriceMap.get("EEM").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[19]));
+                        this.stockPriceMap.get("INTC").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[20]));
+                        this.stockPriceMap.get("DIS").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[21]));
+                        this.stockPriceMap.get("MSFT").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[22]));
+                        this.stockPriceMap.get("NFLX").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[23]));
+                        this.stockPriceMap.get("VOO").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[24]));
+                        this.stockPriceMap.get("MSTR").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[25]));
+                        this.stockPriceMap.get("FB").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[26]));
+                        this.stockPriceMap.get("MCHI").put(Long.parseLong(transactionSplit[0]),Double.parseDouble(transactionSplit[27]));
+
                     }
 
                     line = reader.readLine();
