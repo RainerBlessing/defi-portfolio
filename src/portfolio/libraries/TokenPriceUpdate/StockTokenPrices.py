@@ -21,7 +21,7 @@ if __name__ == '__main__':
     strDate = today.strftime("%Y-%m-%d")
     strStartDate = '2021-11-01'
     Tokens = ['TSLA', 'GME', 'GOOGL', 'BABA', 'PLTR', 'AAPL', 'SPY', 'QQQ', 'PDBC', 'VNQ', 'ARKK', 'GLD', 'URTH', 'TLT',
-              'SLV','COIN','AMZN','NVDA','EEM']
+              'SLV','COIN','AMZN','NVDA','EEM','INTC','DIS','MSFT','NFLX','VOO','MSTR','FB','MCHI']
     resultUSD = pandas.DataFrame()
 
     for token in Tokens:
@@ -45,7 +45,8 @@ if __name__ == '__main__':
     result['Date'] = result.index
     result = result[
         ['Date', 'TSLAUSD', 'GMEUSD', 'GOOGLUSD', 'BABAUSD', 'PLTRUSD', 'AAPLUSD', 'SPYUSD', 'QQQUSD', 'PDBCUSD',
-         'VNQUSD', 'ARKKUSD', 'GLDUSD', 'URTHUSD', 'TLTUSD', 'SLVUSD','COINUSD','AMZNUSD','NVDAUSD','EEMUSD']]
+         'VNQUSD', 'ARKKUSD', 'GLDUSD', 'URTHUSD', 'TLTUSD', 'SLVUSD','COINUSD','AMZNUSD','NVDAUSD','EEMUSD',
+         'INTCUSD','DISUSD','MSFTUSD','NFLXUSD','VOOUSD','MSTRUSD','FBUSD','MCHIUSD']]
 
     index = pandas.DatetimeIndex(result['Date'])
     index = index.astype(numpy.int64).to_series() / 1000000000
