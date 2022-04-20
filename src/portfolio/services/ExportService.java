@@ -380,7 +380,7 @@ public class ExportService {
                     } else {
 
 
-                        if (!(transaction.typeProperty.getValue().equals("UtxosToAccount") || transaction.typeProperty.getValue().equals("AccountToUtxos"))) {
+                        if (!(transaction.typeProperty.getValue().equals("UtxosToAccount"))) {
 
                             TransactionModel poolSwap2 = null;
 
@@ -604,7 +604,7 @@ public class ExportService {
                             }
                         }
 
-                        if ((transaction.typeProperty.getValue().equals("receive") | transaction.typeProperty.getValue().equals("sent")) && !transaction.exportCointracking) {
+                        if ((transaction.typeProperty.getValue().equals("receive") | transaction.typeProperty.getValue().equals("sent") |  transaction.typeProperty.getValue().equals("AccountToUtxos")) && !transaction.exportCointracking) {
 
                             double amount = 0;
                             int onlyOne = 0;
