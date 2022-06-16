@@ -11,8 +11,8 @@
       <entry name="!?*.kt" />
       <entry name="!?*.clj" />
     </wildcardResourcePatterns>
-    <bytecodeTargetLevel target="8">
-      <module name="defi-portfolio" target="8" />
+    <bytecodeTargetLevel target="11">
+      <module name="defi-portfolio" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>
