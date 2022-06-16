@@ -60,19 +60,19 @@ public class MainView implements Initializable {
     @FXML
     public ImageView coinImageRewards1,coinImageRewards2, coinImageCommissions1,coinImageCommissions2;
     @FXML
-    public DatePicker dateFrom = new DatePicker();
+    public final DatePicker dateFrom = new DatePicker();
     @FXML
-    public DatePicker dateTo = new DatePicker();
+    public final DatePicker dateTo = new DatePicker();
     @FXML
-    public DatePicker dateFromCom = new DatePicker();
+    public final DatePicker dateFromCom = new DatePicker();
     @FXML
-    public DatePicker dateToCom = new DatePicker();
+    public final DatePicker dateToCom = new DatePicker();
     @FXML
-    public DatePicker dateFromOver = new DatePicker();
+    public final DatePicker dateFromOver = new DatePicker();
     @FXML
-    public DatePicker dateToOver = new DatePicker();
+    public final DatePicker dateToOver = new DatePicker();
     @FXML
-    public TabPane tabPane = new TabPane();
+    public final TabPane tabPane = new TabPane();
     @FXML
     public LineChart<Number, Number> plotRewards, plotCommissions1, plotCommissions2;
     @FXML
@@ -139,18 +139,18 @@ public class MainView implements Initializable {
     public Label EndDateOver;
     public Stage NoAddressesWarningView;
 
-    public MenuItem menuItemCopySelected = new MenuItem("Copy");
-    public MenuItem menuItemCopyHeaderSelected = new MenuItem("Copy with header");
-    public MenuItem menuItemExportSelected = new MenuItem("Export selected to CSV");
-    public MenuItem menuItemExportAllSelected = new MenuItem("Export all to CSV");
-    public MenuItem menuItemExportAllDailySelected = new MenuItem("Export all to CSV (Daily cumulated)");
-    public MenuItem menuItemExportCointracking = new MenuItem("Export to Cointracking");
-    public MenuItem menuItemExportToCSV = new MenuItem("Export to CSV");
+    public final MenuItem menuItemCopySelected = new MenuItem("Copy");
+    public final MenuItem menuItemCopyHeaderSelected = new MenuItem("Copy with header");
+    public final MenuItem menuItemExportSelected = new MenuItem("Export selected to CSV");
+    public final MenuItem menuItemExportAllSelected = new MenuItem("Export all to CSV");
+    public final MenuItem menuItemExportAllDailySelected = new MenuItem("Export all to CSV (Daily cumulated)");
+    public final MenuItem menuItemExportCointracking = new MenuItem("Export to Cointracking");
+    public final MenuItem menuItemExportToCSV = new MenuItem("Export to CSV");
 
-    public MenuItem menuItemCopySelectedPlot = new MenuItem("Copy");
-    public MenuItem menuItemCopyHeaderSelectedPlot = new MenuItem("Copy with header");
-    public MenuItem menuItemExportSelectedPlot = new MenuItem("Export selected to CSV");
-    public MenuItem menuItemExportAllSelectedPlot = new MenuItem("Export all to CSV");
+    public final MenuItem menuItemCopySelectedPlot = new MenuItem("Copy");
+    public final MenuItem menuItemCopyHeaderSelectedPlot = new MenuItem("Copy with header");
+    public final MenuItem menuItemExportSelectedPlot = new MenuItem("Export selected to CSV");
+    public final MenuItem menuItemExportAllSelectedPlot = new MenuItem("Export all to CSV");
 
 
     public Stage settingsStage, helpStage, donateStage, stageUpdateData;
@@ -165,7 +165,7 @@ public class MainView implements Initializable {
     public Label UpdateText;
     public PieChart plotPortfolio11;
     public Label fieldTotal,fieldTotalYield,fieldTotalYieldRewards,fieldTotalYieldCommissions, tokenLabel,tokenLabelLM;
-    MainViewController mainViewController = MainViewController.getInstance();
+    final MainViewController mainViewController = MainViewController.getInstance();
     private Stage AddressConfigStage;
 
     public MainView() {
@@ -399,7 +399,7 @@ public class MainView implements Initializable {
     }
 
     public void connectDefid(ActionEvent actionEvent) {
-        if (!mainViewController.transactionController.checkRpc()) {
+        if (mainViewController.transactionController.checkRpc()) {
             this.mainViewController.transactionController.startServer();
         }
     }
@@ -924,7 +924,7 @@ public class MainView implements Initializable {
                                 Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/block/" + tempParam.blockHashProperty.getValue()).toURI());
                             }
                         } catch (IOException | URISyntaxException e) {
-                            SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
+                            SettingsController.getInstance().logger.warning("Exception occurred: " + e);
                         }
                     });
                     setGraphic(hyperlink);
@@ -961,7 +961,7 @@ public class MainView implements Initializable {
                                 Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/address/" + tempParam.ownerProperty.getValue()).toURI());
                             }
                         } catch (IOException | URISyntaxException e) {
-                            SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
+                            SettingsController.getInstance().logger.warning("Exception occurred: " + e);
                         }
                     });
                     setGraphic(hyperlink);
@@ -997,7 +997,7 @@ public class MainView implements Initializable {
                                 Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/block/" + tempParam.blockHeightProperty.getValue()).toURI());
                             }
                         } catch (IOException | URISyntaxException e) {
-                            SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
+                            SettingsController.getInstance().logger.warning("Exception occurred: " + e);
                         }
                     });
                     setGraphic(hyperlink);
@@ -1040,7 +1040,7 @@ public class MainView implements Initializable {
                                     Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/tx/" + tempParam.txIDProperty.getValue()).toURI());
                                 }
                             } catch (IOException | URISyntaxException e) {
-                                SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
+                                SettingsController.getInstance().logger.warning("Exception occurred: " + e);
                             }
                         });
 

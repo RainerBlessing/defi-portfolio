@@ -4,13 +4,13 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class DonateController {
-    private static DonateController OBJ;
+    private static final DonateController OBJ;
 
     static {
         OBJ = new DonateController();
     }
-    public StringProperty strDonateText = new SimpleStringProperty();
-    public StringProperty strBtnClose = new SimpleStringProperty();
+    public final StringProperty strDonateText = new SimpleStringProperty();
+    public final StringProperty strBtnClose = new SimpleStringProperty();
 
 
     public static DonateController getInstance() {

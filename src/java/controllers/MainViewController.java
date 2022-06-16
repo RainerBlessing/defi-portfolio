@@ -1,7 +1,6 @@
 package controllers;
 
 import com.sun.javafx.charts.Legend;
-import javafx.animation.PauseTransition;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,7 +16,6 @@ import javafx.scene.control.Tooltip;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Duration;
 import models.*;
 import services.ExportService;
 import views.MainView;
@@ -36,24 +34,24 @@ import java.util.*;
 
 public class MainViewController {
 
-    public StringProperty strCurrentBlockLocally = new SimpleStringProperty("0");
-    public StringProperty strCurrentBlockOnBlockchain = new SimpleStringProperty("No connection");
+    public final StringProperty strCurrentBlockLocally = new SimpleStringProperty("0");
+    public final StringProperty strCurrentBlockOnBlockchain = new SimpleStringProperty("No connection");
     public StringProperty strProgressbar = new SimpleStringProperty("");
-    public BooleanProperty bDataBase = new SimpleBooleanProperty(true);
+    public final BooleanProperty bDataBase = new SimpleBooleanProperty(true);
 
     //View
     public MainView mainView;
 
     //Table and plot lists
-    public List<PoolPairModel> poolPairModelList = new ArrayList<>();
+    public final List<PoolPairModel> poolPairModelList = new ArrayList<>();
     public ObservableList<PoolPairModel> poolPairList;
 
     //Init all controller and services
-    public SettingsController settingsController = SettingsController.getInstance();
-    public DonateController donateController = DonateController.getInstance();
+    public final SettingsController settingsController = SettingsController.getInstance();
+    public final DonateController donateController = DonateController.getInstance();
     public HelpController helpController = HelpController.getInstance();
-    public CoinPriceController coinPriceController = CoinPriceController.getInstance();
-    public TransactionController transactionController = TransactionController.getInstance();
+    public final CoinPriceController coinPriceController = CoinPriceController.getInstance();
+    public final TransactionController transactionController = TransactionController.getInstance();
     public ExportService expService;
     public boolean updateSingleton = true;
     final Delta dragDelta = new Delta();
@@ -72,7 +70,7 @@ public class MainViewController {
 
         this.settingsController.logger.info("Start DeFi-Portfolio");
         if (this.settingsController.selectedLaunchDefid) {
-            if (!this.transactionController.checkRpc()) this.transactionController.startServer();
+            if (this.transactionController.checkRpc()) this.transactionController.startServer();
         }
 
         this.startStockUpdate();
@@ -154,7 +152,7 @@ public class MainViewController {
 
 
         } catch (Exception e) {
-            this.settingsController.logger.warning("Exception occurred: " + e.toString());
+            this.settingsController.logger.warning("Exception occurred: " + e);
         }
 
 
@@ -275,7 +273,7 @@ public class MainViewController {
         clipboard.setContents(stringSelection, null);
     }
 
-    public boolean updateTransactionData() {
+    public void updateTransactionData() {
         TransactionController.getInstance().clearTransactionList();
         TransactionController.getInstance().clearPortfolioList();
         //this.transactionController.updateBalanceList();
@@ -324,7 +322,7 @@ public class MainViewController {
 
 
         } catch (Exception e) {
-            this.settingsController.logger.warning("Exception occurred: " + e.toString());
+            this.settingsController.logger.warning("Exception occurred: " + e);
         }
 
 
@@ -342,7 +340,6 @@ public class MainViewController {
             return transactionController.updateTransactionData(Integer.parseInt(transactionController.getBlockCount()));
         }
 */
-        return true;
 
     }
 
@@ -460,8 +457,8 @@ public class MainViewController {
         } else if (SettingsController.getInstance().selectedFiatCurrency.getValue().equals("CHF")) {
             currency = "CHF";
         }
-        Double calculatedPortfolio = 0.0;
-        Double calculatedPortfolio2 = 0.0;
+        double calculatedPortfolio = 0.0;
+        double calculatedPortfolio2 = 0.0;
         Locale localeDecimal = Locale.GERMAN;
         if (this.settingsController.selectedDecimal.getValue().equals(".")) {
             localeDecimal = Locale.US;
@@ -988,7 +985,7 @@ public class MainViewController {
             }
 
             if (success) {
-                this.settingsController.lastExportPath = selectedFile.getParent().toString();
+                this.settingsController.lastExportPath = selectedFile.getParent();
                 this.settingsController.saveSettings();
                 try {
                     this.showExportSuccessfullWindow();
@@ -1048,7 +1045,7 @@ public class MainViewController {
             }
 
             if (success) {
-                this.settingsController.lastExportPath = selectedFile.getParent().toString();
+                this.settingsController.lastExportPath = selectedFile.getParent();
                 this.settingsController.saveSettings();
                 try {
                     this.showExportSuccessfullWindow();
@@ -1083,7 +1080,7 @@ public class MainViewController {
             boolean success = this.expService.exportPoolPairToExcel(list, selectedFile.getPath(), source, this.mainView);
 
             if (success) {
-                this.settingsController.lastExportPath = selectedFile.getParent().toString();
+                this.settingsController.lastExportPath = selectedFile.getParent();
                 this.settingsController.saveSettings();
                 try {
                     this.showExportSuccessfullWindow();

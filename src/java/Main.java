@@ -1,5 +1,3 @@
-package portfolio;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -23,7 +21,7 @@ public class Main extends Application {
         try {
             root = FXMLLoader.load(getClass().getResource("views/MainView.fxml"));
         } catch (IOException e) {
-            SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
+            SettingsController.getInstance().logger.warning("Exception occurred: " + e);
         }
         assert root != null;
         Scene scene = new Scene(root);

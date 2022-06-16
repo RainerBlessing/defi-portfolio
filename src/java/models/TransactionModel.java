@@ -7,19 +7,19 @@ import services.ExportService;
 
 public class TransactionModel {
 
-    public StringProperty ownerProperty = new SimpleStringProperty("");
-    public IntegerProperty blockHeightProperty = new SimpleIntegerProperty(0);
-    public StringProperty blockHashProperty = new SimpleStringProperty("");
-    public LongProperty blockTimeProperty = new SimpleLongProperty(0L);
-    public StringProperty typeProperty = new SimpleStringProperty("");
-    public StringProperty poolIDProperty = new SimpleStringProperty("");
-    public StringProperty amountProperty = new SimpleStringProperty("");
-    public StringProperty cryptoCurrencyProperty = new SimpleStringProperty("");
-    public DoubleProperty cryptoValueProperty = new SimpleDoubleProperty(0.0);
-    public DoubleProperty fiatValueProperty = new SimpleDoubleProperty(0.0);
-    public StringProperty fiatCurrencyProperty = new SimpleStringProperty("");
-    public StringProperty txIDProperty = new SimpleStringProperty("");
-    public StringProperty rewardType = new SimpleStringProperty("");
+    public final StringProperty ownerProperty = new SimpleStringProperty("");
+    public final IntegerProperty blockHeightProperty = new SimpleIntegerProperty(0);
+    public final StringProperty blockHashProperty = new SimpleStringProperty("");
+    public final LongProperty blockTimeProperty = new SimpleLongProperty(0L);
+    public final StringProperty typeProperty = new SimpleStringProperty("");
+    public final StringProperty poolIDProperty = new SimpleStringProperty("");
+    public final StringProperty amountProperty = new SimpleStringProperty("");
+    public final StringProperty cryptoCurrencyProperty = new SimpleStringProperty("");
+    public final DoubleProperty cryptoValueProperty = new SimpleDoubleProperty(0.0);
+    public final DoubleProperty fiatValueProperty = new SimpleDoubleProperty(0.0);
+    public final StringProperty fiatCurrencyProperty = new SimpleStringProperty("");
+    public final StringProperty txIDProperty = new SimpleStringProperty("");
+    public final StringProperty rewardType = new SimpleStringProperty("");
     public boolean exportCointracking = false;
 
     public Long getBlockTime(){
@@ -50,9 +50,9 @@ public class TransactionModel {
 
             String poolRatioString = transactionController.getPoolRatio(transactionController.getIdFromPoolPair(this.amountProperty.getValue().split("@")[1]), "ab");
             if(!poolRatioString.equals("-")){
-                Double poolRatio = Double.parseDouble(poolRatioString);
-                Double token1 = Math.sqrt(poolRatio * Double.parseDouble(this.amountProperty.getValue().split("@")[0]) * Double.parseDouble(this.amountProperty.getValue().split("@")[0]));
-                Double token2 = Math.sqrt(Double.parseDouble(this.amountProperty.getValue().split("@")[0]) * Double.parseDouble(this.amountProperty.getValue().split("@")[0]) / poolRatio);
+                double poolRatio = Double.parseDouble(poolRatioString);
+                double token1 = Math.sqrt(poolRatio * Double.parseDouble(this.amountProperty.getValue().split("@")[0]) * Double.parseDouble(this.amountProperty.getValue().split("@")[0]));
+                double token2 = Math.sqrt(Double.parseDouble(this.amountProperty.getValue().split("@")[0]) * Double.parseDouble(this.amountProperty.getValue().split("@")[0]) / poolRatio);
 
                 Double price1 = transactionController.getCoinPriceController().getPriceFromTimeStamp(this.amountProperty.getValue().split("@")[1].contains("DUSD"), this.amountProperty.getValue().split("@")[1].split("-")[0] + SettingsController.getInstance().selectedFiatCurrency.getValue(), blockTime* 1000L) * token1;
                 Double price2 = transactionController.getCoinPriceController().getPriceFromTimeStamp(this.amountProperty.getValue().split("@")[1].contains("DUSD"), this.amountProperty.getValue().split("@")[1].split("-")[1] + SettingsController.getInstance().selectedFiatCurrency.getValue(), blockTime* 1000L) * token2;

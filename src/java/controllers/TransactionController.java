@@ -40,9 +40,9 @@ public class TransactionController {
         OBJ = new TransactionController();
     }
 
-    private SettingsController settingsController = SettingsController.getInstance();
-    private CoinPriceController coinPriceController = CoinPriceController.getInstance();
-    private String strTransactionData = SettingsController.getInstance().DEFI_PORTFOLIO_HOME + SettingsController.getInstance().strTransactionData;
+    private final SettingsController settingsController = SettingsController.getInstance();
+    private final CoinPriceController coinPriceController = CoinPriceController.getInstance();
+    private final String strTransactionData = SettingsController.getInstance().DEFI_PORTFOLIO_HOME + SettingsController.getInstance().strTransactionData;
     private ObservableList<TransactionModel> transactionList;
     private int localBlockCount;
     private final TreeMap<String, TreeMap<String, PortfolioModel>> portfolioList = new TreeMap<>();
@@ -51,7 +51,7 @@ public class TransactionController {
     public JLabel jl;
     public Process defidProcess;
     private Boolean classSingleton = true;
-    public TreeMap<String, ImpermanentLossModel> impermanentLossList = new TreeMap<>();
+    public final TreeMap<String, ImpermanentLossModel> impermanentLossList = new TreeMap<>();
     public TreeMap<String, Double> balanceTreeMap = new TreeMap<>();
     public String poolPairs="";
     public String tokens="";
@@ -78,15 +78,15 @@ public class TransactionController {
 
                 TransactionModel coin1 = null;
                 TransactionModel coin2 = null;
-                for (int i = 0; i < transactionList.size(); i++) {
-                    if (transactionList.get(i).blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
+                for (TransactionModel transactionModel : transactionList) {
+                    if (transactionModel.blockHeightProperty.getValue() > transaction.blockHeightProperty.getValue())
                         break;
 
-                    if (transactionList.get(i).txIDProperty.getValue().equals(transaction.txIDProperty.getValue()) && !transactionList.get(i).cryptoCurrencyProperty.getValue().contains("-")) {
-                        if (coin1 == null && (transactionList.get(i).cryptoCurrencyProperty.getValue().equals("DFI")) ||(transactionList.get(i).cryptoCurrencyProperty.getValue().equals("DUSD")&&!isDUSDPool)) {
-                            coin1 = transactionList.get(i);
+                    if (transactionModel.txIDProperty.getValue().equals(transaction.txIDProperty.getValue()) && !transactionModel.cryptoCurrencyProperty.getValue().contains("-")) {
+                        if (coin1 == null && (transactionModel.cryptoCurrencyProperty.getValue().equals("DFI")) || (transactionModel.cryptoCurrencyProperty.getValue().equals("DUSD") && !isDUSDPool)) {
+                            coin1 = transactionModel;
                         } else if (coin2 == null) {
-                            coin2 = transactionList.get(i);
+                            coin2 = transactionModel;
                         }
                         if (coin1 != null && coin2 != null) {
                             if (!impermanentLossList.containsKey(transaction.cryptoCurrencyProperty.getValue())) {
@@ -117,15 +117,15 @@ public class TransactionController {
     public boolean checkRpc() {
         JSONObject jsonObject = getRpcResponse("{\"method\": \"getrpcinfo\"}");
         if (jsonObject != null) {
-            return jsonObject.get("result") != null;
+            return jsonObject.get("result") == null;
         } else {
-            return false;
+            return true;
         }
     }
 
     public void startServer() {
         try {
-            if (!this.checkRpc()) {
+            if (this.checkRpc()) {
                 switch (this.settingsController.getPlatform()) {
                     case "mac":
                         FileWriter myWriter = new FileWriter(System.getProperty("user.dir").replace("\\", "/") + "/PortfolioData/" + "defi.sh");
@@ -156,7 +156,7 @@ public class TransactionController {
                 }
             }
         } catch (IOException e) {
-            this.settingsController.logger.warning("Exception occurred: " + e.toString());
+            this.settingsController.logger.warning("Exception occurred: " + e);
         }
     }
 
@@ -165,7 +165,7 @@ public class TransactionController {
             getRpcResponse("{\"method\": \"stop\"}");
             if (defidProcess != null) defidProcess.destroy();
         } catch (Exception e) {
-            this.settingsController.logger.warning("Exception occurred: " + e.toString());
+            this.settingsController.logger.warning("Exception occurred: " + e);
         }
     }
 
@@ -182,9 +182,9 @@ public class TransactionController {
         return portfolioList;
     }
 
-    public List<BalanceModel> updateBalanceList() {
+    public void updateBalanceList() {
 
-        return this.balanceList = getCoinAndTokenBalances();
+        this.balanceList = getCoinAndTokenBalances();
     }
 
     public List<BalanceModel> getBalanceList() {
@@ -220,7 +220,7 @@ public class TransactionController {
             try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 jsonText = br.readLine();
             } catch (Exception ex) {
-                this.settingsController.logger.warning("Exception occurred: " + ex.toString());
+                this.settingsController.logger.warning("Exception occurred: " + ex);
             }
             JSONObject obj = (JSONObject) JSONValue.parse(jsonText);
             if (obj.get("data") != null) {
@@ -231,7 +231,7 @@ public class TransactionController {
                 return "No connection";
             }
         } catch (IOException e) {
-            this.settingsController.logger.warning("Exception occurred: " + e.toString());
+            this.settingsController.logger.warning("Exception occurred: " + e);
         }
 
         return "No connection";
@@ -246,7 +246,7 @@ public class TransactionController {
             try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 this.poolPairs = br.readLine();
             } catch (Exception ex) {
-                this.settingsController.logger.warning("Exception occurred: " + ex.toString());
+                this.settingsController.logger.warning("Exception occurred: " + ex);
             }
             }
             JSONObject obj = (JSONObject) JSONValue.parse(this.poolPairs);
@@ -254,17 +254,17 @@ public class TransactionController {
 
                 JSONArray data = (JSONArray) obj.get("data");
 
-                for (Object transaction : (JSONArray) data) {
+                for (Object transaction : data) {
                     JSONObject jsonObject = (JSONObject)transaction;
                     if(((JSONObject)transaction).get("id").toString().contains(poolID)){
                         JSONObject ratio =(JSONObject)jsonObject.get("priceRatio");
-                        return ((JSONObject) ratio).get(priceRatio).toString();
+                        return ratio.get(priceRatio).toString();
                     }
                 }
 
             }
         } catch (IOException e) {
-            this.settingsController.logger.warning("Exception occurred: " + e.toString());
+            this.settingsController.logger.warning("Exception occurred: " + e);
         }
 
         return "-";
@@ -274,16 +274,16 @@ public class TransactionController {
 
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL("https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/usd/"+SettingsController.getInstance().selectedFiatCurrency.getValue().toLowerCase()+".json").openConnection();
-            String jsonText = "";
+            StringBuilder jsonText = new StringBuilder();
             String line = "";
             try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                  while((line=br.readLine()) != null){
-                     jsonText = jsonText+line;
+                     jsonText.append(line);
                  }
             } catch (Exception ex) {
-                this.settingsController.logger.warning("Exception occurred: " + ex.toString());
+                this.settingsController.logger.warning("Exception occurred: " + ex);
             }
-            JSONObject obj = (JSONObject) JSONValue.parse(jsonText);
+            JSONObject obj = (JSONObject) JSONValue.parse(jsonText.toString());
             if (obj.get(SettingsController.getInstance().selectedFiatCurrency.getValue().toLowerCase()) != null) {
 
                 return Double.parseDouble(obj.get(SettingsController.getInstance().selectedFiatCurrency.getValue().toLowerCase()).toString());
@@ -291,7 +291,7 @@ public class TransactionController {
             }
 
         } catch (IOException e) {
-            this.settingsController.logger.warning("Exception occurred: " + e.toString());
+            this.settingsController.logger.warning("Exception occurred: " + e);
         }
 
         return 1;
@@ -305,22 +305,21 @@ public class TransactionController {
             try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 jsonText = br.readLine();
             } catch (Exception ex) {
-                this.settingsController.logger.warning("Exception occurred: " + ex.toString());
+                this.settingsController.logger.warning("Exception occurred: " + ex);
             }
             JSONObject obj = (JSONObject) JSONValue.parse(jsonText);
             if (obj.get("data") != null) {
 
                 JSONArray data = (JSONArray) obj.get("data");
 
-                for (Object transaction : (JSONArray) data) {
+                for (Object transaction : data) {
                     JSONObject jsonObject = (JSONObject)transaction;
 
                     if(!pool.contains("DUSD-DFI")){
                         if(((JSONObject)transaction).get("id").toString().contains(pool.replace("DUSD","USD"))){
                             JSONObject price =(JSONObject)jsonObject.get("price");
                             JSONObject aggregated =(JSONObject)price.get("aggregated");
-                            String amount =aggregated.get("amount").toString();
-                            return amount;
+                            return aggregated.get("amount").toString();
                         }
                     }else{
                         return "1";
@@ -330,7 +329,7 @@ public class TransactionController {
             }
 
         } catch (IOException e) {
-            this.settingsController.logger.warning("Exception occurred: " + e.toString());
+            this.settingsController.logger.warning("Exception occurred: " + e);
         }
 
         return "No connection";
@@ -349,7 +348,7 @@ public class TransactionController {
                 return "No connection";
             }
         } catch (Exception e) {
-            this.settingsController.logger.warning("Exception occurred: " + e.toString());
+            this.settingsController.logger.warning("Exception occurred: " + e);
             return "No connection";
         }
     }
@@ -447,7 +446,7 @@ public class TransactionController {
                 }
             }   }
         } catch (Exception e) {
-            this.settingsController.logger.warning("Exception occurred: " + e.toString());
+            this.settingsController.logger.warning("Exception occurred: " + e);
         }
 
         return transactionList;
@@ -525,7 +524,7 @@ public class TransactionController {
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
                     jsonText = br.readLine();
                 } catch (Exception ex) {
-                    this.settingsController.logger.warning("Exception occurred: " + ex.toString());
+                    this.settingsController.logger.warning("Exception occurred: " + ex);
                 }
                 SettingsController.getInstance().debouncer = true;
                 Object obj = JSONValue.parse(jsonText);
@@ -565,7 +564,7 @@ public class TransactionController {
 
                 reader.close();
             } catch (IOException e) {
-                this.settingsController.logger.warning("Exception occurred: " + e.toString());
+                this.settingsController.logger.warning("Exception occurred: " + e);
             }
         }
     }
@@ -597,7 +596,7 @@ public class TransactionController {
                 reader.close();
                 return transactionList;
             } catch (IOException e) {
-                this.settingsController.logger.warning("Exception occurred: " + e.toString());
+                this.settingsController.logger.warning("Exception occurred: " + e);
             }
         }
         return transactionList;
@@ -624,7 +623,7 @@ public class TransactionController {
             try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 jsonText = br.readLine();
             } catch (Exception ex) {
-                this.settingsController.logger.warning("Exception occurred: " + ex.toString());
+                this.settingsController.logger.warning("Exception occurred: " + ex);
             }
 
             JSONObject jsonObject = (JSONObject) JSONValue.parse(jsonText);
@@ -635,7 +634,7 @@ public class TransactionController {
 
             return jsonArray;
         } catch (IOException e) {
-            this.settingsController.logger.warning("Exception occurred: " + e.toString());
+            this.settingsController.logger.warning("Exception occurred: " + e);
         }
         return null;
 
@@ -649,17 +648,16 @@ public class TransactionController {
             try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 jsonText = br.readLine();
             } catch (Exception ex) {
-                this.settingsController.logger.warning("Exception occurred: " + ex.toString());
+                this.settingsController.logger.warning("Exception occurred: " + ex);
             }
 
             JSONObject jsonObject = (JSONObject) JSONValue.parse(jsonText);
 
             if(jsonObject == null) return "0";
-            String balance = jsonObject.get("data").toString();
 
-            return balance;
+            return jsonObject.get("data").toString();
         } catch (IOException e) {
-            this.settingsController.logger.warning("Exception occurred: " + e.toString());
+            this.settingsController.logger.warning("Exception occurred: " + e);
         }
         return null;
 
@@ -700,7 +698,7 @@ public class TransactionController {
                     newFiatCommissions2 = transactionSplit.fiatValueProperty.getValue();
                     newCoinCommissions2 = transactionSplit.cryptoValueProperty.getValue();
                 }}catch(Exception ex){
-                    this.settingsController.logger.warning("Exception occurred: " + ex.toString());
+                    this.settingsController.logger.warning("Exception occurred: " + ex);
                 }
             }
 
@@ -773,7 +771,7 @@ public class TransactionController {
         try {
             date = new SimpleDateFormat("yyyy-MM-dd").parse(strDate);
         } catch (ParseException e) {
-            this.settingsController.logger.warning("Exception occurred: " + e.toString());
+            this.settingsController.logger.warning("Exception occurred: " + e);
         }
         assert date != null;
         Timestamp ts = new Timestamp(date.getTime());
@@ -873,7 +871,7 @@ public class TransactionController {
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                     this.tokens  = br.readLine();
                 } catch (Exception ex) {
-                    this.settingsController.logger.warning("Exception occurred: " + ex.toString());
+                    this.settingsController.logger.warning("Exception occurred: " + ex);
                 }
                 }
 
@@ -890,7 +888,7 @@ public class TransactionController {
                     }
                 }
             } catch (IOException e) {
-                this.settingsController.logger.warning("Exception occurred: " + e.toString());
+                this.settingsController.logger.warning("Exception occurred: " + e);
             }
         }}
         return pool;
@@ -905,7 +903,7 @@ public class TransactionController {
             try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 jsonText = br.readLine();
             } catch (Exception ex) {
-                this.settingsController.logger.warning("Exception occurred: " + ex.toString());
+                this.settingsController.logger.warning("Exception occurred: " + ex);
             }
             JSONObject obj = (JSONObject) JSONValue.parse(jsonText);
             if (obj.get("data") != null) {
@@ -920,7 +918,7 @@ public class TransactionController {
                 }
             }
         } catch (IOException e) {
-            this.settingsController.logger.warning("Exception occurred: " + e.toString());
+            this.settingsController.logger.warning("Exception occurred: " + e);
         }
         return pool;
     }
@@ -942,7 +940,7 @@ public class TransactionController {
                      if (!balanceTreeMap.containsKey(tokenName)) {
                          balanceTreeMap.put(tokenName, tokenValue);
                      } else {
-                         double oldValue = balanceTreeMap.get(tokenName).doubleValue();
+                         double oldValue = balanceTreeMap.get(tokenName);
                          balanceTreeMap.put(tokenName, oldValue + tokenValue);
                      }
                  }
@@ -950,7 +948,7 @@ public class TransactionController {
                  if (!balanceTreeMap.containsKey("DFI")) {
                      balanceTreeMap.put("DFI", 0.0);
                  }
-                 double oldValue = balanceTreeMap.get("DFI").doubleValue();
+                 double oldValue = balanceTreeMap.get("DFI");
                  double balanceValue = Double.parseDouble(getAddressUtxoBalance(address));
                  balanceTreeMap.put("DFI", oldValue + balanceValue);
              }
@@ -961,13 +959,13 @@ public class TransactionController {
 
 
                 if (entry.getKey().contains("-")) {
-                    Double poolRatio = Double.parseDouble(getPoolRatio(this.getIdFromPoolPair(entry.getKey()),"ab"));
-                    Double token1 = Math.sqrt(poolRatio * entry.getValue() * entry.getValue());
-                    Double token2 = Math.sqrt(entry.getValue() * entry.getValue() / poolRatio);
+                    double poolRatio = Double.parseDouble(getPoolRatio(this.getIdFromPoolPair(entry.getKey()),"ab"));
+                    double token1 = Math.sqrt(poolRatio * entry.getValue() * entry.getValue());
+                    double token2 = Math.sqrt(entry.getValue() * entry.getValue() / poolRatio);
                     try {
                         balanceModelList.add(new BalanceModel(entry.getKey().split("-")[0], coinPriceController.getPriceFromTimeStamp(entry.getKey().contains("DUSD"),entry.getKey().split("-")[0] + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * token1, token1, entry.getKey().split("-")[1], coinPriceController.getPriceFromTimeStamp(entry.getKey().split("-")[1].contains("DUSD"),entry.getKey().split("-")[1] + SettingsController.getInstance().selectedFiatCurrency.getValue(), System.currentTimeMillis()) * token2, token2, entry.getValue()));
                     } catch (Exception e) {
-                        this.settingsController.logger.warning("Exception occurred: " + e.toString());
+                        this.settingsController.logger.warning("Exception occurred: " + e);
                     }
                 } else {
                     if (entry.getValue()>0) {
@@ -1117,14 +1115,14 @@ public class TransactionController {
                 this.ps = null;
                 this.ps = Runtime.getRuntime().exec("./jre/bin/java -Xdock:icon=icons.icns -jar UpdateData.jar " + MainViewController.getInstance().settingsController.selectedStyleMode.getValue().replace(" ", ""));
             } catch (IOException r) {
-                SettingsController.getInstance().logger.warning("Exception occurred: " + r.toString());
+                SettingsController.getInstance().logger.warning("Exception occurred: " + r);
             }}
             if(SettingsController.getInstance().getPlatform().contains("linux")) {
                 try {
                     this.ps = null;
                     this.ps = Runtime.getRuntime().exec("jre/bin/java -jar UpdateData.jar " + MainViewController.getInstance().settingsController.selectedStyleMode.getValue().replace(" ", ""));
                 } catch (IOException r) {
-                    SettingsController.getInstance().logger.warning("Exception occurred: " + r.toString());
+                    SettingsController.getInstance().logger.warning("Exception occurred: " + r);
                 }
             }
             else{
@@ -1132,7 +1130,7 @@ public class TransactionController {
                     this.ps = null;
                     this.ps = Runtime.getRuntime().exec("./jre/bin/java -jar UpdateData.jar " + MainViewController.getInstance().settingsController.selectedStyleMode.getValue().replace(" ", ""));
                 } catch (IOException r) {
-                    SettingsController.getInstance().logger.warning("Exception occurred: " + r.toString());
+                    SettingsController.getInstance().logger.warning("Exception occurred: " + r);
                 }
             }
         } catch (IOException h) {
@@ -1228,7 +1226,7 @@ public class TransactionController {
                     }
 
                 } catch (Exception e) {
-                    this.settingsController.logger.warning("Exception occurred: " + e.toString());
+                    this.settingsController.logger.warning("Exception occurred: " + e);
                 }
             }
             iFile++;
@@ -1249,7 +1247,7 @@ public class TransactionController {
         try {
             date = new SimpleDateFormat("dd/MM/yyyy / hh:mm a").parse(input);
         } catch (ParseException e) {
-            this.settingsController.logger.warning("Exception occurred: " + e.toString());
+            this.settingsController.logger.warning("Exception occurred: " + e);
         }
         assert date != null;
         Timestamp ts = new Timestamp(date.getTime());

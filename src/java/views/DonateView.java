@@ -28,7 +28,7 @@ public class DonateView implements Initializable {
     public TextField donateTextField;
     public AnchorPane anchorPane;
 
-    DonateController donateController = DonateController.getInstance();
+    final DonateController donateController = DonateController.getInstance();
 
     public void  btnCopyPressed(){
         String myString = "dMswTqWd43S9Yu1m4LiX3QYPL2BAs7d37V";

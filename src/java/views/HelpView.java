@@ -24,7 +24,7 @@ public class HelpView implements Initializable {
         btnClose.setText(SettingsController.getInstance().translationList.getValue().get("Close").toString());
     }
 
-    public void btnMailToCallback() throws IOException {
+    public void btnMailToCallback() {
 
         if (SettingsController.getInstance().getPlatform().equals("linux")) {
             // Workaround for Linux because "Desktop.getDesktop().browse()" doesn't work on some Linux implementations

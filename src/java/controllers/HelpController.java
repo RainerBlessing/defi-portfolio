@@ -5,7 +5,7 @@ import javafx.beans.property.StringProperty;
 
 public class HelpController {
 
-    private static HelpController OBJ;
+    private static final HelpController OBJ;
 
     static {
         OBJ = new HelpController();

@@ -24,6 +24,7 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -43,7 +44,7 @@ public class AddAdressView implements Initializable {
     public TableView<Addresses> table;
     @FXML
     public TableColumn<Addresses,String> tableAddedAddresses;
-    public ObservableList<Addresses> listAdresses =
+    public final ObservableList<Addresses> listAdresses =
             FXCollections.observableArrayList();
 
     @Override
@@ -75,7 +76,7 @@ public class AddAdressView implements Initializable {
 
                     JSONObject obj = new JSONObject();
                     obj.put("query", "query {userByKey (key: \""+this.txtUserAddress.getText()+"\"){addresses}}");
-                    byte[] postDataBytes = obj.toString().getBytes("UTF-8");
+                    byte[] postDataBytes = obj.toString().getBytes(StandardCharsets.UTF_8);
 
                     HttpURLConnection connectionGraph = (HttpURLConnection) new URL("https://graphql.defichain-income.com/graphql").openConnection();
                     connectionGraph.setDoOutput( true );
@@ -91,7 +92,7 @@ public class AddAdressView implements Initializable {
                     try (BufferedReader br = new BufferedReader(new InputStreamReader(connectionGraph.getInputStream()))) {
                         jsonText = br.readLine();
                     } catch (Exception exc) {
-                        SettingsController.getInstance().logger.warning("Exception occurred: " + ex.toString());
+                        SettingsController.getInstance().logger.warning("Exception occurred: " + ex);
                     }
 
                     JSONObject response =   (JSONObject) JSONValue.parse(jsonText);
@@ -109,18 +110,13 @@ public class AddAdressView implements Initializable {
 
                     lblNoValidAddress.setVisible(true);
                     int delay = 5000;
-                    ActionListener taskPerfomer = new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            lblNoValidAddress.setVisible(false);
-                        }
-                    };
+                    ActionListener taskPerfomer = e -> lblNoValidAddress.setVisible(false);
                     new javax.swing.Timer(delay,taskPerfomer).start();
 
                     }
                 }
             } catch (IOException e) {
-                SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
+                SettingsController.getInstance().logger.warning("Exception occurred: " + e);
             }
         }
         this.txtUserAddress.clear();
@@ -144,7 +140,7 @@ public class AddAdressView implements Initializable {
             }
             csvWriter.flush();
             csvWriter.close();
-        } catch (IOException e) {
+        } catch (IOException ignored) {
 
         }
 

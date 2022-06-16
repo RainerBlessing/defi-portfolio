@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.TimerTask;
 
 public class CheckConnection extends TimerTask {
-    MainViewController mainViewController;
+    final MainViewController mainViewController;
 
     public CheckConnection(MainViewController mainViewController) {
         this.mainViewController = mainViewController;
@@ -17,7 +17,7 @@ public class CheckConnection extends TimerTask {
     public void run() {
         Platform.runLater(() -> {
                     if (SettingsController.getInstance().runCheckTimer) {
-                        if (!this.mainViewController.transactionController.checkRpc()) {
+                        if (this.mainViewController.transactionController.checkRpc()) {
                             if (SettingsController.getInstance().errorBouncer < 30) {
                                 System.out.println("Try to connect to Server");
                                 SettingsController.getInstance().errorBouncer++;

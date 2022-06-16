@@ -17,10 +17,10 @@ import java.util.TreeMap;
 public class CoinPriceController {
 
     private CoinPriceModel coinPriceModel;
-    String strCoinPriceData = SettingsController.getInstance().DEFI_PORTFOLIO_HOME + SettingsController.getInstance().strCoinPriceData;
-    String strStockPriceData = SettingsController.getInstance().DEFI_PORTFOLIO_HOME + SettingsController.getInstance().strStockPriceData;
+    final String strCoinPriceData = SettingsController.getInstance().DEFI_PORTFOLIO_HOME + SettingsController.getInstance().strCoinPriceData;
+    final String strStockPriceData = SettingsController.getInstance().DEFI_PORTFOLIO_HOME + SettingsController.getInstance().strStockPriceData;
     public TreeMap<String, TreeMap<Long, Double>> stockPriceMap = new TreeMap<>();
-        private static CoinPriceController OBJ;
+        private static final CoinPriceController OBJ;
 
         static {
             OBJ = new CoinPriceController();
@@ -87,7 +87,7 @@ public class CoinPriceController {
 
                 reader.close();
             } catch (IOException e) {
-                SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
+                SettingsController.getInstance().logger.warning("Exception occurred: " + e);
             }
         }
 
@@ -335,10 +335,10 @@ public class CoinPriceController {
                 file.close();
                 this.coinPriceModel = coinPrice;
             } catch (IOException e) {
-                SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
+                SettingsController.getInstance().logger.warning("Exception occurred: " + e);
             }
         } catch (Exception e) {
-            SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
+            SettingsController.getInstance().logger.warning("Exception occurred: " + e);
         }
     }
 
@@ -357,7 +357,7 @@ public class CoinPriceController {
                 file.close();
 
             } catch (IOException | ClassNotFoundException e) {
-                SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
+                SettingsController.getInstance().logger.warning("Exception occurred: " + e);
             }
         }
         return coinPrice;
@@ -392,27 +392,23 @@ public class CoinPriceController {
 
     public boolean isCrypto(String tokenName) {
 
-            if(tokenName.contains("DFI")||tokenName.contains("ETH")||tokenName.contains("BTC")||tokenName.contains("USDT")||tokenName.contains("DOGE")||tokenName.contains("LTC")||tokenName.contains("BCH")||tokenName.contains("USDC")){
-                  return true;
-            }else{
-                return false;
-            }
+        return tokenName.contains("DFI") || tokenName.contains("ETH") || tokenName.contains("BTC") || tokenName.contains("USDT") || tokenName.contains("DOGE") || tokenName.contains("LTC") || tokenName.contains("BCH") || tokenName.contains("USDC");
         }
 
     public double getCurrencyFactor(){
 
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL("https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/usd/"+SettingsController.getInstance().selectedFiatCurrency.getValue().toLowerCase()+".json").openConnection();
-            String jsonText = "";
+            StringBuilder jsonText = new StringBuilder();
             String line = "";
             try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 while((line=br.readLine()) != null){
-                    jsonText = jsonText+line;
+                    jsonText.append(line);
                 }
             } catch (Exception ex) {
-                SettingsController.getInstance().logger.warning("Exception occurred: " + ex.toString());
+                SettingsController.getInstance().logger.warning("Exception occurred: " + ex);
             }
-            JSONObject obj = (JSONObject) JSONValue.parse(jsonText);
+            JSONObject obj = (JSONObject) JSONValue.parse(jsonText.toString());
             if (obj.get(SettingsController.getInstance().selectedFiatCurrency.getValue().toLowerCase()) != null) {
 
                 return Double.parseDouble(obj.get(SettingsController.getInstance().selectedFiatCurrency.getValue().toLowerCase()).toString());
@@ -420,7 +416,7 @@ public class CoinPriceController {
             }
 
         } catch (IOException e) {
-            SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
+            SettingsController.getInstance().logger.warning("Exception occurred: " + e);
         }
 
         return 1;

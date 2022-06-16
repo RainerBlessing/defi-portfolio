@@ -70,7 +70,7 @@ public class SettingsView implements Initializable {
     public Button btnDeleteData;
     @FXML
     private ComboBox<String> cmbLanguage, cmbPrefCurrency, cmbDecSeperator, cmbCSVSeperator, cmbPrefferedStyle, dataSourceCmb,cmbDefaultDataSource,cointrackingExportCmb, CSVExportcmb;
-    SettingsController settingsController = SettingsController.getInstance();
+    final SettingsController settingsController = SettingsController.getInstance();
 
     public void btnSaveAndApplyPressed() {
         this.settingsController.saveSettings();
@@ -85,9 +85,9 @@ public class SettingsView implements Initializable {
             result = Files.deleteIfExists(new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + "/portfolioData.portfolio").toPath());
 
         } catch (IOException e) {
-            SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
+            SettingsController.getInstance().logger.warning("Exception occurred: " + e);
         }
-        if(result == true){
+        if(result){
             TransactionController.getInstance().clearTransactionList();
             TransactionController.getInstance().clearPortfolioList();
             MainViewController.getInstance().poolPairList.clear();
@@ -192,7 +192,7 @@ public class SettingsView implements Initializable {
         back.setArcHeight(back.getHeight());
         back.setArcWidth(back.getHeight());
         back.setFill(Color.valueOf("#d6cecc"));//Grau
-        Double r = 3.0;
+        double r = 3.0;
         switchButton.setShape(new Circle(r));
 
         switchButton.setMaxSize(20, 20);
@@ -229,12 +229,7 @@ public class SettingsView implements Initializable {
 
     public void SwitchButton() {
         init();
-        EventHandler<Event> click = new EventHandler<Event>() {
-            @Override
-            public void handle(Event e) {
-                updateSwitchButton();
-            }
-        };
+        EventHandler<Event> click = e -> updateSwitchButton();
         switchButton.setFocusTraversable(false);
         switchButton.setOnMouseClicked(click);
         stack.setOnMouseClicked(click);

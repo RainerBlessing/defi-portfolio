@@ -25,7 +25,7 @@ public class UpdateView implements Initializable {
     public Button btnClose;
     public AnchorPane anchorPane;
     TransactionController transactionController  = TransactionController.getInstance();
-    UpdateController updateController = UpdateController.getInstance();
+    final UpdateController updateController = UpdateController.getInstance();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

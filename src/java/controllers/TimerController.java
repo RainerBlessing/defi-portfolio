@@ -12,7 +12,7 @@ import java.net.URL;
 import java.util.TimerTask;
 
 public class TimerController extends TimerTask {
-    MainViewController mainViewController;
+    final MainViewController mainViewController;
 
     public TimerController(MainViewController mainViewController) {
         this.mainViewController = mainViewController;
@@ -28,7 +28,7 @@ public class TimerController extends TimerTask {
                             try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                                 jsonText = br.readLine();
                             } catch (Exception ex) {
-                                SettingsController.getInstance().logger.warning("Exception occurred: " + ex.toString());
+                                SettingsController.getInstance().logger.warning("Exception occurred: " + ex);
                             }
                             JSONObject obj = (JSONObject) JSONValue.parse(jsonText);
                             if (obj.get("data") != null) {
@@ -41,7 +41,7 @@ public class TimerController extends TimerTask {
                                 mainViewController.strCurrentBlockOnBlockchain.set(count.get("blocks").toString());
                             }
                         } catch (IOException e) {
-                            SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
+                            SettingsController.getInstance().logger.warning("Exception occurred: " + e);
                         }
 
 
