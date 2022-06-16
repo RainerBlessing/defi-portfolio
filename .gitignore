@@ -1,3 +1,4 @@
 docu/javadoc/
 build/
 .gradle/
+.idea/
