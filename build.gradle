@@ -4,15 +4,17 @@ plugins {
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.8'
 }
+
 def errorproneVersion = '2.14.0'
 
 repositories {
     mavenCentral()
-    maven{
+    maven {
         url "https://maven.ceon.pl/artifactory/repo/" //com.sun:deploy
     }
 
 }
+
 dependencies {
 //    compile 'com.googlecode.json-simple:json-simple:1.1.1'
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
@@ -27,5 +29,5 @@ sourceSets {
 
 javafx {
     version = "11"
-    modules = [ 'javafx.controls', 'javafx.fxml' ]
+    modules = ['javafx.controls', 'javafx.fxml']
 }
