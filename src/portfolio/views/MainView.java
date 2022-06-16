@@ -531,7 +531,7 @@ public class MainView implements Initializable {
 //                                Process ps = null;
 //                                ps = Runtime.getRuntime().exec("./jre/bin/java -Xdock:icon=icons.icns -jar UpdateData.jar " + this.mainViewController.settingsController.selectedStyleMode.getValue().replace(" ", ""));
 //                            } catch (IOException r) {
-//                                SettingsController.getInstance().logger.warning("Exception occured: " + r.toString());
+//                                SettingsController.getInstance().logger.warning("Exception occurred: " + r.toString());
 //                            }
 //                        } catch (IOException h) {
 //                            SettingsController.getInstance().logger.warning("Could not write to update.portfolio.");
@@ -924,7 +924,7 @@ public class MainView implements Initializable {
                                 Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/block/" + tempParam.blockHashProperty.getValue()).toURI());
                             }
                         } catch (IOException | URISyntaxException e) {
-                            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+                            SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
                         }
                     });
                     setGraphic(hyperlink);
@@ -961,7 +961,7 @@ public class MainView implements Initializable {
                                 Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/address/" + tempParam.ownerProperty.getValue()).toURI());
                             }
                         } catch (IOException | URISyntaxException e) {
-                            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+                            SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
                         }
                     });
                     setGraphic(hyperlink);
@@ -997,7 +997,7 @@ public class MainView implements Initializable {
                                 Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/block/" + tempParam.blockHeightProperty.getValue()).toURI());
                             }
                         } catch (IOException | URISyntaxException e) {
-                            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+                            SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
                         }
                     });
                     setGraphic(hyperlink);
@@ -1040,7 +1040,7 @@ public class MainView implements Initializable {
                                     Desktop.getDesktop().browse(new URL("https://mainnet.defichain.io/#/DFI/mainnet/tx/" + tempParam.txIDProperty.getValue()).toURI());
                                 }
                             } catch (IOException | URISyntaxException e) {
-                                SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+                                SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
                             }
                         });
 

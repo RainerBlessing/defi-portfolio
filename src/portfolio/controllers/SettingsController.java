@@ -31,7 +31,7 @@ public class SettingsController {
         try {
             OBJ = new SettingsController();
         } catch (IOException e) {
-            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+            SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
         }
     }
 
@@ -160,7 +160,7 @@ public class SettingsController {
 
         JSONParser jsonParser = new JSONParser();
 
-        String fileName = System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/portfolio/translations/";
+        String fileName = System.getProperty("user.dir").replace("\\","/") + "/src/portfolio/translations/";
         switch (selectedLanguage.getValue()) {
             case "English":
                 fileName += "en.json";
@@ -185,7 +185,7 @@ public class SettingsController {
             Object obj = jsonParser.parse(reader);
             this.translationList.setValue((JSONObject) obj);
         } catch (ParseException | IOException e) {
-            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+            SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
         }
     }
 
@@ -262,7 +262,7 @@ public class SettingsController {
                 this.showMissingTransaction = configProps.getProperty("MissingTransaction").equals("true");
                 this.lastWalletCSVImportPath = configProps.getProperty("LastWalletCSVImportPath");
             } catch (Exception e) {
-                SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+                SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
                 saveSettings();
             }
         }
@@ -297,7 +297,7 @@ public class SettingsController {
             csvWriter.flush();
             csvWriter.close();
         } catch (IOException e) {
-            this.logger.warning("Exception occured: " + e.toString());
+            this.logger.warning("Exception occurred: " + e.toString());
         }
     }
 
@@ -311,7 +311,7 @@ public class SettingsController {
                 Files.copy(pathConfig.toPath(), pathPortfoliohDataConfig.toPath(), StandardCopyOption.REPLACE_EXISTING);
             }
         } catch (Exception e) {
-            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+            SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
         }
         // adapt port
         Path path = Paths.get(this.PORTFOLIO_CONFIG_FILE_PATH);
@@ -322,7 +322,7 @@ public class SettingsController {
             try (FileInputStream i = new FileInputStream(configFile)) {
                 configProps.load(i);
             } catch (IOException e) {
-                SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+                SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
             }
 
             String rpcportConfig = configProps.getProperty("rpcport");
@@ -334,7 +334,7 @@ public class SettingsController {
             if(rpcConnectConfig != null)content = content.replaceAll(rpcConnectConfig, "127.0.0.1");
             Files.write(path, content.getBytes(charset));
         } catch (Exception e) {
-            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+            SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
         }
 
             File configFile = new File(this.PORTFOLIO_CONFIG_FILE_PATH);
@@ -342,7 +342,7 @@ public class SettingsController {
             try (FileInputStream i = new FileInputStream(configFile)) {
                 configProps.load(i);
             } catch (IOException e) {
-                SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+                SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
             }
             this.rpcauth = configProps.getProperty("rpcauth");
             this.rpcuser = configProps.getProperty("rpcuser");

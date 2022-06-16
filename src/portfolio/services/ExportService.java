@@ -1,22 +1,15 @@
 package portfolio.services;
 
-import com.sun.deploy.security.SelectableSecurityManager;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
-import portfolio.Main;
 import portfolio.controllers.MainViewController;
 import portfolio.controllers.SettingsController;
 import portfolio.controllers.TransactionController;
-import portfolio.views.MainView;
 import portfolio.models.PoolPairModel;
 import portfolio.models.TransactionModel;
+import portfolio.views.MainView;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -44,7 +37,7 @@ public class ExportService {
         try {
             writer = new PrintWriter(new FileWriter(exportPath, true));
         } catch (IOException e) {
-            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+            SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
         }
         StringBuilder sb = new StringBuilder();
 
@@ -122,7 +115,7 @@ public class ExportService {
         try {
             writer = new PrintWriter(new FileWriter(exportPath, true));
         } catch (IOException e) {
-            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+            SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
         }
         StringBuilder sb = new StringBuilder();
 
@@ -249,7 +242,7 @@ public class ExportService {
         try {
             writer = new PrintWriter(new FileWriter(exportPath, true));
         } catch (IOException e) {
-            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+            SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
         }
         List<TransactionModel> incompleteTransactions = new ArrayList<>();
         long currentTimeStamp = (new Timestamp(System.currentTimeMillis()).getTime() - 24 * 60 * 60 * 1000) / 1000L;
@@ -834,7 +827,7 @@ public class ExportService {
                 try {
                     writer = new PrintWriter(new FileWriter(SettingsController.getInstance().INCOMPLETE_FILE_PATH, true));
                 } catch (IOException e) {
-                    SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+                    SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
                 }
 
                 StringBuilder sbIncomplete = new StringBuilder();
@@ -965,7 +958,7 @@ public class ExportService {
                 writer.close();
                 return true;
             } catch (FileNotFoundException e) {
-                SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+                SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
                 return false;
             }
         }
@@ -979,7 +972,7 @@ public class ExportService {
             try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
                 jsonText = br.readLine();
             } catch (Exception ex) {
-                SettingsController.getInstance().logger.warning("Exception occured: " + ex.toString());
+                SettingsController.getInstance().logger.warning("Exception occurred: " + ex.toString());
             }
             JSONObject obj = (JSONObject) JSONValue.parse(jsonText);
             if (obj.get("data") != null) {
@@ -994,7 +987,7 @@ public class ExportService {
                 }
             }
         } catch (IOException e) {
-            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+            SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
         }
         return pool;
     }

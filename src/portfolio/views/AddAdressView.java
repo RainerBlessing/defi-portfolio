@@ -91,7 +91,7 @@ public class AddAdressView implements Initializable {
                     try (BufferedReader br = new BufferedReader(new InputStreamReader(connectionGraph.getInputStream()))) {
                         jsonText = br.readLine();
                     } catch (Exception exc) {
-                        SettingsController.getInstance().logger.warning("Exception occured: " + ex.toString());
+                        SettingsController.getInstance().logger.warning("Exception occurred: " + ex.toString());
                     }
 
                     JSONObject response =   (JSONObject) JSONValue.parse(jsonText);
@@ -120,7 +120,7 @@ public class AddAdressView implements Initializable {
                     }
                 }
             } catch (IOException e) {
-                SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+                SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
             }
         }
         this.txtUserAddress.clear();

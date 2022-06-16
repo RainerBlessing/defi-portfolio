@@ -155,7 +155,7 @@ public class MainViewController {
 
 
         } catch (Exception e) {
-            this.settingsController.logger.warning("Exception occured: " + e.toString());
+            this.settingsController.logger.warning("Exception occurred: " + e.toString());
         }
 
 
@@ -325,7 +325,7 @@ public class MainViewController {
 
 
         } catch (Exception e) {
-            this.settingsController.logger.warning("Exception occured: " + e.toString());
+            this.settingsController.logger.warning("Exception occurred: " + e.toString());
         }
 
 

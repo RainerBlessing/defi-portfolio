@@ -113,7 +113,7 @@ def adaptCSV(var):
         path = os.path.split(pathTransactions)
         if os.path.exists(path[0] + '\\CSVMerge.cookie'):
             os.remove(path[0] + '\\CSVMerge.cookie')
-        errorFile = open(path[0] + "\\MergingErrorOccured.txt", "w")
+        errorFile = open(path[0] + "\\MergingErroroccurred.txt", "w")
         errorFile.close()
 
 if __name__ == '__main__':

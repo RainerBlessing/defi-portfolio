@@ -87,7 +87,7 @@ public class CoinPriceController {
 
                 reader.close();
             } catch (IOException e) {
-                SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+                SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
             }
         }
 
@@ -335,10 +335,10 @@ public class CoinPriceController {
                 file.close();
                 this.coinPriceModel = coinPrice;
             } catch (IOException e) {
-                SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+                SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
             }
         } catch (Exception e) {
-            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+            SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
         }
     }
 
@@ -357,7 +357,7 @@ public class CoinPriceController {
                 file.close();
 
             } catch (IOException | ClassNotFoundException e) {
-                SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+                SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
             }
         }
         return coinPrice;
@@ -410,7 +410,7 @@ public class CoinPriceController {
                     jsonText = jsonText+line;
                 }
             } catch (Exception ex) {
-                SettingsController.getInstance().logger.warning("Exception occured: " + ex.toString());
+                SettingsController.getInstance().logger.warning("Exception occurred: " + ex.toString());
             }
             JSONObject obj = (JSONObject) JSONValue.parse(jsonText);
             if (obj.get(SettingsController.getInstance().selectedFiatCurrency.getValue().toLowerCase()) != null) {
@@ -420,7 +420,7 @@ public class CoinPriceController {
             }
 
         } catch (IOException e) {
-            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+            SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
         }
 
         return 1;

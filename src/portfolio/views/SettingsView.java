@@ -85,7 +85,7 @@ public class SettingsView implements Initializable {
             result = Files.deleteIfExists(new File(SettingsController.getInstance().DEFI_PORTFOLIO_HOME + "/portfolioData.portfolio").toPath());
 
         } catch (IOException e) {
-            SettingsController.getInstance().logger.warning("Exception occured: " + e.toString());
+            SettingsController.getInstance().logger.warning("Exception occurred: " + e.toString());
         }
         if(result == true){
             TransactionController.getInstance().clearTransactionList();
