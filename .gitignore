@@ -1,2 +1,3 @@
 docu/javadoc/
-out/
+build/
+.gradle/
