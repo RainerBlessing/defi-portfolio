@@ -19,11 +19,11 @@ dependencies {
 //    compile 'com.googlecode.json-simple:json-simple:1.1.1'
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
     errorprone "com.google.errorprone:error_prone_core:${errorproneVersion}"
-    implementation files('src/portfolio/libraries/CoinGecko-Java-master.jar')
+    implementation files('lib/CoinGecko-Java-master.jar')
 }
 
 sourceSets {
-    main.java.srcDirs = ['src/portfolio']
+    main.java.srcDirs = ['src/java']
 //    main.resources.srcDirs = ['src/resources']
 }
 
