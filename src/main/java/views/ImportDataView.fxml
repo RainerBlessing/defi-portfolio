@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-
-<AnchorPane prefHeight="298.0" prefWidth="237.0" xmlns:fx="http://javafx.com/fxml/1"  fx:controller="portfolio.views.ImportDataView">
+<?import javafx.scene.layout.AnchorPane?>
+<AnchorPane prefHeight="298.0" prefWidth="237.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.ImportDataView">
    <children>
       <CheckBox fx:id="cmbSaveDefault" layoutX="32.0" layoutY="260.0" mnemonicParsing="false" onAction="#defaultChanged" prefHeight="38.0" prefWidth="109.0" text="Save as default" visible="false" wrapText="true" />
       <Button fx:id="btnClose" layoutX="162.0" layoutY="240.0" mnemonicParsing="false" onAction="#btnClosePressed" prefHeight="40.0" prefWidth="55.0">
          <graphic>
             <ImageView fitHeight="22.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../icons/exit.png" />
+                  <Image url="@../icons/exit.png" />
                </image>
             </ImageView>
          </graphic>
@@ -31,7 +30,7 @@
          <graphic>
             <ImageView fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../icons/databaseprocess.png" />
+                  <Image url="@../icons/databaseprocess.png" />
                </image>
             </ImageView>
          </graphic>
@@ -46,7 +45,7 @@
          <graphic>
             <ImageView fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../icons/cakeIcon.png" />
+                  <Image url="@../icons/cakeIcon.png" />
                </image>
             </ImageView>
          </graphic>
@@ -61,7 +60,7 @@
          <graphic>
             <ImageView fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../icons/walletIcon.png" />
+                  <Image url="@../icons/walletIcon.png" />
                </image>
             </ImageView>
          </graphic>

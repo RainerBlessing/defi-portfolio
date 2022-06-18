@@ -5,12 +5,11 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-
-<AnchorPane prefHeight="195.0" prefWidth="532.0"  xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.NoAddressesWarningView">
+<AnchorPane prefHeight="195.0" prefWidth="532.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.NoAddressesWarningView">
    <children>
       <ImageView fx:id="imgImage" fitHeight="85.0" fitWidth="87.0" layoutX="25.0" layoutY="35.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../icons/warning.png" />
+            <Image url="@../icons/warning.png" />
          </image>
       </ImageView>
       <Label fx:id="lblText" layoutX="133.0" layoutY="30.0" prefHeight="95.0" prefWidth="368.0" text="No addresses found. Please add your addresses in the address configuration. You can find it in the settings menu or click on the button below." wrapText="true" />

@@ -5,12 +5,11 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-
-<AnchorPane prefHeight="195.0" prefWidth="380.0"  xmlns:fx="http://javafx.com/fxml/1" fx:controller="portfolio.views.FileTypeNotSupportedView">
+<AnchorPane prefHeight="195.0" prefWidth="380.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.FileTypeNotSupportedView">
    <children>
       <ImageView fitHeight="85.0" fitWidth="87.0" layoutX="25.0" layoutY="35.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../icons/disclaimer.png" />
+            <Image url="@../icons/disclaimer.png" />
          </image>
       </ImageView>
       <Label fx:id="lblDisclaimer" layoutX="132.0" layoutY="25.0" prefHeight="95.0" prefWidth="276.0" text="Please restart the tool to get the updated data!" wrapText="true" />

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<AnchorPane fx:id="anchorPane" prefHeight="157.0" prefWidth="635.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.DonateView">
+   <children>
+      <Label layoutX="145.0" layoutY="105.0" prefHeight="25.0" prefWidth="444.0" text="\$DFI Wallet:">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Label fx:id="donateText" layoutX="145.0" layoutY="14.0" prefHeight="84.0" prefWidth="464.0" text="If you like the Defi-PortfolioManagement and would like to support its further development, we would appreciate your donation." wrapText="true">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Button fx:id="btnCopy" layoutX="504.0" layoutY="98.0" mnemonicParsing="false" onAction="#btnCopyPressed" prefHeight="40.0" prefWidth="55.0">
+         <graphic>
+            <ImageView fitHeight="22.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icons/copy.png" />
+               </image>
+            </ImageView>
+         </graphic>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </Button>
+      <ImageView fx:id="img" fitHeight="130.0" fitWidth="129.0" layoutX="7.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../icons/DonateQR.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="btnClose" layoutX="565.0" layoutY="98.0" mnemonicParsing="false" onMouseClicked="#Close" prefHeight="40.0" prefWidth="55.0">
+      <graphic>
+         <ImageView fitHeight="22.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+               <Image url="@../icons/exit.png" />
+            </image>
+         </ImageView>
+      </graphic>
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor>
+      <padding>
+         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+      </padding>
+      </Button>
+      <TextField fx:id="donateTextField" layoutX="236.0" layoutY="98.0" prefHeight="40.0" prefWidth="262.0" text="dMswTqWd43S9Yu1m4LiX3QYPL2BAs7d37V" />
+
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</AnchorPane>
