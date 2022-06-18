@@ -1,8 +1,6 @@
 package services;
 
-import com.google.inject.Guice;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import javafx.scene.control.TableColumn;
 import org.json.simple.JSONArray;
@@ -53,7 +51,7 @@ public class ExportService {
 
         for (TableColumn column : this.mainViewController.mainView.rawDataTable.getColumns()
         ) {
-            sb.append(column.getId()).append(settingsController.selectedSeperator.getValue());
+            sb.append(column.getId()).append(settingsController.selectedSeparator.getValue());
         }
 
         sb.setLength(sb.length() - 1);
@@ -73,7 +71,7 @@ public class ExportService {
 
 
         for (TransactionModel transaction : transactions) {
-            if (settingsController.exportCSVCariante.getValue().equals("Export selected to CSV")) {
+            if (settingsController.exportCSVVariant.getValue().equals("Export selected to CSV")) {
                 sb = new StringBuilder();
                 sb.append(this.mainViewController.transactionController.convertTimeStampToString(transaction.blockTimeProperty.getValue())).append(exportSplitter);
                 sb.append(transaction.typeProperty.getValue()).append(exportSplitter);
@@ -131,7 +129,7 @@ public class ExportService {
 
         for (TableColumn column : this.mainViewController.mainView.rawDataTable.getColumns()
         ) {
-            sb.append(column.getId()).append(settingsController.selectedSeperator.getValue());
+            sb.append(column.getId()).append(settingsController.selectedSeparator.getValue());
         }
 
         sb.setLength(sb.length() - 1);
@@ -842,7 +840,7 @@ public class ExportService {
 
                 for (TableColumn column : this.mainViewController.mainView.rawDataTable.getColumns()
                 ) {
-                    sbIncomplete.append(column.getId()).append(settingsController.selectedSeperator.getValue());
+                    sbIncomplete.append(column.getId()).append(settingsController.selectedSeparator.getValue());
                 }
 
                 sbIncomplete.setLength(sbIncomplete.length() - 1);
@@ -913,49 +911,49 @@ public class ExportService {
                 }
                 switch (mainView.tabPane.getSelectionModel().getSelectedItem().getId()) {
                     case "Portfolio":
-                        sb.append((mainView.plotTable.getColumns().get(0).getId() + "," + mainView.plotTable.getColumns().get(2).getId() + "," + mainView.plotTable.getColumns().get(2).getId() + "," + mainView.plotTable.getColumns().get(9).getId()).replace(",", settingsController.selectedSeperator.getValue())).append("\n");
+                        sb.append((mainView.plotTable.getColumns().get(0).getId() + "," + mainView.plotTable.getColumns().get(2).getId() + "," + mainView.plotTable.getColumns().get(2).getId() + "," + mainView.plotTable.getColumns().get(9).getId()).replace(",", settingsController.selectedSeparator.getValue())).append("\n");
                         for (PoolPairModel poolPairModel : poolPairModelList) {
-                            sb.append(poolPairModel.getBlockTime().getValue()).append(settingsController.selectedSeperator.getValue());
-                            sb.append(poolPairModel.getPoolPair().getValue().replace(",","")).append(settingsController.selectedSeperator.getValue());
-                            sb.append(poolPairModel.getBalanceFiatValue().replace(",","")).append(settingsController.selectedSeperator.getValue());
+                            sb.append(poolPairModel.getBlockTime().getValue()).append(settingsController.selectedSeparator.getValue());
+                            sb.append(poolPairModel.getPoolPair().getValue().replace(",","")).append(settingsController.selectedSeparator.getValue());
+                            sb.append(poolPairModel.getBalanceFiatValue().replace(",","")).append(settingsController.selectedSeparator.getValue());
                             sb.append("\n");
                         }
                         break;
                     case "Overview":
-                        sb.append((mainView.plotTable.getColumns().get(0).getId() + "," + mainView.plotTable.getColumns().get(1).getId() + "," + mainView.plotTable.getColumns().get(2).getId() + "," + mainView.plotTable.getColumns().get(3).getId() + "," + mainView.plotTable.getColumns().get(4).getId() + "," + mainView.plotTable.getColumns().get(5).getId() + "," + mainView.plotTable.getColumns().get(6).getId() + "," + mainView.plotTable.getColumns().get(7).getId() + "," + mainView.plotTable.getColumns().get(8).getId()).replace(",", settingsController.selectedSeperator.getValue())).append("\n");
+                        sb.append((mainView.plotTable.getColumns().get(0).getId() + "," + mainView.plotTable.getColumns().get(1).getId() + "," + mainView.plotTable.getColumns().get(2).getId() + "," + mainView.plotTable.getColumns().get(3).getId() + "," + mainView.plotTable.getColumns().get(4).getId() + "," + mainView.plotTable.getColumns().get(5).getId() + "," + mainView.plotTable.getColumns().get(6).getId() + "," + mainView.plotTable.getColumns().get(7).getId() + "," + mainView.plotTable.getColumns().get(8).getId()).replace(",", settingsController.selectedSeparator.getValue())).append("\n");
                         for (PoolPairModel poolPairModel : poolPairModelList) {
-                            sb.append(poolPairModel.getBlockTime().getValue()).append(settingsController.selectedSeperator.getValue());
-                            sb.append(poolPairModel.getPoolPair().getValue()).append(settingsController.selectedSeperator.getValue());
-                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValue1().getValue())).append(settingsController.selectedSeperator.getValue());
-                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoFiatValue1().getValue())).append(settingsController.selectedSeperator.getValue());
-                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValue2().getValue())).append(settingsController.selectedSeperator.getValue());
-                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoFiatValue2().getValue())).append(settingsController.selectedSeperator.getValue());
-                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getcryptoCommission2Overviewvalue())).append(settingsController.selectedSeperator.getValue());
-                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getcryptoCommission2FiatOverviewvalue())).append(settingsController.selectedSeperator.getValue());
-                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getFiatValue().getValue())).append(settingsController.selectedSeperator.getValue());
+                            sb.append(poolPairModel.getBlockTime().getValue()).append(settingsController.selectedSeparator.getValue());
+                            sb.append(poolPairModel.getPoolPair().getValue()).append(settingsController.selectedSeparator.getValue());
+                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValue1().getValue())).append(settingsController.selectedSeparator.getValue());
+                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoFiatValue1().getValue())).append(settingsController.selectedSeparator.getValue());
+                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValue2().getValue())).append(settingsController.selectedSeparator.getValue());
+                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoFiatValue2().getValue())).append(settingsController.selectedSeparator.getValue());
+                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getcryptoCommission2Overviewvalue())).append(settingsController.selectedSeparator.getValue());
+                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getcryptoCommission2FiatOverviewvalue())).append(settingsController.selectedSeparator.getValue());
+                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getFiatValue().getValue())).append(settingsController.selectedSeparator.getValue());
                             sb.append("\n");
                         }
                         break;
                     case "Commissions":
-                        sb.append((mainView.plotTable.getColumns().get(0).getId() + "," + mainView.plotTable.getColumns().get(1).getId() + "," + mainView.plotTable.getColumns().get(2).getId() + "," + mainView.plotTable.getColumns().get(3).getId() + "," + mainView.plotTable.getColumns().get(4).getId() + "," + mainView.plotTable.getColumns().get(5).getId() + "," + mainView.plotTable.getColumns().get(8).getId()).replace(",", settingsController.selectedSeperator.getValue())).append("\n");
+                        sb.append((mainView.plotTable.getColumns().get(0).getId() + "," + mainView.plotTable.getColumns().get(1).getId() + "," + mainView.plotTable.getColumns().get(2).getId() + "," + mainView.plotTable.getColumns().get(3).getId() + "," + mainView.plotTable.getColumns().get(4).getId() + "," + mainView.plotTable.getColumns().get(5).getId() + "," + mainView.plotTable.getColumns().get(8).getId()).replace(",", settingsController.selectedSeparator.getValue())).append("\n");
                         for (PoolPairModel poolPairModel : poolPairModelList) {
-                            sb.append(poolPairModel.getBlockTime().getValue()).append(settingsController.selectedSeperator.getValue());
-                            sb.append(poolPairModel.getPoolPair().getValue()).append(settingsController.selectedSeperator.getValue());
-                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValue1().getValue())).append(settingsController.selectedSeperator.getValue());
-                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoFiatValue1().getValue())).append(settingsController.selectedSeperator.getValue());
-                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValue2().getValue())).append(settingsController.selectedSeperator.getValue());
-                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoFiatValue2().getValue())).append(settingsController.selectedSeperator.getValue());
-                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getFiatValue().getValue())).append(settingsController.selectedSeperator.getValue());
+                            sb.append(poolPairModel.getBlockTime().getValue()).append(settingsController.selectedSeparator.getValue());
+                            sb.append(poolPairModel.getPoolPair().getValue()).append(settingsController.selectedSeparator.getValue());
+                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValue1().getValue())).append(settingsController.selectedSeparator.getValue());
+                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoFiatValue1().getValue())).append(settingsController.selectedSeparator.getValue());
+                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValue2().getValue())).append(settingsController.selectedSeparator.getValue());
+                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoFiatValue2().getValue())).append(settingsController.selectedSeparator.getValue());
+                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getFiatValue().getValue())).append(settingsController.selectedSeparator.getValue());
                             sb.append("\n");
                         }
                         break;
                     case "Rewards":
-                        sb.append((mainView.plotTable.getColumns().get(0).getId() + "," + mainView.plotTable.getColumns().get(1).getId() + "," + mainView.plotTable.getColumns().get(2).getId() + "," + mainView.plotTable.getColumns().get(3).getId()).replace(",", settingsController.selectedSeperator.getValue())).append("\n");
+                        sb.append((mainView.plotTable.getColumns().get(0).getId() + "," + mainView.plotTable.getColumns().get(1).getId() + "," + mainView.plotTable.getColumns().get(2).getId() + "," + mainView.plotTable.getColumns().get(3).getId()).replace(",", settingsController.selectedSeparator.getValue())).append("\n");
                         for (PoolPairModel poolPairModel : poolPairModelList) {
-                            sb.append(poolPairModel.getBlockTime().getValue()).append(settingsController.selectedSeperator.getValue());
-                            sb.append(poolPairModel.getPoolPair().getValue()).append(settingsController.selectedSeperator.getValue());
-                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValue1().getValue())).append(settingsController.selectedSeperator.getValue());
-                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoFiatValue1().getValue())).append(settingsController.selectedSeperator.getValue());
+                            sb.append(poolPairModel.getBlockTime().getValue()).append(settingsController.selectedSeparator.getValue());
+                            sb.append(poolPairModel.getPoolPair().getValue()).append(settingsController.selectedSeparator.getValue());
+                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoValue1().getValue())).append(settingsController.selectedSeparator.getValue());
+                            sb.append(String.format(localeDecimal, "%.8f", poolPairModel.getCryptoFiatValue1().getValue())).append(settingsController.selectedSeparator.getValue());
                             sb.append("\n");
                         }
                         break;

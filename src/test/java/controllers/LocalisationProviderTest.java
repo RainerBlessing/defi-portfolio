@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.testng.annotations.*;
+import resourceprovider.LocalisationProvider;
 
 import java.io.IOException;
 

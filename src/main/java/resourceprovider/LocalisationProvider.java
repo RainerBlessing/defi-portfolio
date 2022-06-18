@@ -1,4 +1,4 @@
-package controllers;
+package resourceprovider;
 
 import com.google.inject.Singleton;
 import org.json.simple.JSONObject;

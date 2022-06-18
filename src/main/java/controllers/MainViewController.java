@@ -1,10 +1,9 @@
 package controllers;
 
-import com.google.inject.Guice;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.sun.javafx.charts.Legend;
+import resourceprovider.CssProvider;
 import views.MainView;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -170,23 +169,23 @@ public class MainViewController {
         if (withHeaders) {
             for (TableColumn column : this.mainView.rawDataTable.getColumns()
             ) {
-                sb.append(column.getId()).append(this.settingsController.selectedSeperator.getValue());
+                sb.append(column.getId()).append(this.settingsController.selectedSeparator.getValue());
             }
             sb.setLength(sb.length() - 1);
             sb.append("\n");
         }
         for (TransactionModel transaction : list) {
-            sb.append(this.transactionController.convertTimeStampToString(transaction.blockTimeProperty.getValue())).append(this.settingsController.selectedSeperator.getValue());
-            sb.append(transaction.typeProperty.getValue()).append(this.settingsController.selectedSeperator.getValue());
+            sb.append(this.transactionController.convertTimeStampToString(transaction.blockTimeProperty.getValue())).append(this.settingsController.selectedSeparator.getValue());
+            sb.append(transaction.typeProperty.getValue()).append(this.settingsController.selectedSeparator.getValue());
             String[] CoinsAndAmounts = this.transactionController.splitCoinsAndAmounts(transaction.amountProperty.getValue());
-            sb.append(String.format(localeDecimal, "%.8f", Double.parseDouble(CoinsAndAmounts[0]))).append(this.settingsController.selectedSeperator.getValue());
-            sb.append(CoinsAndAmounts[1]).append(this.settingsController.selectedSeperator.getValue());
-            sb.append(String.format(localeDecimal, "%.8f", transaction.fiatValueProperty.getValue())).append(this.settingsController.selectedSeperator.getValue());
-            sb.append(this.settingsController.selectedFiatCurrency.getValue()).append(this.settingsController.selectedSeperator.getValue());
-            sb.append(transaction.poolIDProperty.getValue()).append(this.settingsController.selectedSeperator.getValue());
-            sb.append(transaction.blockHeightProperty.getValue()).append(this.settingsController.selectedSeperator.getValue());
-            sb.append(transaction.blockHashProperty.getValue()).append(this.settingsController.selectedSeperator.getValue());
-            sb.append(transaction.ownerProperty.getValue()).append(this.settingsController.selectedSeperator.getValue());
+            sb.append(String.format(localeDecimal, "%.8f", Double.parseDouble(CoinsAndAmounts[0]))).append(this.settingsController.selectedSeparator.getValue());
+            sb.append(CoinsAndAmounts[1]).append(this.settingsController.selectedSeparator.getValue());
+            sb.append(String.format(localeDecimal, "%.8f", transaction.fiatValueProperty.getValue())).append(this.settingsController.selectedSeparator.getValue());
+            sb.append(this.settingsController.selectedFiatCurrency.getValue()).append(this.settingsController.selectedSeparator.getValue());
+            sb.append(transaction.poolIDProperty.getValue()).append(this.settingsController.selectedSeparator.getValue());
+            sb.append(transaction.blockHeightProperty.getValue()).append(this.settingsController.selectedSeparator.getValue());
+            sb.append(transaction.blockHashProperty.getValue()).append(this.settingsController.selectedSeparator.getValue());
+            sb.append(transaction.ownerProperty.getValue()).append(this.settingsController.selectedSeparator.getValue());
             sb.append(transaction.txIDProperty.getValue());
             sb.append("\n");
         }
@@ -205,16 +204,16 @@ public class MainViewController {
         if (withHeaders) {
             switch (this.mainView.tabPane.getSelectionModel().getSelectedItem().getId()) {
                 case "Portfolio":
-                    sb.append((this.mainView.plotTable.getColumns().get(0).getId() + "," + this.mainView.plotTable.getColumns().get(2).getId() + "," + this.mainView.plotTable.getColumns().get(9).getId()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+                    sb.append((this.mainView.plotTable.getColumns().get(0).getId() + "," + this.mainView.plotTable.getColumns().get(2).getId() + "," + this.mainView.plotTable.getColumns().get(9).getId()).replace(",", this.settingsController.selectedSeparator.getValue())).append("\n");
                     break;
                 case "Overview":
-                    sb.append((this.mainView.plotTable.getColumns().get(0).getId() + "," + this.mainView.plotTable.getColumns().get(1).getId() + "," + this.mainView.plotTable.getColumns().get(2).getId() + "," + this.mainView.plotTable.getColumns().get(3).getId() + "," + this.mainView.plotTable.getColumns().get(4).getId() + "," + this.mainView.plotTable.getColumns().get(5).getId() + "," + this.mainView.plotTable.getColumns().get(6).getId() + "," + this.mainView.plotTable.getColumns().get(7).getId() + "," + this.mainView.plotTable.getColumns().get(8).getId()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+                    sb.append((this.mainView.plotTable.getColumns().get(0).getId() + "," + this.mainView.plotTable.getColumns().get(1).getId() + "," + this.mainView.plotTable.getColumns().get(2).getId() + "," + this.mainView.plotTable.getColumns().get(3).getId() + "," + this.mainView.plotTable.getColumns().get(4).getId() + "," + this.mainView.plotTable.getColumns().get(5).getId() + "," + this.mainView.plotTable.getColumns().get(6).getId() + "," + this.mainView.plotTable.getColumns().get(7).getId() + "," + this.mainView.plotTable.getColumns().get(8).getId()).replace(",", this.settingsController.selectedSeparator.getValue())).append("\n");
                     break;
                 case "Commissions":
-                    sb.append((this.mainView.plotTable.getColumns().get(0).getId() + "," + this.mainView.plotTable.getColumns().get(1).getId() + "," + this.mainView.plotTable.getColumns().get(2).getId() + "," + this.mainView.plotTable.getColumns().get(3).getId() + "," + this.mainView.plotTable.getColumns().get(4).getId() + "," + this.mainView.plotTable.getColumns().get(5).getId() + "," + this.mainView.plotTable.getColumns().get(8).getId()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+                    sb.append((this.mainView.plotTable.getColumns().get(0).getId() + "," + this.mainView.plotTable.getColumns().get(1).getId() + "," + this.mainView.plotTable.getColumns().get(2).getId() + "," + this.mainView.plotTable.getColumns().get(3).getId() + "," + this.mainView.plotTable.getColumns().get(4).getId() + "," + this.mainView.plotTable.getColumns().get(5).getId() + "," + this.mainView.plotTable.getColumns().get(8).getId()).replace(",", this.settingsController.selectedSeparator.getValue())).append("\n");
                     break;
                 case "Rewards":
-                    sb.append((this.mainView.plotTable.getColumns().get(0).getId() + "," + this.mainView.plotTable.getColumns().get(1).getId() + "," + this.mainView.plotTable.getColumns().get(2).getId() + "," + this.mainView.plotTable.getColumns().get(3).getId()).replace(",", this.settingsController.selectedSeperator.getValue())).append("\n");
+                    sb.append((this.mainView.plotTable.getColumns().get(0).getId() + "," + this.mainView.plotTable.getColumns().get(1).getId() + "," + this.mainView.plotTable.getColumns().get(2).getId() + "," + this.mainView.plotTable.getColumns().get(3).getId()).replace(",", this.settingsController.selectedSeparator.getValue())).append("\n");
                     break;
                 default:
                     break;
@@ -225,40 +224,40 @@ public class MainViewController {
         ) {
             switch (this.mainView.tabPane.getSelectionModel().getSelectedItem().getId()) {
                 case "Portfolio":
-                    sb.append(poolPair.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                    sb.append(poolPair.getPoolPair().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                    sb.append(poolPair.getBalanceFiat().getValue()).append(this.settingsController.selectedSeperator.getValue());
+                    sb.append(poolPair.getBlockTime().getValue()).append(this.settingsController.selectedSeparator.getValue());
+                    sb.append(poolPair.getPoolPair().getValue()).append(this.settingsController.selectedSeparator.getValue());
+                    sb.append(poolPair.getBalanceFiat().getValue()).append(this.settingsController.selectedSeparator.getValue());
                     sb.append("\n");
                     break;
                 case "Overview":
-                    sb.append(poolPair.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                    sb.append(poolPair.getPoolPair().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoValue1().getValue())).append(this.settingsController.selectedSeperator.getValue());
-                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoFiatValue1().getValue())).append(this.settingsController.selectedSeperator.getValue());
-                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoValue2().getValue())).append(this.settingsController.selectedSeperator.getValue());
-                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoFiatValue2().getValue())).append(this.settingsController.selectedSeperator.getValue());
-                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getcryptoCommission2Overviewvalue())).append(this.settingsController.selectedSeperator.getValue());
-                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getcryptoCommission2FiatOverviewvalue())).append(this.settingsController.selectedSeperator.getValue());
-                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getFiatValue().getValue())).append(this.settingsController.selectedSeperator.getValue());
+                    sb.append(poolPair.getBlockTime().getValue()).append(this.settingsController.selectedSeparator.getValue());
+                    sb.append(poolPair.getPoolPair().getValue()).append(this.settingsController.selectedSeparator.getValue());
+                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoValue1().getValue())).append(this.settingsController.selectedSeparator.getValue());
+                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoFiatValue1().getValue())).append(this.settingsController.selectedSeparator.getValue());
+                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoValue2().getValue())).append(this.settingsController.selectedSeparator.getValue());
+                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoFiatValue2().getValue())).append(this.settingsController.selectedSeparator.getValue());
+                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getcryptoCommission2Overviewvalue())).append(this.settingsController.selectedSeparator.getValue());
+                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getcryptoCommission2FiatOverviewvalue())).append(this.settingsController.selectedSeparator.getValue());
+                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getFiatValue().getValue())).append(this.settingsController.selectedSeparator.getValue());
                     sb.append("\n");
                     break;
                 case "Rewards":
                 case "Belohnungen":
-                    sb.append(poolPair.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                    sb.append(poolPair.getPoolPair().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoValue1().getValue())).append(this.settingsController.selectedSeperator.getValue());
-                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoFiatValue1().getValue())).append(this.settingsController.selectedSeperator.getValue());
+                    sb.append(poolPair.getBlockTime().getValue()).append(this.settingsController.selectedSeparator.getValue());
+                    sb.append(poolPair.getPoolPair().getValue()).append(this.settingsController.selectedSeparator.getValue());
+                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoValue1().getValue())).append(this.settingsController.selectedSeparator.getValue());
+                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoFiatValue1().getValue())).append(this.settingsController.selectedSeparator.getValue());
                     sb.append("\n");
                     break;
                 case "Commissions":
                 case "Kommissionen":
-                    sb.append(poolPair.getBlockTime().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                    sb.append(poolPair.getPoolPair().getValue()).append(this.settingsController.selectedSeperator.getValue());
-                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoValue1().getValue())).append(this.settingsController.selectedSeperator.getValue());
-                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoFiatValue1().getValue())).append(this.settingsController.selectedSeperator.getValue());
-                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoValue2().getValue())).append(this.settingsController.selectedSeperator.getValue());
-                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoFiatValue2().getValue())).append(this.settingsController.selectedSeperator.getValue());
-                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getFiatValue().getValue())).append(this.settingsController.selectedSeperator.getValue());
+                    sb.append(poolPair.getBlockTime().getValue()).append(this.settingsController.selectedSeparator.getValue());
+                    sb.append(poolPair.getPoolPair().getValue()).append(this.settingsController.selectedSeparator.getValue());
+                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoValue1().getValue())).append(this.settingsController.selectedSeparator.getValue());
+                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoFiatValue1().getValue())).append(this.settingsController.selectedSeparator.getValue());
+                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoValue2().getValue())).append(this.settingsController.selectedSeparator.getValue());
+                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getCryptoFiatValue2().getValue())).append(this.settingsController.selectedSeparator.getValue());
+                    sb.append(String.format(localeDecimal, "%.8f", poolPair.getFiatValue().getValue())).append(this.settingsController.selectedSeparator.getValue());
                     sb.append("\n");
                     break;
                 default:
@@ -273,7 +272,7 @@ public class MainViewController {
     public void updateTransactionData() {
         transactionController.clearTransactionList();
         transactionController.clearPortfolioList();
-        //this.transactionController.updateBalanceList();
+        transactionController.updateBalanceList();
 
 
         try {
@@ -493,8 +492,8 @@ public class MainViewController {
             double poolPair1Price = coinPriceController.getPriceFromTimeStamp(poolPair.contains("DUSD"),poolPair.split("-")[1] + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
             double poolPair2Price = coinPriceController.getPriceFromTimeStamp(poolPair.contains("DUSD"),poolPair.split("-")[0] + this.settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis());
 
-            if (this.transactionController.getPortfolioList().containsKey(poolPair + "-" + this.settingsController.selectedIntervallInt)) {
-                for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(poolPair + "-" + this.settingsController.selectedIntervallInt).entrySet()) {
+            if (this.transactionController.getPortfolioList().containsKey(poolPair + "-" + this.settingsController.selectedIntervalInt)) {
+                for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(poolPair + "-" + this.settingsController.selectedIntervalInt).entrySet()) {
                     totalYield += (entry.getValue().getCoinCommissions1Value() * poolPair1Price) + (entry.getValue().getCoinCommissions2Value() * poolPair2Price) + (entry.getValue().getCoinRewards1Value() * poolPair1Price);
                     totalYieldRewards += entry.getValue().getCoinRewards1Value() * poolPair1Price;
                     totalYieldCommissions += (entry.getValue().getCoinCommissions1Value() * poolPair1Price) + (entry.getValue().getCoinCommissions2Value() * poolPair2Price);
@@ -626,11 +625,11 @@ public class MainViewController {
                 XYChart.Series<Number, Number> overviewSeries = new XYChart.Series();
                 overviewSeries.setName(poolPair);
 
-                if (this.transactionController.getPortfolioList().containsKey(poolPair + "-" + this.settingsController.selectedIntervallInt)) {
+                if (this.transactionController.getPortfolioList().containsKey(poolPair + "-" + this.settingsController.selectedIntervalInt)) {
 
-                    for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(poolPair + "-" + this.settingsController.selectedIntervallInt).entrySet()) {
-                        if (entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateFrom.getValue().toString(), this.settingsController.selectedIntervallInt)) >= 0 &&
-                                entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateTo.getValue().toString(), this.settingsController.selectedIntervallInt)) <= 0) {
+                    for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(poolPair + "-" + this.settingsController.selectedIntervalInt).entrySet()) {
+                        if (entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateFrom.getValue().toString(), this.settingsController.selectedIntervalInt)) >= 0 &&
+                                entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateTo.getValue().toString(), this.settingsController.selectedIntervalInt)) <= 0) {
 
                             if (poolPair.equals(entry.getValue().getPoolPairValue())) {
                                 overviewSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getFiatRewards1Value() + entry.getValue().getFiatCommissions1Value() + entry.getValue().getFiatCommissions2Value()));
@@ -685,14 +684,14 @@ public class MainViewController {
             this.mainView.plotRewards.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[1] + " (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
         }
 
-        if (this.transactionController.getPortfolioList().containsKey(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervallInt)) {
+        if (this.transactionController.getPortfolioList().containsKey(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervalInt)) {
 
             if (this.settingsController.selectedPlotType.getValue().equals(this.settingsController.translationList.getValue().get("Individual"))) {
 
-                for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervallInt).entrySet()) {
+                for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervalInt).entrySet()) {
 
-                    if (entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateFrom.getValue().toString(), this.settingsController.selectedIntervallInt)) >= 0 &&
-                            entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateTo.getValue().toString(), this.settingsController.selectedIntervallInt)) <= 0) {
+                    if (entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateFrom.getValue().toString(), this.settingsController.selectedIntervalInt)) >= 0 &&
+                            entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateTo.getValue().toString(), this.settingsController.selectedIntervalInt)) <= 0) {
 
                         if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
                             rewardsSeries.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getCoinRewards1Value()));
@@ -735,9 +734,9 @@ public class MainViewController {
                 double cumulatedCoinValue = 0;
                 double cumulatedFiatValue = 0;
 
-                for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervallInt).entrySet()) {
-                    if (entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateFrom.getValue().toString(), this.settingsController.selectedIntervallInt)) >= 0 &&
-                            entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateTo.getValue().toString(), this.settingsController.selectedIntervallInt)) <= 0) {
+                for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervalInt).entrySet()) {
+                    if (entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateFrom.getValue().toString(), this.settingsController.selectedIntervalInt)) >= 0 &&
+                            entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateTo.getValue().toString(), this.settingsController.selectedIntervalInt)) <= 0) {
 
                         if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
                             cumulatedCoinValue = cumulatedCoinValue + entry.getValue().getCoinRewards1Value();
@@ -800,13 +799,13 @@ public class MainViewController {
             this.mainView.plotCommissions2.getYAxis().setLabel(this.settingsController.selectedCoin.getValue().split("-")[0] + " (" + this.settingsController.selectedFiatCurrency.getValue() + ")");
         }
 
-        if (this.transactionController.getPortfolioList().containsKey(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervallInt)) {
+        if (this.transactionController.getPortfolioList().containsKey(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervalInt)) {
 
             if (this.settingsController.selectedPlotType.getValue().equals(this.settingsController.translationList.getValue().get("Individual"))) {
 
-                for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervallInt).entrySet()) {
-                    if (entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateFrom.getValue().toString(), this.settingsController.selectedIntervallInt)) >= 0 &&
-                            entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateTo.getValue().toString(), this.settingsController.selectedIntervallInt)) <= 0) {
+                for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervalInt).entrySet()) {
+                    if (entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateFrom.getValue().toString(), this.settingsController.selectedIntervalInt)) >= 0 &&
+                            entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateTo.getValue().toString(), this.settingsController.selectedIntervalInt)) <= 0) {
 
                         if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
                             commissionsSeries1.getData().add(new XYChart.Data(entry.getKey(), entry.getValue().getCoinCommissions1Value()));
@@ -863,9 +862,9 @@ public class MainViewController {
                 double cumulatedCommissions1FiatValue = 0;
                 double cumulatedCommissions2CoinValue = 0;
                 double cumulatedCommissions2FiatValue = 0;
-                for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervallInt).entrySet()) {
-                    if (entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateFrom.getValue().toString(), this.settingsController.selectedIntervallInt)) >= 0 &&
-                            entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateTo.getValue().toString(), this.settingsController.selectedIntervallInt)) <= 0) {
+                for (HashMap.Entry<String, PortfolioModel> entry : this.transactionController.getPortfolioList().get(this.settingsController.selectedCoin.getValue() + "-" + this.settingsController.selectedIntervalInt).entrySet()) {
+                    if (entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateFrom.getValue().toString(), this.settingsController.selectedIntervalInt)) >= 0 &&
+                            entry.getValue().getDateValue().compareTo(this.transactionController.convertDateToIntervall(this.settingsController.dateTo.getValue().toString(), this.settingsController.selectedIntervalInt)) <= 0) {
                         if (this.settingsController.selectedPlotCurrency.getValue().equals("Coin")) {
                             cumulatedCommissions1CoinValue = cumulatedCommissions1CoinValue + entry.getValue().getCoinCommissions1Value();
                             cumulatedCommissions2CoinValue = cumulatedCommissions2CoinValue + entry.getValue().getCoinCommissions2Value();
@@ -974,11 +973,11 @@ public class MainViewController {
         if (selectedFile != null) {
             boolean success;
             if (filter.equals("DAILY")) {
-                success = this.expService.exportTransactionToExcelDaily(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeperator.getValue());
+                success = this.expService.exportTransactionToExcelDaily(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeparator.getValue());
             } else if (filter.equals("")) {
-                success = this.expService.exportTransactionToExcel(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeperator.getValue());
+                success = this.expService.exportTransactionToExcel(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeparator.getValue());
             } else {
-                success = this.expService.exportTransactionToCointracking(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeperator.getValue(), settingsController.exportCointracingVariante.getValue());
+                success = this.expService.exportTransactionToCointracking(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeparator.getValue(), settingsController.exportCointracingVariant.getValue());
             }
 
             if (success) {
@@ -1002,10 +1001,10 @@ public class MainViewController {
     public void exportTransactionToExcel(TableView<TransactionModel> rawDataTable) {
         List<TransactionModel> list;
         String filter;
-        if(settingsController.exportCSVCariante.getValue().equals("Export selected to CSV")){
+        if(settingsController.exportCSVVariant.getValue().equals("Export selected to CSV")){
             list = rawDataTable.selectionModelProperty().get().getSelectedItems();
             filter = "";
-        }else if(settingsController.exportCSVCariante.getValue().equals("Export all to CSV"))
+        }else if(settingsController.exportCSVVariant.getValue().equals("Export all to CSV"))
         {
             list = rawDataTable.getItems();
             filter = "";
@@ -1034,11 +1033,11 @@ public class MainViewController {
         if (selectedFile != null) {
             boolean success;
             if (filter.equals("DAILY")) {
-                success = this.expService.exportTransactionToExcelDaily(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeperator.getValue());
+                success = this.expService.exportTransactionToExcelDaily(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeparator.getValue());
             } else if (filter.equals("")) {
-                success = this.expService.exportTransactionToExcel(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeperator.getValue());
+                success = this.expService.exportTransactionToExcel(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeparator.getValue());
             } else {
-                success = this.expService.exportTransactionToCointracking(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeperator.getValue(), settingsController.exportCointracingVariante.getValue());
+                success = this.expService.exportTransactionToCointracking(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeparator.getValue(), settingsController.exportCointracingVariant.getValue());
             }
 
             if (success) {

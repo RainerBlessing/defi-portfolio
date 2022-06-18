@@ -1,4 +1,4 @@
-package controllers;
+package resourceprovider;
 
 import java.io.File;
 

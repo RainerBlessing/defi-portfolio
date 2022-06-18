@@ -1,11 +1,9 @@
 import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import com.google.inject.name.Names;
 import controllers.*;
 import javafx.fxml.FXMLLoader;
-import models.TransactionModel;
 import provider.FXMLLoaderProvider;
+import resourceprovider.LocalisationProvider;
 import services.ExportService;
 import views.DisclaimerView;
 import views.MainView;

@@ -1,7 +1,6 @@
 package views;
 
-import com.google.inject.Inject;
-import controllers.CssProvider;
+import resourceprovider.CssProvider;
 import controllers.SettingsController;
 import controllers.TransactionController;
 import javafx.fxml.FXML;
@@ -13,7 +12,6 @@ import javafx.scene.control.CheckBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.io.File;
 import java.io.IOException;
 
 public class ImportDataView {

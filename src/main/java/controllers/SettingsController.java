@@ -1,13 +1,11 @@
 package controllers;
 
-import com.google.inject.Guice;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import javafx.beans.property.*;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import resourceprovider.LocalisationProvider;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -17,10 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.Timer;
+import java.util.*;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -30,49 +25,40 @@ import java.util.logging.SimpleFormatter;
 public class SettingsController {
     public final String Version = "V1.6.2";
 
-    private LocalisationProvider localisationProvider;
-//    private static SettingsController OBJ = null;
-//
-//    static {
-//        try {
-//            OBJ = new SettingsController();
-//        } catch (IOException e) {
-//            logger.warning("Exception occurred: " + e);
-//        }
-//    }
+    private final LocalisationProvider localisationProvider;
 
     public final StringProperty selectedLanguage = new SimpleStringProperty("English");
     public final StringProperty selectedFiatCurrency = new SimpleStringProperty("EUR");
     public final StringProperty selectedDecimal = new SimpleStringProperty(".");
-    public final StringProperty selectedSeperator = new SimpleStringProperty(",");
+    public final StringProperty selectedSeparator = new SimpleStringProperty(",");
     public final StringProperty selectedStyleMode = new SimpleStringProperty("Dark Mode");
     public final StringProperty selectedCoin = new SimpleStringProperty("BTC-DFI");
     public final StringProperty selectedPlotCurrency = new SimpleStringProperty("Coin");
-    public final StringProperty selectedDefaulUpdateSource = new SimpleStringProperty("Show options");
+    public final StringProperty selectedDefaultUpdateSource = new SimpleStringProperty("Show options");
     public final StringProperty selectedPlotType = new SimpleStringProperty();
-    public final StringProperty selectedIntervall = new SimpleStringProperty();
+    public final StringProperty selectedInterval = new SimpleStringProperty();
     public final StringProperty tokenBalance = new SimpleStringProperty();
     public final StringProperty tokenBalanceLM = new SimpleStringProperty();
     public final StringProperty tokenAmount = new SimpleStringProperty();
     public final StringProperty tokenYield = new SimpleStringProperty();
     public final StringProperty tokenYieldRewards = new SimpleStringProperty();
     public final StringProperty tokenYieldCommissions = new SimpleStringProperty();
-    public final ObjectProperty<LocalDate> dateFrom = new SimpleObjectProperty("2020-11-30");
-    public final ObjectProperty<LocalDate> dateTo = new SimpleObjectProperty();
-    public final ObjectProperty<LocalDate> exportFrom = new SimpleObjectProperty();
-    public final ObjectProperty<LocalDate> exportTo = new SimpleObjectProperty();
-    public final ObjectProperty<JSONObject> translationList = new SimpleObjectProperty();
-    public String selectedIntervallInt = "Daily";
+    public final ObjectProperty<LocalDate> dateFrom = new SimpleObjectProperty<>(LocalDate.parse("2020-11-30"));
+    public final ObjectProperty<LocalDate> dateTo = new SimpleObjectProperty<>();
+    public final ObjectProperty<LocalDate> exportFrom = new SimpleObjectProperty<>();
+    public final ObjectProperty<LocalDate> exportTo = new SimpleObjectProperty<>();
+    public final ObjectProperty<JSONObject> translationList = new SimpleObjectProperty<>();
+    public String selectedIntervalInt = "Daily";
     public final StringProperty selectedSource = new SimpleStringProperty("Active Wallet");
-    public final StringProperty exportCointracingVariante = new SimpleStringProperty();
-    public final StringProperty exportCSVCariante = new SimpleStringProperty();
+    public final StringProperty exportCointracingVariant = new SimpleStringProperty();
+    public final StringProperty exportCSVVariant = new SimpleStringProperty();
     public boolean showDisclaim = true;
     public boolean showMissingTransaction = true;
     public boolean selectedLaunchDefid = false;
     public boolean selectedLaunchSync = true;
     public boolean checkCointracking = false;
     public boolean updatePython = false;
-    public final ArrayList<String> listAddresses = new ArrayList();
+    public final List<String> listAddresses = new ArrayList<>();
 
     public final StringProperty lastUpdate = new SimpleStringProperty("-");
     //Combo box filling
@@ -80,7 +66,7 @@ public class SettingsController {
     public final String[] plotCurrency = new String[]{"Coin", "Daily Fiat", "Current Fiat"};
     public final String[] styleModes = new String[]{"Light Mode", "Dark Mode"};
     public final String[] datasources = new String[]{"Active Wallet", "All Wallets"};
-    public final String[] cointrackingExportVariants = new String[]{"Cumulate All", "Cumulate None","Cumulate Pool Pair","Cumulate Rewards and Commisions"};
+    public final String[] cointrackingExportVariants = new String[]{"Cumulate All", "Cumulate None","Cumulate Pool Pair","Cumulate Rewards and Commissions"};
     public final String[] csvExportVariants = new String[]{"Export selected to CSV","Export all to CSV","Export all to CSV (Daily cumulated)"};
     public final String[] defaultUpdateSource = new String[]{"Show options", "Update data","Wallet CSV"};
 
@@ -90,8 +76,8 @@ public class SettingsController {
     public final String BINARY_FILE_PATH = System.getProperty("user.dir").replace("\\","/") + "/PortfolioData/" + BINARY_FILE_NAME;
     public final String CONFIG_FILE_PATH =getPlatform() == "win" ?
             System.getProperty("user.home").replace("\\","/") + "/.defi/defi.conf" : //WIN PATH
-    getPlatform() == "mac" ? System.getProperty("user.home").replace("\\","/")  + "/Library/Application Support/DeFi/.defi/defi.conf" : //MAC PATH
-    getPlatform() == "linux" ? System.getProperty("user.home").replace("\\","/")  + "/.defi/defi.conf" : //LINUX PATH
+            Objects.equals(getPlatform(), "mac") ? System.getProperty("user.home").replace("\\","/")  + "/Library/Application Support/DeFi/.defi/defi.conf" : //MAC PATH
+                    Objects.equals(getPlatform(), "linux") ? System.getProperty("user.home").replace("\\","/")  + "/.defi/defi.conf" : //LINUX PATH
     "";
     public final String DEFI_PORTFOLIO_HOME = getPlatform().equals("win") ?
             System.getenv("APPDATA").replace("\\","/") + "/defi-portfolio/" : //WIN PATH
@@ -104,11 +90,11 @@ public class SettingsController {
     public final String INCOMPLETE_FILE_PATH = DEFI_PORTFOLIO_HOME + "incompleteList.portfolio";
     public final String strTransactionData = "transactionData.portfolio";
     public final String strCoinPriceData = "coinPriceData.portfolio";
-    public final String strStockPriceData = "stockTockenPrices.portfolio";
+    public final String strStockPriceData = "stockTokenPrices.portfolio";
     public final String[] languages = new String[]{"English", "Deutsch","Espa\u00F1ol","Bokm\u00E5l","Nederlands"};
     public final String[] currencies = new String[]{"EUR", "USD", "CHF"};
-    public String[] decSeperators = new String[]{".", ","};
-    public String[] csvSeperators = new String[]{",", ";"};
+    public String[] decSeparators = new String[]{".", ","};
+    public String[] csvSeparators = new String[]{",", ";"};
     public final Logger logger = Logger.getLogger("Logger");
     public String rpcauth;
     public String rpcuser;
@@ -135,7 +121,9 @@ public class SettingsController {
 
         File directory = new File(DEFI_PORTFOLIO_HOME);
         if (!directory.exists()) {
-            directory.mkdir();
+            if (!directory.mkdir()) {
+                logger.warning("Could not create directory "+directory.getAbsolutePath());
+            }
         }
 
         fh = new FileHandler(DEFI_PORTFOLIO_HOME + "log.txt");
@@ -158,8 +146,6 @@ public class SettingsController {
                 while ((line = br.readLine()) != null) {
                     this.listAddresses.add(line);
                 }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -208,12 +194,12 @@ public class SettingsController {
                 }
                 this.selectedFiatCurrency.setValue(configProps.getProperty("SelectedFiatCurrency"));
                 this.selectedDecimal.setValue(configProps.getProperty("SelectedDecimal"));
-                this.selectedSeperator.setValue(configProps.getProperty("SelectedSeperator"));
+                this.selectedSeparator.setValue(configProps.getProperty("SelectedSeperator"));
                 this.selectedCoin.setValue(configProps.getProperty("SelectedCoin"));
                 this.selectedPlotCurrency.setValue(configProps.getProperty("SelectedPlotCurrency"));
                 this.selectedStyleMode.setValue(configProps.getProperty("SelectedStyleMode"));
-                this.exportCointracingVariante.setValue(configProps.getProperty("ExportCointrackinVariante"));
-                this.exportCSVCariante.setValue(configProps.getProperty("ExportCSVVariante"));
+                this.exportCointracingVariant.setValue(configProps.getProperty("ExportCointrackinVariante"));
+                this.exportCSVVariant.setValue(configProps.getProperty("ExportCSVVariante"));
                 this.exportFrom.setValue(LocalDate.parse(configProps.getProperty("ExportFrom")));
                 this.exportTo.setValue(LocalDate.parse(LocalDate.now().toString()));
                 this.dateFrom.setValue(LocalDate.parse(configProps.getProperty("SelectedDate")));
@@ -237,9 +223,9 @@ public class SettingsController {
                     this.lastUpdate.setValue("-");
                 }
                 if(configProps.getProperty("DefaultDataSource") !=null){
-                    this.selectedDefaulUpdateSource.setValue(configProps.getProperty("DefaultDataSource"));
+                    this.selectedDefaultUpdateSource.setValue(configProps.getProperty("DefaultDataSource"));
                 }else{
-                    this.selectedDefaulUpdateSource.setValue("Show options");
+                    this.selectedDefaultUpdateSource.setValue("Show options");
                 }
                 this.showMissingTransaction = configProps.getProperty("MissingTransaction").equals("true");
                 this.lastWalletCSVImportPath = configProps.getProperty("LastWalletCSVImportPath");
@@ -258,7 +244,7 @@ public class SettingsController {
             csvWriter.append("SelectedLanguage=").append(this.selectedLanguage.getValue()).append("\n");
             csvWriter.append("SelectedFiatCurrency=").append(this.selectedFiatCurrency.getValue()).append("\n");
             csvWriter.append("SelectedDecimal=").append(this.selectedDecimal.getValue()).append("\n");
-            csvWriter.append("SelectedSeperator=").append(this.selectedSeperator.getValue()).append("\n");
+            csvWriter.append("SelectedSeparator=").append(this.selectedSeparator.getValue()).append("\n");
             csvWriter.append("SelectedCoin=").append(this.selectedCoin.getValue()).append("\n");
             csvWriter.append("SelectedPlotCurrency=").append(this.selectedPlotCurrency.getValue()).append("\n");
             csvWriter.append("SelectedStyleMode=").append(this.selectedStyleMode.getValue()).append("\n");
@@ -269,12 +255,12 @@ public class SettingsController {
             csvWriter.append("SelectedLaunchSync=").append(String.valueOf(this.selectedLaunchSync)).append("\n");
             csvWriter.append("SelectedSource=").append(this.selectedSource.getValue()).append("\n");
             csvWriter.append("LastUpdate=").append(this.lastUpdate.getValue()).append("\n");
-            csvWriter.append("ExportCointrackinVariante=").append(this.exportCointracingVariante.getValue()).append("\n");
-            csvWriter.append("ExportCSVVariante=").append(this.exportCSVCariante.getValue()).append("\n");
+            csvWriter.append("ExportCointrackinVariant=").append(this.exportCointracingVariant.getValue()).append("\n");
+            csvWriter.append("ExportCSVVariant=").append(this.exportCSVVariant.getValue()).append("\n");
             csvWriter.append("ExportFrom=").append(String.valueOf(this.exportFrom.getValue())).append("\n");
             csvWriter.append("ExportTo=").append(String.valueOf(this.exportTo.getValue())).append("\n");
             csvWriter.append("MissingTransaction=").append(String.valueOf(this.showMissingTransaction)).append("\n");
-            csvWriter.append("DefaultDataSource=").append(this.selectedDefaulUpdateSource.getValue()).append("\n");
+            csvWriter.append("DefaultDataSource=").append(this.selectedDefaultUpdateSource.getValue()).append("\n");
             csvWriter.append("LastWalletCSVImportPath=").append(this.lastWalletCSVImportPath).append("\n");
             csvWriter.flush();
             csvWriter.close();

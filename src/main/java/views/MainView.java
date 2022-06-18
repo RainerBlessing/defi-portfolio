@@ -27,6 +27,8 @@ import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import models.PoolPairModel;
 import models.TransactionModel;
+import resourceprovider.CssProvider;
+import resourceprovider.IconProvider;
 
 import java.awt.*;
 import java.io.File;
@@ -458,10 +460,10 @@ public class MainView implements Initializable {
 
         updateLanguage();
 
-        coinImageRewards1.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
-        coinImageRewards2.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + settingsController.selectedCoin.getValue().split("-")[1].toLowerCase() + "-icon.png").toURI().toString()));
-        coinImageCommissions1.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
-        coinImageCommissions2.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + settingsController.selectedCoin.getValue().split("-")[1].toLowerCase() + "-icon.png").toURI().toString()));
+        coinImageRewards1.setImage(IconProvider.getImage( settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png"));
+        coinImageRewards2.setImage(IconProvider.getImage( settingsController.selectedCoin.getValue().split("-")[1].toLowerCase() + "-icon.png"));
+        coinImageCommissions1.setImage(IconProvider.getImage( settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png"));
+        coinImageCommissions2.setImage(IconProvider.getImage( settingsController.selectedCoin.getValue().split("-")[1].toLowerCase() + "-icon.png"));
         updateStylesheet();
 
         settingsController.selectedStyleMode.addListener(style -> updateStylesheet());
@@ -478,7 +480,7 @@ public class MainView implements Initializable {
         this.strCurrentBlockOnBlockchain.textProperty().bindBidirectional(mainViewController.strCurrentBlockOnBlockchain);
         this.strLastUpdate.textProperty().bindBidirectional(settingsController.lastUpdate);
         this.btnUpdateDatabase.setOnAction(e -> {
-                switch(settingsController.selectedDefaulUpdateSource.getValue()) {
+                switch(settingsController.selectedDefaultUpdateSource.getValue()) {
                 case "Update data":
                     if(settingsController.listAddresses.size() > 0){
                         transactionController.updateDatabase();
@@ -592,25 +594,25 @@ public class MainView implements Initializable {
                 }
         );
 
-        this.cmbIntervall.valueProperty().bindBidirectional(settingsController.selectedIntervall);
+        this.cmbIntervall.valueProperty().bindBidirectional(settingsController.selectedInterval);
         this.cmbIntervall.valueProperty().addListener((ov, oldValue, newValue) ->
         {
             if (newValue != null) {
-                settingsController.selectedIntervallInt = "Daily";
+                settingsController.selectedIntervalInt = "Daily";
                 if(settingsController.translationList.getValue().get("Daily").equals(newValue)){
-                    settingsController.selectedIntervallInt = "Daily";
+                    settingsController.selectedIntervalInt = "Daily";
                 }
 
                 if(settingsController.translationList.getValue().get("Weekly").equals(newValue)){
-                    settingsController.selectedIntervallInt = "Weekly";
+                    settingsController.selectedIntervalInt = "Weekly";
                 }
 
                 if(settingsController.translationList.getValue().get("Monthly").equals(newValue)){
-                    settingsController.selectedIntervallInt = "Monthly";
+                    settingsController.selectedIntervalInt = "Monthly";
                 }
 
                 if(settingsController.translationList.getValue().get("Yearly").equals(newValue)){
-                    settingsController.selectedIntervallInt = "Yearly";
+                    settingsController.selectedIntervalInt = "Yearly";
                 }
             }
             if (!this.init)
@@ -618,8 +620,8 @@ public class MainView implements Initializable {
             settingsController.saveSettings();
         });
 
-        this.cmbIntervallCom.valueProperty().bindBidirectional(settingsController.selectedIntervall);
-        this.cmbIntervallOver.valueProperty().bindBidirectional(settingsController.selectedIntervall);
+        this.cmbIntervallCom.valueProperty().bindBidirectional(settingsController.selectedInterval);
+        this.cmbIntervallOver.valueProperty().bindBidirectional(settingsController.selectedInterval);
 
         this.cmbCoins.getItems().addAll(settingsController.cryptoCurrencies);
         this.cmbCoins.valueProperty().bindBidirectional(settingsController.selectedCoin);
@@ -629,10 +631,11 @@ public class MainView implements Initializable {
 
             this.updateHeader();
             settingsController.saveSettings();
-            coinImageRewards1.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
-            coinImageRewards2.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + settingsController.selectedCoin.getValue().split("-")[1].toLowerCase() + "-icon.png").toURI().toString()));
-            coinImageCommissions1.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png").toURI().toString()));
-            coinImageCommissions2.setImage(new Image(new File(System.getProperty("user.dir") + "/defi-portfolio/src/icons/" + settingsController.selectedCoin.getValue().split("-")[1].toLowerCase() + "-icon.png").toURI().toString()));        });
+            coinImageRewards1.setImage(IconProvider.getImage( settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png"));
+            coinImageRewards2.setImage(IconProvider.getImage( settingsController.selectedCoin.getValue().split("-")[1].toLowerCase() + "-icon.png"));
+            coinImageCommissions1.setImage(IconProvider.getImage( settingsController.selectedCoin.getValue().split("-")[0].toLowerCase() + "-icon.png"));
+            coinImageCommissions2.setImage(IconProvider.getImage( settingsController.selectedCoin.getValue().split("-")[1].toLowerCase() + "-icon.png"));
+        });
 
         this.cmbCoinsCom.getItems().addAll(settingsController.cryptoCurrencies);
         this.cmbCoinsCom.valueProperty().bindBidirectional(settingsController.selectedCoin);
@@ -1397,9 +1400,9 @@ public class MainView implements Initializable {
         this.ownerColumn.setText(settingsController.translationList.getValue().get("Owner").toString());
         this.transactionColumn.setText(settingsController.translationList.getValue().get("TransactionHash").toString());
         this.fiatColumn.setText(settingsController.translationList.getValue().get("Total").toString());
-//        mainViewController.donateController.strDonateText.setValue(settingsController.translationList.getValue().get("DonateLabel").toString());
+        mainViewController.donateController.strDonateText.setValue(settingsController.translationList.getValue().get("DonateLabel").toString());
         settingsController.selectedPlotType.setValue(settingsController.translationList.getValue().get("Individual").toString());
-        settingsController.selectedIntervall.setValue(settingsController.translationList.getValue().get("Daily").toString());
+        settingsController.selectedInterval.setValue(settingsController.translationList.getValue().get("Daily").toString());
 
 
         if (!this.init)

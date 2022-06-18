@@ -115,9 +115,9 @@ public class SettingsView implements Initializable {
         this.lblLaunchDefid.setText(this.settingsController.translationList.getValue().get("LaunchDefid").toString());
         this.cmbLanguage.getItems().addAll(this.settingsController.languages);
         this.cmbLanguage.valueProperty().bindBidirectional(this.settingsController.selectedLanguage);
-        this.cointrackingExportCmb.valueProperty().bindBidirectional(this.settingsController.exportCointracingVariante);
+        this.cointrackingExportCmb.valueProperty().bindBidirectional(this.settingsController.exportCointracingVariant);
         this.cointrackingExportCmb.getItems().addAll(this.settingsController.cointrackingExportVariants);
-        this.CSVExportcmb.valueProperty().bindBidirectional(this.settingsController.exportCSVCariante);
+        this.CSVExportcmb.valueProperty().bindBidirectional(this.settingsController.exportCSVVariant);
         this.CSVExportcmb.getItems().addAll(this.settingsController.csvExportVariants);
 
         this.lblDeleteData.setText(this.settingsController.translationList.getValue().get("DeleteLabel").toString());
@@ -155,7 +155,7 @@ public class SettingsView implements Initializable {
 
         this.lblDefaultDataSource.setText(this.settingsController.translationList.getValue().get("DefaultDataUpdate").toString());
         this.cmbDefaultDataSource.getItems().addAll(this.settingsController.defaultUpdateSource);
-        this.cmbDefaultDataSource.valueProperty().bindBidirectional(this.settingsController.selectedDefaulUpdateSource);
+        this.cmbDefaultDataSource.valueProperty().bindBidirectional(this.settingsController.selectedDefaultUpdateSource);
         this.SwitchButton();
     }
 
