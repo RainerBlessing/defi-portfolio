@@ -19,13 +19,23 @@ dependencies {
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
     errorprone "com.google.errorprone:error_prone_core:${errorproneVersion}"
     implementation files('lib/CoinGecko-Java-master.jar')
+    implementation 'com.google.inject:guice:5.1.0'
+    implementation 'com.cathive.fx:fx-guice:8.0.0'
+
+    testImplementation 'org.testng:testng:7.6.0'
 }
 
 sourceSets {
-    main.java.srcDirs = ['src/java']
+//    main.java.srcDirs = ['src/main/java']
+//    test.java.srcDirs =
 }
 
 javafx {
     version = "12"
     modules = ['javafx.controls', 'javafx.fxml']
 }
+
+test {
+    useTestNG()
+}
+mainClassName = "Main"
