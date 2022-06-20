@@ -1,5 +1,6 @@
 package views;
 
+import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Inject;
 import resourceprovider.CssProvider;
 import controllers.SettingsController;
@@ -25,7 +26,8 @@ public class NoAddressesWarningView implements Initializable {
     public Button btnOpenConfig;
     @FXML
     public Label lblText;
-
+    @Inject
+    private GuiceFXMLLoader fxmlLoader;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         lblText.setText(settingsController.translationList.getValue().get("NoAddressFoundGoToConfig").toString());
@@ -42,7 +44,7 @@ public class NoAddressesWarningView implements Initializable {
         this.btnClose();
         if (AddressConfigStage != null) AddressConfigStage.close();
         final SettingsView.Delta dragDelta = new SettingsView.Delta();
-        Parent root = FXMLLoader.load(getClass().getResource("AddAddresses.fxml"));
+        Parent root = fxmlLoader.load(getClass().getResource("AddAddresses.fxml")).getRoot();
         Scene scene = new Scene(root);
         AddressConfigStage = new Stage();
         AddressConfigStage.initStyle(StageStyle.UNDECORATED);

@@ -2,20 +2,15 @@ package services;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import javafx.scene.control.TableColumn;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-import controllers.MainViewController;
 import controllers.SettingsController;
 import controllers.TransactionController;
+import javafx.collections.ObservableList;
+import javafx.scene.control.TableColumn;
 import models.PoolPairModel;
 import models.TransactionModel;
 import views.MainView;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,9 +19,7 @@ import java.util.*;
 @Singleton
 public class ExportService {
     private SettingsController settingsController;
-    final MainViewController mainViewController=null;
     final Delta dragDelta = new Delta();
-    private MainView mainView;
     private TransactionController transactionController;
 
     @Inject
@@ -35,7 +28,7 @@ public class ExportService {
         this.transactionController = transactionController;
     }
 
-    public boolean exportTransactionToExcel(List<TransactionModel> transactions, String exportPath, Locale localeDecimal, String exportSplitter) {
+    public boolean exportTransactionToExcel(List<TransactionModel> transactions, String exportPath, Locale localeDecimal, String exportSplitter,ObservableList<TableColumn<TransactionModel, ?>> columns) {
         File exportFile = new File(exportPath);
         settingsController.lastExportPath = exportFile.getParent();
         settingsController.saveSettings();
@@ -49,7 +42,7 @@ public class ExportService {
         }
         StringBuilder sb = new StringBuilder();
 
-        for (TableColumn column : this.mainViewController.mainView.rawDataTable.getColumns()
+        for (TableColumn column : columns
         ) {
             sb.append(column.getId()).append(settingsController.selectedSeparator.getValue());
         }
@@ -73,7 +66,7 @@ public class ExportService {
         for (TransactionModel transaction : transactions) {
             if (settingsController.exportCSVVariant.getValue().equals("Export selected to CSV")) {
                 sb = new StringBuilder();
-                sb.append(this.mainViewController.transactionController.convertTimeStampToString(transaction.blockTimeProperty.getValue())).append(exportSplitter);
+                sb.append(transactionController.convertTimeStampToString(transaction.blockTimeProperty.getValue())).append(exportSplitter);
                 sb.append(transaction.typeProperty.getValue()).append(exportSplitter);
                 sb.append(String.format(localeDecimal, "%.8f", transaction.cryptoValueProperty.getValue())).append(exportSplitter);
                 sb.append(transaction.cryptoCurrencyProperty.getValue()).append(exportSplitter);
@@ -90,7 +83,7 @@ public class ExportService {
             } else {
                 if ((dateFrom.getTime() / 1000) < transaction.blockTimeProperty.getValue() && ((dateTo.getTime() + 86400000) / 1000) > transaction.blockTimeProperty.getValue()) {
                     sb = new StringBuilder();
-                    sb.append(this.mainViewController.transactionController.convertTimeStampToString(transaction.blockTimeProperty.getValue())).append(exportSplitter);
+                    sb.append(transactionController.convertTimeStampToString(transaction.blockTimeProperty.getValue())).append(exportSplitter);
                     sb.append(transaction.typeProperty.getValue()).append(exportSplitter);
                     sb.append(String.format(localeDecimal, "%.8f", transaction.cryptoValueProperty.getValue())).append(exportSplitter);
                     sb.append(transaction.cryptoCurrencyProperty.getValue()).append(exportSplitter);
@@ -113,7 +106,7 @@ public class ExportService {
 
     }
 
-    public boolean exportTransactionToExcelDaily(List<TransactionModel> transactions, String exportPath, Locale localeDecimal, String exportSplitter) {
+    public boolean exportTransactionToExcelDaily(List<TransactionModel> transactions, String exportPath, Locale localeDecimal, String exportSplitter,ObservableList<TableColumn<TransactionModel, ?>> columns) {
         File exportFile = new File(exportPath);
         settingsController.lastExportPath = exportFile.getParent();
         settingsController.saveSettings();
@@ -127,7 +120,7 @@ public class ExportService {
         }
         StringBuilder sb = new StringBuilder();
 
-        for (TableColumn column : this.mainViewController.mainView.rawDataTable.getColumns()
+        for (TableColumn column : columns
         ) {
             sb.append(column.getId()).append(settingsController.selectedSeparator.getValue());
         }
@@ -151,14 +144,14 @@ public class ExportService {
 
         for (TransactionModel transaction : transactions) {
             if ((dateFrom.getTime() / 1000) < transaction.blockTimeProperty.getValue() && ((dateTo.getTime() + 86400000) / 1000) > transaction.blockTimeProperty.getValue()) {
-                String newDate = this.mainViewController.transactionController.convertTimeStampWithoutTimeToString(transaction.blockTimeProperty.getValue());
+                String newDate = transactionController.convertTimeStampWithoutTimeToString(transaction.blockTimeProperty.getValue());
 
                 if (transaction.typeProperty.getValue().equals("Commission") || transaction.typeProperty.getValue().equals("Rewards")) {
 
                     if ((oldDate.equals("") || oldDate.equals(newDate))) {
-                        String key = this.mainViewController.transactionController.getPoolPairFromId(transaction.poolIDProperty.getValue()) + transaction.cryptoCurrencyProperty.getValue() + transaction.typeProperty.getValue();
+                        String key = transactionController.getPoolPairFromId(transaction.poolIDProperty.getValue()) + transaction.cryptoCurrencyProperty.getValue() + transaction.typeProperty.getValue();
                         if (!exportList.containsKey(key)) {
-                            exportList.put(key, new TransactionModel(transaction.blockTimeProperty.getValue(), transaction.ownerProperty.getValue(), transaction.typeProperty.getValue(), transaction.amountProperty.getValue(), transaction.blockHashProperty.getValue(), transaction.blockHeightProperty.getValue(), transaction.poolIDProperty.getValue(), transaction.txIDProperty.getValue(),transaction.rewardType.getValue(), this.mainViewController.transactionController,settingsController));
+                            exportList.put(key, transactionController.createTransactionModel(transaction.blockTimeProperty.getValue(), transaction.ownerProperty.getValue(), transaction.typeProperty.getValue(), transaction.amountProperty.getValue(), transaction.blockHashProperty.getValue(), transaction.blockHeightProperty.getValue(), transaction.poolIDProperty.getValue(), transaction.txIDProperty.getValue(),transaction.rewardType.getValue()));
                         } else {
                             exportList.get(key).cryptoValueProperty.set(exportList.get(key).cryptoValueProperty.getValue() + transaction.cryptoValueProperty.getValue());
                             exportList.get(key).fiatValueProperty.set(exportList.get(key).fiatValueProperty.getValue() + transaction.fiatValueProperty.getValue());
@@ -167,7 +160,7 @@ public class ExportService {
                         for (HashMap.Entry<String, TransactionModel> entry : exportList.entrySet()) {
 
                             sb = new StringBuilder();
-                            sb.append(this.mainViewController.transactionController.convertTimeStampWithoutTimeToString(entry.getValue().blockTimeProperty.getValue())).append(exportSplitter);
+                            sb.append(transactionController.convertTimeStampWithoutTimeToString(entry.getValue().blockTimeProperty.getValue())).append(exportSplitter);
                             sb.append(entry.getValue().typeProperty.getValue()).append(exportSplitter);
                             sb.append(String.format(localeDecimal, "%.8f", entry.getValue().cryptoValueProperty.getValue())).append(exportSplitter);
                             sb.append(entry.getValue().cryptoCurrencyProperty.getValue()).append(exportSplitter);
@@ -185,14 +178,14 @@ public class ExportService {
                         }
                         exportList = new TreeMap<>();
 
-                        String key = this.mainViewController.transactionController.getPoolPairFromId(transaction.poolIDProperty.getValue()) + transaction.cryptoCurrencyProperty.getValue() + transaction.typeProperty.getValue();
-                        exportList.put(key, new TransactionModel(transaction.blockTimeProperty.getValue(), transaction.ownerProperty.getValue(), transaction.typeProperty.getValue(), transaction.amountProperty.getValue(), transaction.blockHashProperty.getValue(), transaction.blockHeightProperty.getValue(), transaction.poolIDProperty.getValue(), transaction.txIDProperty.getValue(),transaction.rewardType.getValue(), this.mainViewController.transactionController,settingsController));
+                        String key = transactionController.getPoolPairFromId(transaction.poolIDProperty.getValue()) + transaction.cryptoCurrencyProperty.getValue() + transaction.typeProperty.getValue();
+                        exportList.put(key, transactionController.createTransactionModel(transaction.blockTimeProperty.getValue(), transaction.ownerProperty.getValue(), transaction.typeProperty.getValue(), transaction.amountProperty.getValue(), transaction.blockHashProperty.getValue(), transaction.blockHeightProperty.getValue(), transaction.poolIDProperty.getValue(), transaction.txIDProperty.getValue(),transaction.rewardType.getValue()));
 
                     }
 
                 } else {
                     sb = new StringBuilder();
-                    sb.append(this.mainViewController.transactionController.convertTimeStampToString(transaction.blockTimeProperty.getValue())).append(exportSplitter);
+                    sb.append(transactionController.convertTimeStampToString(transaction.blockTimeProperty.getValue())).append(exportSplitter);
                     sb.append(transaction.typeProperty.getValue()).append(exportSplitter);
                     sb.append(String.format(localeDecimal, "%.8f", transaction.cryptoValueProperty.getValue())).append(exportSplitter);
                     sb.append(transaction.cryptoCurrencyProperty.getValue()).append(exportSplitter);
@@ -215,7 +208,7 @@ public class ExportService {
         for (HashMap.Entry<String, TransactionModel> entry : exportList.entrySet()) {
 
             sb = new StringBuilder();
-            sb.append(this.mainViewController.transactionController.convertTimeStampWithoutTimeToString(entry.getValue().blockTimeProperty.getValue())).append(exportSplitter);
+            sb.append(transactionController.convertTimeStampWithoutTimeToString(entry.getValue().blockTimeProperty.getValue())).append(exportSplitter);
             sb.append(entry.getValue().typeProperty.getValue()).append(exportSplitter);
             sb.append(String.format(localeDecimal, "%.8f", entry.getValue().cryptoValueProperty.getValue())).append(exportSplitter);
             sb.append(entry.getValue().cryptoCurrencyProperty.getValue()).append(exportSplitter);
@@ -240,7 +233,8 @@ public class ExportService {
 
     public String[] cointrackingExportVariants = new String[]{"Cumulate All", "Cumulate None", "Cumulate Pool Pair", "Cumulate Rewards and Commisions"};
 
-    public boolean exportTransactionToCointracking(List<TransactionModel> transactions, String exportPath, Locale localeDecimal, String exportSplitter, String filter) {
+    public ExportResult exportTransactionToCointracking(List<TransactionModel> transactions, String exportPath, Locale localeDecimal, String exportSplitter, String filter,ObservableList<TableColumn<TransactionModel, ?>> columns) {
+        boolean showMissingTransactionWindow=false;
         File exportFile = new File(exportPath);
         settingsController.lastExportPath = exportFile.getParent();
         settingsController.saveSettings();
@@ -288,7 +282,7 @@ public class ExportService {
 
                 if (transaction.blockTimeProperty.getValue() * 1000L < ts.getTime()) {
 
-                    String newDate = this.mainViewController.transactionController.convertTimeStampWithoutTimeToString(transaction.blockTimeProperty.getValue());
+                    String newDate = transactionController.convertTimeStampWithoutTimeToString(transaction.blockTimeProperty.getValue());
 
                     if (transaction.typeProperty.getValue().equals("Commission") || transaction.typeProperty.getValue().equals("Rewards")) {
 
@@ -300,18 +294,18 @@ public class ExportService {
                                     key = transaction.cryptoCurrencyProperty.getValue();
                                     break;
                                 case "Cumulate Rewards and Commisions":
-                                    key = this.mainViewController.transactionController.getPoolPairFromId(transaction.poolIDProperty.getValue()) + transaction.cryptoCurrencyProperty.getValue();
+                                    key = transactionController.getPoolPairFromId(transaction.poolIDProperty.getValue()) + transaction.cryptoCurrencyProperty.getValue();
                                     break;
                                 case "Cumulate Pool Pair":
                                     key = transaction.cryptoCurrencyProperty.getValue() + transaction.typeProperty.getValue();
                                     break;
                                 case "Cumulate None":
-                                    key = this.mainViewController.transactionController.getPoolPairFromId(transaction.poolIDProperty.getValue()) + transaction.cryptoCurrencyProperty.getValue() + transaction.typeProperty.getValue();
+                                    key = transactionController.getPoolPairFromId(transaction.poolIDProperty.getValue()) + transaction.cryptoCurrencyProperty.getValue() + transaction.typeProperty.getValue();
                                     break;
                             }
 
                             if (!exportList.containsKey(key)) {
-                                exportList.put(key, new TransactionModel(transaction.blockTimeProperty.getValue(), transaction.ownerProperty.getValue(), transaction.typeProperty.getValue(), transaction.amountProperty.getValue(), transaction.blockHashProperty.getValue(), transaction.blockHeightProperty.getValue(), transaction.poolIDProperty.getValue(), transaction.txIDProperty.getValue(),transaction.rewardType.getValue(), this.mainViewController.transactionController,settingsController));
+                                exportList.put(key, transactionController.createTransactionModel(transaction.blockTimeProperty.getValue(), transaction.ownerProperty.getValue(), transaction.typeProperty.getValue(), transaction.amountProperty.getValue(), transaction.blockHashProperty.getValue(), transaction.blockHeightProperty.getValue(), transaction.poolIDProperty.getValue(), transaction.txIDProperty.getValue(),transaction.rewardType.getValue()));
                             } else {
                                 exportList.get(key).cryptoValueProperty.set(exportList.get(key).cryptoValueProperty.getValue() + transaction.cryptoValueProperty.getValue());
                                 exportList.get(key).fiatValueProperty.set(exportList.get(key).fiatValueProperty.getValue() + transaction.fiatValueProperty.getValue());
@@ -338,13 +332,13 @@ public class ExportService {
                                         sb.append("\"" + "LM Interest Income" + "\"").append(exportSplitter);
                                         break;
                                     case "Cumulate Rewards and Commisions":
-                                        sb.append("\"" + "LM Interest Income (").append(this.mainViewController.transactionController.getPoolPairFromId(entry.getValue().poolIDProperty.getValue())).append(")" + "\"").append(exportSplitter);
+                                        sb.append("\"" + "LM Interest Income (").append(transactionController.getPoolPairFromId(entry.getValue().poolIDProperty.getValue())).append(")" + "\"").append(exportSplitter);
                                         break;
                                     case "Cumulate Pool Pair":
                                         sb.append("\"" + "LM ").append(entry.getValue().typeProperty.getValue()).append("\"").append(exportSplitter);
                                         break;
                                     case "Cumulate None":
-                                        sb.append("\"" + "LM ").append(entry.getValue().typeProperty.getValue()).append(" (").append(this.mainViewController.transactionController.getPoolPairFromId(entry.getValue().poolIDProperty.getValue())).append(")" + "\"").append(exportSplitter);
+                                        sb.append("\"" + "LM ").append(entry.getValue().typeProperty.getValue()).append(" (").append(transactionController.getPoolPairFromId(entry.getValue().poolIDProperty.getValue())).append(")" + "\"").append(exportSplitter);
                                         break;
                                 }
 
@@ -358,24 +352,18 @@ public class ExportService {
                             }
 
                             exportList = new TreeMap<>();
-                            String key = "";
+                            String key = switch (filter) {
+                                case "Cumulate All" -> transaction.cryptoCurrencyProperty.getValue();
+                                case "Cumulate Rewards and Commisions" ->
+                                        transactionController.getPoolPairFromId(transaction.poolIDProperty.getValue()) + transaction.cryptoCurrencyProperty.getValue();
+                                case "Cumulate Pool Pair" ->
+                                        transaction.cryptoCurrencyProperty.getValue() + transaction.typeProperty.getValue();
+                                case "Cumulate None" ->
+                                        transactionController.getPoolPairFromId(transaction.poolIDProperty.getValue()) + transaction.cryptoCurrencyProperty.getValue() + transaction.typeProperty.getValue();
+                                default -> "";
+                            };
 
-                            switch (filter) {
-                                case "Cumulate All":
-                                    key = transaction.cryptoCurrencyProperty.getValue();
-                                    break;
-                                case "Cumulate Rewards and Commisions":
-                                    key = this.mainViewController.transactionController.getPoolPairFromId(transaction.poolIDProperty.getValue()) + transaction.cryptoCurrencyProperty.getValue();
-                                    break;
-                                case "Cumulate Pool Pair":
-                                    key = transaction.cryptoCurrencyProperty.getValue() + transaction.typeProperty.getValue();
-                                    break;
-                                case "Cumulate None":
-                                    key = this.mainViewController.transactionController.getPoolPairFromId(transaction.poolIDProperty.getValue()) + transaction.cryptoCurrencyProperty.getValue() + transaction.typeProperty.getValue();
-                                    break;
-                            }
-
-                            exportList.put(key, new TransactionModel(transaction.blockTimeProperty.getValue(), transaction.ownerProperty.getValue(), transaction.typeProperty.getValue(), transaction.amountProperty.getValue(), transaction.blockHashProperty.getValue(), transaction.blockHeightProperty.getValue(), transaction.poolIDProperty.getValue(), transaction.txIDProperty.getValue(),transaction.rewardType.getValue(), this.mainViewController.transactionController,settingsController));
+                            exportList.put(key, transactionController.createTransactionModel(transaction.blockTimeProperty.getValue(), transaction.ownerProperty.getValue(), transaction.typeProperty.getValue(), transaction.amountProperty.getValue(), transaction.blockHashProperty.getValue(), transaction.blockHeightProperty.getValue(), transaction.poolIDProperty.getValue(), transaction.txIDProperty.getValue(),transaction.rewardType.getValue()));
                         }
 
                     } else {
@@ -802,13 +790,13 @@ public class ExportService {
                         sb.append("\"" + "LM Interest Income" + "\"").append(exportSplitter);
                         break;
                     case "Cumulate Rewards and Commisions":
-                        sb.append("\"" + "LM Interest Income (").append(this.mainViewController.transactionController.getPoolPairFromId(entry.getValue().poolIDProperty.getValue())).append(")" + "\"").append(exportSplitter);
+                        sb.append("\"" + "LM Interest Income (").append(transactionController.getPoolPairFromId(entry.getValue().poolIDProperty.getValue())).append(")" + "\"").append(exportSplitter);
                         break;
                     case "Cumulate Pool Pair":
                         sb.append("\"" + "LM ").append(entry.getValue().typeProperty.getValue()).append("\"").append(exportSplitter);
                         break;
                     case "Cumulate None":
-                        sb.append("\"" + "LM ").append(entry.getValue().typeProperty.getValue()).append(" (").append(this.mainViewController.transactionController.getPoolPairFromId(entry.getValue().poolIDProperty.getValue())).append(")" + "\"").append(exportSplitter);
+                        sb.append("\"" + "LM ").append(entry.getValue().typeProperty.getValue()).append(" (").append(transactionController.getPoolPairFromId(entry.getValue().poolIDProperty.getValue())).append(")" + "\"").append(exportSplitter);
                         break;
                 }
 
@@ -838,7 +826,7 @@ public class ExportService {
 
                 StringBuilder sbIncomplete = new StringBuilder();
 
-                for (TableColumn column : this.mainViewController.mainView.rawDataTable.getColumns()
+                for (TableColumn column : columns
                 ) {
                     sbIncomplete.append(column.getId()).append(settingsController.selectedSeparator.getValue());
                 }
@@ -849,7 +837,7 @@ public class ExportService {
 
                 for (TransactionModel transaction : incompleteTransactions) {
                     sbIncomplete = new StringBuilder();
-                    sbIncomplete.append(this.mainViewController.transactionController.convertTimeStampToString(transaction.blockTimeProperty.getValue())).append(exportSplitter);
+                    sbIncomplete.append(transactionController.convertTimeStampToString(transaction.blockTimeProperty.getValue())).append(exportSplitter);
                     sbIncomplete.append(transaction.typeProperty.getValue()).append(exportSplitter);
                     sbIncomplete.append(String.format(localeDecimal, "%.8f", transaction.cryptoValueProperty.getValue())).append(exportSplitter);
                     sbIncomplete.append(transaction.cryptoCurrencyProperty.getValue()).append(exportSplitter);
@@ -868,7 +856,7 @@ public class ExportService {
 
                 // Disclaimer anzeigen
                 if (settingsController.showMissingTransaction) {
-                    mainView.showMissingTransactionWindow();
+                    showMissingTransactionWindow=true;
                 }
             }else{
                 File incompleteFile = new File(settingsController.INCOMPLETE_FILE_PATH);
@@ -876,9 +864,18 @@ public class ExportService {
             }
 
             settingsController.checkCointracking = true;
-            return true;
+            return new ExportResult(showMissingTransactionWindow,true);
         }
 
+    public class ExportResult {
+        public ExportResult(boolean showMissingTransactionWindow, boolean result) {
+            this.showMissingTransactionWindow = showMissingTransactionWindow;
+            this.result=result;
+        }
+
+        public boolean showMissingTransactionWindow;
+        public boolean result;
+    }
 
         public String Type2CointrackingType (String type){
             switch (type) {
@@ -909,9 +906,11 @@ public class ExportService {
                 if (settingsController.selectedDecimal.getValue().equals(".")) {
                     localeDecimal = Locale.US;
                 }
+                ObservableList<TableColumn<PoolPairModel, ?>> columns = mainView.plotTable.getColumns();
+
                 switch (mainView.tabPane.getSelectionModel().getSelectedItem().getId()) {
                     case "Portfolio":
-                        sb.append((mainView.plotTable.getColumns().get(0).getId() + "," + mainView.plotTable.getColumns().get(2).getId() + "," + mainView.plotTable.getColumns().get(2).getId() + "," + mainView.plotTable.getColumns().get(9).getId()).replace(",", settingsController.selectedSeparator.getValue())).append("\n");
+                        sb.append((columns.get(0).getId() + "," + columns.get(2).getId() + "," + columns.get(2).getId() + "," + columns.get(9).getId()).replace(",", settingsController.selectedSeparator.getValue())).append("\n");
                         for (PoolPairModel poolPairModel : poolPairModelList) {
                             sb.append(poolPairModel.getBlockTime().getValue()).append(settingsController.selectedSeparator.getValue());
                             sb.append(poolPairModel.getPoolPair().getValue().replace(",","")).append(settingsController.selectedSeparator.getValue());
@@ -920,7 +919,7 @@ public class ExportService {
                         }
                         break;
                     case "Overview":
-                        sb.append((mainView.plotTable.getColumns().get(0).getId() + "," + mainView.plotTable.getColumns().get(1).getId() + "," + mainView.plotTable.getColumns().get(2).getId() + "," + mainView.plotTable.getColumns().get(3).getId() + "," + mainView.plotTable.getColumns().get(4).getId() + "," + mainView.plotTable.getColumns().get(5).getId() + "," + mainView.plotTable.getColumns().get(6).getId() + "," + mainView.plotTable.getColumns().get(7).getId() + "," + mainView.plotTable.getColumns().get(8).getId()).replace(",", settingsController.selectedSeparator.getValue())).append("\n");
+                        sb.append((columns.get(0).getId() + "," + columns.get(1).getId() + "," + columns.get(2).getId() + "," + columns.get(3).getId() + "," + columns.get(4).getId() + "," + columns.get(5).getId() + "," + columns.get(6).getId() + "," + columns.get(7).getId() + "," + columns.get(8).getId()).replace(",", settingsController.selectedSeparator.getValue())).append("\n");
                         for (PoolPairModel poolPairModel : poolPairModelList) {
                             sb.append(poolPairModel.getBlockTime().getValue()).append(settingsController.selectedSeparator.getValue());
                             sb.append(poolPairModel.getPoolPair().getValue()).append(settingsController.selectedSeparator.getValue());
@@ -935,7 +934,7 @@ public class ExportService {
                         }
                         break;
                     case "Commissions":
-                        sb.append((mainView.plotTable.getColumns().get(0).getId() + "," + mainView.plotTable.getColumns().get(1).getId() + "," + mainView.plotTable.getColumns().get(2).getId() + "," + mainView.plotTable.getColumns().get(3).getId() + "," + mainView.plotTable.getColumns().get(4).getId() + "," + mainView.plotTable.getColumns().get(5).getId() + "," + mainView.plotTable.getColumns().get(8).getId()).replace(",", settingsController.selectedSeparator.getValue())).append("\n");
+                        sb.append((columns.get(0).getId() + "," + columns.get(1).getId() + "," + columns.get(2).getId() + "," + columns.get(3).getId() + "," + columns.get(4).getId() + "," + columns.get(5).getId() + "," + columns.get(8).getId()).replace(",", settingsController.selectedSeparator.getValue())).append("\n");
                         for (PoolPairModel poolPairModel : poolPairModelList) {
                             sb.append(poolPairModel.getBlockTime().getValue()).append(settingsController.selectedSeparator.getValue());
                             sb.append(poolPairModel.getPoolPair().getValue()).append(settingsController.selectedSeparator.getValue());
@@ -948,7 +947,7 @@ public class ExportService {
                         }
                         break;
                     case "Rewards":
-                        sb.append((mainView.plotTable.getColumns().get(0).getId() + "," + mainView.plotTable.getColumns().get(1).getId() + "," + mainView.plotTable.getColumns().get(2).getId() + "," + mainView.plotTable.getColumns().get(3).getId()).replace(",", settingsController.selectedSeparator.getValue())).append("\n");
+                        sb.append((columns.get(0).getId() + "," + columns.get(1).getId() + "," + columns.get(2).getId() + "," + columns.get(3).getId()).replace(",", settingsController.selectedSeparator.getValue())).append("\n");
                         for (PoolPairModel poolPairModel : poolPairModelList) {
                             sb.append(poolPairModel.getBlockTime().getValue()).append(settingsController.selectedSeparator.getValue());
                             sb.append(poolPairModel.getPoolPair().getValue()).append(settingsController.selectedSeparator.getValue());
@@ -969,38 +968,7 @@ public class ExportService {
             }
         }
 
-    public String getIdFromPoolPair(String poolID) {
-        String pool= "-";
-
-        try {
-            HttpURLConnection connection = (HttpURLConnection) new URL("https://ocean.defichain.com/v0/mainnet/tokens?size=1000").openConnection();
-            String jsonText = "";
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-                jsonText = br.readLine();
-            } catch (Exception ex) {
-                settingsController.logger.warning("Exception occurred: " + ex);
-            }
-            JSONObject obj = (JSONObject) JSONValue.parse(jsonText);
-            if (obj.get("data") != null) {
-                JSONArray data = (JSONArray) obj.get("data");
-
-                for (Object token : data) {
-                    JSONObject jsonToken = (JSONObject) token;
-                    if (jsonToken.get("symbol").toString().contains(poolID)) {
-                        return pool = jsonToken.get("id").toString();
-                    }
-
-                }
-            }
-        } catch (IOException e) {
-            settingsController.logger.warning("Exception occurred: " + e);
-        }
-        return pool;
-    }
-
         static class Delta {
             double x, y;
         }
-
-
     }

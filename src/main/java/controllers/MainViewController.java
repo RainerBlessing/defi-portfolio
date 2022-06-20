@@ -1,14 +1,15 @@
 package controllers;
 
+import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.sun.javafx.charts.Legend;
-import resourceprovider.CssProvider;
-import views.MainView;
-import javafx.beans.property.*;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -21,7 +22,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import models.*;
+import resourceprovider.CssProvider;
+import resourceprovider.Utilities;
 import services.ExportService;
+import views.MainView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -58,6 +62,12 @@ public class MainViewController {
     public boolean updateSingleton = true;
     final Delta dragDelta = new Delta();
     public Process defidProcess;
+
+    @Inject
+    private GuiceFXMLLoader fxmlLoader;
+
+    @Inject
+    private Utilities utilities;
 
     @Inject
     public MainViewController(SettingsController settingsController, CoinPriceController coinPriceController, TransactionController transactionController, ExportService exportService) {
@@ -291,9 +301,7 @@ public class MainViewController {
                     Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + settingsController.DEFI_PORTFOLIO_HOME + "updatePortfolio");
                     break;
                 case "win":
-                    String path = System.getProperty("user.dir")+"\\defi-portfolio\\src\\portfolio\\libraries\\updatePortfolio.exe";
-                    String[] commands = {"cmd", "/c", "start", "\"Update Portfolio\"", path,settingsController.DEFI_PORTFOLIO_HOME,settingsController.PORTFOLIO_CONFIG_FILE_PATH};
-                    defidProcess = Runtime.getRuntime().exec(commands);
+                    defidProcess = utilities.updatePortfolio();
                     break;
                 case "linux":
                     String pathLinux = System.getProperty("user.dir")+"/defi-portfolio/src/portfolio/libraries/updatePortfolio ";
@@ -347,7 +355,7 @@ public class MainViewController {
         } catch (IOException e) {
             settingsController.logger.warning("Could not write to update.portfolio."); }
 
-        this.transactionController.updateTransactionList(this.transactionController.getLocalTransactionList());
+        transactionController.updateTransactionList(this.transactionController.getLocalTransactionList());
         int localBlockCount = this.transactionController.getLocalBlockCount();
         int blockCount = Integer.parseInt(this.transactionController.getBlockCount());
         this.strCurrentBlockLocally.set(Integer.toString(localBlockCount));
@@ -460,13 +468,13 @@ public class MainViewController {
             localeDecimal = Locale.US;
         }
         for (BalanceModel balanceModel : this.transactionController.getBalanceList()) {
-           // if ((balanceModel.getToken1NameValue().equals("DUSD") || balanceModel.getToken2NameValue().equals("DUSD")) &&  !balanceModel.getToken2NameValue().equals("-")) {
-           //     double factor = 1.0;
+            if ((balanceModel.getToken1NameValue().equals("DUSD") || balanceModel.getToken2NameValue().equals("DUSD")) &&  !balanceModel.getToken2NameValue().equals("-")) {
+                double factor = 1.0;
 
-             //   if(!settingsController.selectedFiatCurrency.getValue().contains("USD")) factor = this.transactionController.getCurrencyFactor();
-             //   balanceModel.setFiat1(factor*balanceModel.getCrypto1Value()*Double.parseDouble(this.transactionController.getPrice(balanceModel.getToken1NameValue()+"-"+balanceModel.getToken2NameValue())));
-             //   balanceModel.setFiat2(factor*balanceModel.getCrypto2Value());
-            //}
+                if(!settingsController.selectedFiatCurrency.getValue().contains("USD")) factor = this.transactionController.getCurrencyFactor();
+                balanceModel.setFiat1(factor*balanceModel.getCrypto1Value()*Double.parseDouble(this.transactionController.getPrice(balanceModel.getToken1NameValue()+"-"+balanceModel.getToken2NameValue())));
+                balanceModel.setFiat2(factor*balanceModel.getCrypto2Value());
+            }
 
             if (balanceModel.getToken2NameValue().equals("-")) {
                 pieChartData.add(new PieChart.Data(balanceModel.getToken1NameValue(), balanceModel.getFiat1Value()));
@@ -970,32 +978,7 @@ public class MainViewController {
         fileChooser.setInitialFileName(exportPath);
         File selectedFile = fileChooser.showSaveDialog(new Stage());
 
-        if (selectedFile != null) {
-            boolean success;
-            if (filter.equals("DAILY")) {
-                success = this.expService.exportTransactionToExcelDaily(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeparator.getValue());
-            } else if (filter.equals("")) {
-                success = this.expService.exportTransactionToExcel(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeparator.getValue());
-            } else {
-                success = this.expService.exportTransactionToCointracking(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeparator.getValue(), settingsController.exportCointracingVariant.getValue());
-            }
-
-            if (success) {
-                this.settingsController.lastExportPath = selectedFile.getParent();
-                this.settingsController.saveSettings();
-                try {
-                    this.showExportSuccessfullWindow();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                try {
-                    this.showExportErrorWindow();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        extracted(list, filter, localeDecimal, selectedFile);
     }
 
     public void exportTransactionToExcel(TableView<TransactionModel> rawDataTable) {
@@ -1030,14 +1013,23 @@ public class MainViewController {
         fileChooser.setInitialFileName(dateFormat.format(date) + "_Portfolio_Export_RawData");
         File selectedFile = fileChooser.showSaveDialog(new Stage());
 
+        extracted(list, filter, localeDecimal, selectedFile);
+    }
+
+    private void extracted(List<TransactionModel> list, String filter, Locale localeDecimal, File selectedFile) {
         if (selectedFile != null) {
             boolean success;
             if (filter.equals("DAILY")) {
-                success = this.expService.exportTransactionToExcelDaily(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeparator.getValue());
+                success = this.expService.exportTransactionToExcelDaily(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeparator.getValue(),mainView.rawDataTable.getColumns());
             } else if (filter.equals("")) {
-                success = this.expService.exportTransactionToExcel(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeparator.getValue());
+                success = this.expService.exportTransactionToExcel(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeparator.getValue(),mainView.rawDataTable.getColumns());
             } else {
-                success = this.expService.exportTransactionToCointracking(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeparator.getValue(), settingsController.exportCointracingVariant.getValue());
+                ExportService.ExportResult result = this.expService.exportTransactionToCointracking(list, selectedFile.getPath(), localeDecimal, this.settingsController.selectedSeparator.getValue(), settingsController.exportCointracingVariant.getValue(),mainView.rawDataTable.getColumns());
+                success = result.result;
+                if(result.showMissingTransactionWindow){
+                    mainView.showMissingTransactionWindow();
+                }
+
             }
 
             if (success) {
@@ -1095,7 +1087,7 @@ public class MainViewController {
 
     public void showExportSuccessfullWindow() throws IOException {
         Parent rootExportFinished = null;
-        rootExportFinished = FXMLLoader.load(getClass().getResource("../views/ExportSuccessfullView.fxml"));
+        rootExportFinished = fxmlLoader.load(getClass().getResource("views/ExportSuccessfullView.fxml")).getRoot();
         Scene sceneExportFinished = new Scene(rootExportFinished);
         Stage stageExportFinished = new Stage();
         stageExportFinished.setScene(sceneExportFinished);
@@ -1120,7 +1112,7 @@ public class MainViewController {
     }
     public void showExportErrorWindow() throws IOException {
         Parent rootExportFinished = null;
-        rootExportFinished = FXMLLoader.load(getClass().getResource("../views/ExportErrorView.fxml"));
+        rootExportFinished = fxmlLoader.load(getClass().getResource("views/ExportErrorView.fxml")).getRoot();
         Scene sceneExportFinished = new Scene(rootExportFinished);
         Stage stageExportFinished = new Stage();
         stageExportFinished.setScene(sceneExportFinished);

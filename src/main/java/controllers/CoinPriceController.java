@@ -13,9 +13,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 
 @Singleton
 public class CoinPriceController {
@@ -26,11 +24,9 @@ public class CoinPriceController {
     final String strCoinPriceData;
     final String strStockPriceData;
     public TreeMap<String, TreeMap<Long, Double>> stockPriceMap = new TreeMap<>();
-    private TransactionController transactionController;
 
     @Inject
-        public CoinPriceController(SettingsController settingsController, TransactionController transactionController) {
-        this.transactionController = transactionController;
+        public CoinPriceController(SettingsController settingsController) {
         this.settingsController = settingsController;
 
         strCoinPriceData = settingsController.DEFI_PORTFOLIO_HOME + settingsController.strCoinPriceData;
@@ -98,7 +94,54 @@ public class CoinPriceController {
 
 
     }
+    public String getDate(String blockTime, String intervall) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(Long.parseLong(blockTime) * 1000L);
+        cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH) + 1;
+        int week = cal.get(Calendar.WEEK_OF_YEAR);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        String date = "";
 
+        if (settingsController.translationList.getValue().get("Daily").equals(intervall) | intervall.equals("Daily")) {
+            String monthAdapted = Integer.toString(month);
+            if (month < 10) {
+                monthAdapted = "0" + month;
+            }
+            if (day < 10) {
+                date = year + "-" + monthAdapted + "-0" + day;
+            } else {
+                date = year + "-" + monthAdapted + "-" + day;
+            }
+        }
+
+        if (settingsController.translationList.getValue().get("Weekly").equals(intervall) | intervall.equals("Weekly")) {
+            int correct = 0;
+            if (month == 1 && (day == 1 || day == 2 || day == 3)) {
+                correct = 1;
+            }
+            if (week < 10) {
+                date = year - correct + "-0" + week;
+            } else {
+                date = year - correct + "-" + week;
+            }
+        }
+
+        if (settingsController.translationList.getValue().get("Monthly").equals(intervall) | intervall.equals("Monthly")) {
+            if (month < 10) {
+                date = year + "-0" + month;
+            } else {
+                date = year + "-" + month;
+            }
+        }
+
+        if (settingsController.translationList.getValue().get("Yearly").equals(intervall) | intervall.equals("Yearly")) {
+
+            date = Integer.toString(year);
+        }
+        return date;
+    }
     public void updateCoinPriceData() {
 
         CoinPriceModel coinPrice = getCoinPriceLocal(this.strCoinPriceData);
@@ -106,7 +149,7 @@ public class CoinPriceController {
         long currentTimeStamp = new Timestamp(System.currentTimeMillis()).getTime() / 1000L;
         try {
 
-            if (!transactionController.getDate(Long.toString(currentTimeStamp), "Daily").equals(transactionController.getDate(coinPrice.lastTimeStamp, "Daily"))) {
+            if (!getDate(Long.toString(currentTimeStamp), "Daily").equals(getDate(coinPrice.lastTimeStamp, "Daily"))) {
 
                 if (client.getCoinMarketChartRangeById("defichain", "eur", coinPrice.lastTimeStamp, Long.toString(currentTimeStamp)).getPrices().size() > 0) {
 

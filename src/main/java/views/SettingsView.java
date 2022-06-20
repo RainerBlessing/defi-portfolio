@@ -1,5 +1,6 @@
 package views;
 
+import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Inject;
 import controllers.MainViewController;
 import controllers.SettingsController;
@@ -32,10 +33,6 @@ import java.nio.file.Files;
 import java.util.ResourceBundle;
 
 public class SettingsView implements Initializable {
-    @Inject
-    private SettingsController settingsController;
-    @Inject
-    private MainViewController mainViewController;
     public Button btnSaveAndApply;
     public Label labelLanguage;
     public Label CSV;
@@ -70,13 +67,14 @@ public class SettingsView implements Initializable {
     public Button btnDeleteData;
     @FXML
     private ComboBox<String> cmbLanguage, cmbPrefCurrency, cmbDecSeperator, cmbCSVSeperator, cmbPrefferedStyle, dataSourceCmb,cmbDefaultDataSource,cointrackingExportCmb, CSVExportcmb;
+    @Inject
     private TransactionController transactionController;
-
-    public SettingsView(SettingsController settingsController, MainViewController mainViewController, TransactionController transactionController) {
-        this.settingsController = settingsController;
-        this.mainViewController = mainViewController;
-        this.transactionController = transactionController;
-    }
+    @Inject
+    private SettingsController settingsController;
+    @Inject
+    private MainViewController mainViewController;
+    @Inject
+    private GuiceFXMLLoader fxmlLoader;
 
     public void btnSaveAndApplyPressed() {
         this.settingsController.saveSettings();
@@ -283,7 +281,7 @@ public class SettingsView implements Initializable {
     public void btnOpenAdressConfig() throws IOException {
         if (AddressConfigStage != null) AddressConfigStage.close();
         final Delta dragDelta = new Delta();
-        Parent root = FXMLLoader.load(getClass().getResource("AddAddresses.fxml"));
+        Parent root = fxmlLoader.load(getClass().getResource("AddAddresses.fxml")).getRoot();
         Scene scene = new Scene(root);
         AddressConfigStage = new Stage();
         AddressConfigStage.initStyle(StageStyle.UNDECORATED);

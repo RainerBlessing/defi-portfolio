@@ -23,6 +23,7 @@ dependencies {
     implementation 'com.cathive.fx:fx-guice:8.0.0'
 
     testImplementation 'org.testng:testng:7.6.0'
+    testImplementation 'org.mockito:mockito-all:1.10.19'
 }
 
 sourceSets {

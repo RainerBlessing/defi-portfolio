@@ -24,10 +24,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class AddAdressView implements Initializable {
-    @Inject
-    private SettingsController settingsController;
-    @Inject
-    private MainViewController mainViewController;
     public Button btnAddAddress;
     public TextField txtUserAddress;
     public Label lblAddress;
@@ -45,7 +41,10 @@ public class AddAdressView implements Initializable {
             FXCollections.observableArrayList();
     @Inject
     private TransactionController transactionController;
-
+    @Inject
+    private SettingsController settingsController;
+    @Inject
+    private MainViewController mainViewController;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.loadAddresses();

@@ -1,5 +1,8 @@
 package views;
 
+import com.cathive.fx.guice.GuiceFXMLLoader;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import resourceprovider.CssProvider;
 import controllers.SettingsController;
 import controllers.TransactionController;
@@ -14,17 +17,19 @@ import javafx.stage.StageStyle;
 
 import java.io.IOException;
 
+@Singleton
 public class ImportDataView {
-    public static final String CSS_DIRECTORY = "src/main/resources/styles/";
     private SettingsController settingsController;
+    private TransactionController transactionController;
     @FXML
     public Button btnUpdateData,btnCakeCSV,btnWalletCSV,btnClose;
     @FXML
     public CheckBox cmbSaveDefault;
     public Stage NoAddressesWarningView;
     public Stage AddressConfigStage;
-    private TransactionController transactionController;
-
+    @Inject
+    private GuiceFXMLLoader fxmlLoader;
+    @Inject
     public ImportDataView(SettingsController settingsController, TransactionController transactionController) {
         this.settingsController = settingsController;
         this.transactionController = transactionController;
@@ -39,7 +44,7 @@ public class ImportDataView {
             Parent root = null;
             final Delta dragDelta = new Delta();
             try {
-                root = FXMLLoader.load(getClass().getResource("NoAddressesWarningView.fxml"));
+                root = fxmlLoader.load(getClass().getResource("NoAddressesWarningView.fxml")).getRoot();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -90,7 +95,7 @@ public class ImportDataView {
     public void btnOpenAdressConfig() throws IOException {
         if (AddressConfigStage != null) AddressConfigStage.close();
         final SettingsView.Delta dragDelta = new SettingsView.Delta();
-        Parent root = FXMLLoader.load(getClass().getResource("AddAddresses.fxml"));
+        Parent root = fxmlLoader.load(getClass().getResource("AddAddresses.fxml")).getRoot();
         Scene scene = new Scene(root);
         AddressConfigStage = new Stage();
         AddressConfigStage.initStyle(StageStyle.UNDECORATED);
