@@ -41,4 +41,10 @@ test {
     useTestNG()
 //    suites 'src/test/resources/testng.xml'
 }
+
+tasks.withType(JavaCompile).configureEach {
+    options.errorprone.excludedPaths = ".*/controllers/.*|.*/models/.*|.*/provider/.*|.*/resourceprovider/.*|.*/services/.*|.*/views/.*|.*/AppModule.java|.*/Main.java"
+}
+
+//noinspection GroovyUnusedAssignment
 mainClassName = "Main"
