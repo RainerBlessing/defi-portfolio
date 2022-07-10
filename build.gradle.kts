@@ -1,10 +1,12 @@
 import net.ltgt.gradle.errorprone.errorprone
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     val kotlinVersion = "1.6.0"
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
         classpath(kotlin("gradle-plugin", version = "1.6.21"))
+        classpath("info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.7.4")
     }
 }
 
@@ -27,6 +29,8 @@ plugins {
 
     kotlin("jvm") version "1.6.10"
     id("org.jetbrains.compose") version "1.2.0-alpha01-dev686"
+
+    id("info.solidsoft.pitest") version "1.7.4"
 }
 
 dependencies {
@@ -64,5 +68,15 @@ tasks.withType<JavaCompile>().configureEach  {
 compose.desktop {
     application {
         mainClass = "org.defichain.portfolio.MainKt"
+    }
+}
+
+configure<info.solidsoft.gradle.pitest.PitestPluginExtension>  {
+    targetClasses.set(setOf("org.defichain.portfolio.*"))
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = "15"
     }
 }
