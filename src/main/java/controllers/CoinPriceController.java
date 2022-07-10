@@ -104,7 +104,7 @@ public class CoinPriceController {
         int day = cal.get(Calendar.DAY_OF_MONTH);
         String date = "";
 
-        if (settingsController.translationList.getValue().get("Daily").equals(intervall) | intervall.equals("Daily")) {
+        if (settingsController.getTranslationValue("Daily").equals(intervall) | intervall.equals("Daily")) {
             String monthAdapted = Integer.toString(month);
             if (month < 10) {
                 monthAdapted = "0" + month;
@@ -116,7 +116,7 @@ public class CoinPriceController {
             }
         }
 
-        if (settingsController.translationList.getValue().get("Weekly").equals(intervall) | intervall.equals("Weekly")) {
+        if (settingsController.getTranslationValue("Weekly").equals(intervall) | intervall.equals("Weekly")) {
             int correct = 0;
             if (month == 1 && (day == 1 || day == 2 || day == 3)) {
                 correct = 1;
@@ -128,7 +128,7 @@ public class CoinPriceController {
             }
         }
 
-        if (settingsController.translationList.getValue().get("Monthly").equals(intervall) | intervall.equals("Monthly")) {
+        if (settingsController.getTranslationValue("Monthly").equals(intervall) | intervall.equals("Monthly")) {
             if (month < 10) {
                 date = year + "-0" + month;
             } else {
@@ -136,7 +136,7 @@ public class CoinPriceController {
             }
         }
 
-        if (settingsController.translationList.getValue().get("Yearly").equals(intervall) | intervall.equals("Yearly")) {
+        if (settingsController.getTranslationValue("Yearly").equals(intervall) | intervall.equals("Yearly")) {
 
             date = Integer.toString(year);
         }

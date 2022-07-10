@@ -109,7 +109,7 @@ public class ImportDataView {
             AddressConfigStage.setY(mouseEvent.getScreenY() + dragDelta.y);
         });
         //AddressConfigStage.getIcons().add(new Image(new File(System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/icons/settings.png").toURI().toString()));
-        //AddressConfigStage.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Settings").toString());
+        //AddressConfigStage.setTitle(this.mainViewController.settingsController.getTranslationValue("Settings").toString());
         AddressConfigStage.setScene(scene);
 
 //        ChangeListener<Number> widthListener = (observable, oldValue, newValue) -> {

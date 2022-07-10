@@ -31,9 +31,9 @@ public class DisclaimerView implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        lblDisclaimer.setText(settingsController.translationList.getValue().get("Disclaim").toString());
-        hCheckBox.setText(settingsController.translationList.getValue().get("DisclaimCheck").toString());
-        btnClose.setText(settingsController.translationList.getValue().get("Close").toString());
+        lblDisclaimer.setText(settingsController.getTranslationValue("Disclaim").toString());
+        hCheckBox.setText(settingsController.getTranslationValue("DisclaimCheck").toString());
+        btnClose.setText(settingsController.getTranslationValue("Close").toString());
     }
 
     public void btnClose() {

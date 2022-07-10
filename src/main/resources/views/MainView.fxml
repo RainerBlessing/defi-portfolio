@@ -31,7 +31,7 @@
                 <RowConstraints maxHeight="46.0" minHeight="10.0" prefHeight="36.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <Button fx:id="btnRawData" alignment="CENTER" cache="true" mnemonicParsing="false" onAction="#btnRawDataPressed" prefHeight="90.0" prefWidth="191.0" text="Raw Data" GridPane.rowIndex="1">
+                <Button fx:id="btnRawData" alignment="CENTER" cache="true" mnemonicParsing="false" onAction="#btnRawDataPressed" prefHeight="90.0" prefWidth="191.0" text="%mainView.btnRawData" GridPane.rowIndex="1">
                     <cursor>
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
@@ -47,7 +47,7 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                     </GridPane.margin>
                 </Button>
-                <Button fx:id="btnAnalyse" alignment="CENTER" mnemonicParsing="false" onAction="#btnAnalysePressed" prefHeight="90.0" prefWidth="191.0" text="Analyse Data" GridPane.rowIndex="2">
+                <Button fx:id="btnAnalyse" alignment="CENTER" mnemonicParsing="false" onAction="#btnAnalysePressed" prefHeight="90.0" prefWidth="191.0" text="%mainView.btnAnalyse" GridPane.rowIndex="2">
                     <cursor>
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
@@ -63,7 +63,7 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                     </GridPane.margin>
                 </Button>
-                <Button fx:id="btnSettings" alignment="CENTER" layoutX="15.0" layoutY="133.0" mnemonicParsing="false" onAction="#openSettingPressed" prefHeight="90.0" prefWidth="191.0" text="Settings" GridPane.rowIndex="3">
+                <Button fx:id="btnSettings" alignment="CENTER" layoutX="15.0" layoutY="133.0" mnemonicParsing="false" onAction="#openSettingPressed" prefHeight="90.0" prefWidth="191.0" text="%mainView.btnSettings" GridPane.rowIndex="3">
                     <cursor>
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
@@ -81,7 +81,7 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                     </GridPane.margin>
                 </Button>
-                <Button fx:id="btnHelp" alignment="CENTER" layoutX="10.0" layoutY="225.0" mnemonicParsing="false" onAction="#helpPressed" prefHeight="90.0" prefWidth="191.0" text="Help" GridPane.rowIndex="4">
+                <Button fx:id="btnHelp" alignment="CENTER" layoutX="10.0" layoutY="225.0" mnemonicParsing="false" onAction="#helpPressed" prefHeight="90.0" prefWidth="191.0" text="%mainView.btnHelp" GridPane.rowIndex="4">
                     <cursor>
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
@@ -99,7 +99,7 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                     </GridPane.margin>
                 </Button>
-                <Button fx:id="btnDonate" alignment="CENTER" layoutX="15.0" layoutY="203.0" mnemonicParsing="false" onAction="#openAccountInformation" prefHeight="90.0" prefWidth="191.0" text="Donate" GridPane.rowIndex="5">
+                <Button fx:id="btnDonate" alignment="CENTER" layoutX="15.0" layoutY="203.0" mnemonicParsing="false" onAction="#openAccountInformation" prefHeight="90.0" prefWidth="191.0" text="%mainView.btnDonate" GridPane.rowIndex="5">
                     <cursor>
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
@@ -117,7 +117,7 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                     </GridPane.margin>
                 </Button>
-                <Button fx:id="btnBuyDFI" alignment="CENTER" graphicTextGap="6.0" layoutX="15.0" layoutY="203.0" mnemonicParsing="false" onAction="#openDFXHomepage" prefHeight="90.0" prefWidth="191.0" text="Buy DFI" GridPane.rowIndex="6">
+                <Button fx:id="btnBuyDFI" alignment="CENTER" graphicTextGap="6.0" layoutX="15.0" layoutY="203.0" mnemonicParsing="false" onAction="#openDFXHomepage" prefHeight="90.0" prefWidth="191.0" text="%mainView.btnBuyDFI" GridPane.rowIndex="6">
                     <cursor>
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
@@ -135,7 +135,7 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                     </GridPane.margin>
                 </Button>
-                <Button fx:id="btnConnect" alignment="CENTER" graphicTextGap="6.0" layoutX="15.0" layoutY="203.0" mnemonicParsing="false" onAction="#btnOpenAdressConfig" prefHeight="90.0" prefWidth="191.0" text="Addressen Manager" GridPane.rowIndex="7">
+                <Button fx:id="btnConnect" alignment="CENTER" graphicTextGap="6.0" layoutX="15.0" layoutY="203.0" mnemonicParsing="false" onAction="#btnOpenAdressConfig" prefHeight="90.0" prefWidth="191.0" text="%mainView.btnAddresses" GridPane.rowIndex="7">
                     <cursor>
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
@@ -154,7 +154,7 @@
                     </GridPane.margin>
                 </Button>
 
-                <Button fx:id="btnUpdateDatabase" alignment="CENTER" cache="true" mnemonicParsing="false" prefHeight="90.0" prefWidth="191.0" text="Update Data" GridPane.rowIndex="8">
+                <Button fx:id="btnUpdateDatabase" alignment="CENTER" cache="true" mnemonicParsing="false" prefHeight="90.0" prefWidth="191.0" text="%mainView.btnUpdateData" GridPane.rowIndex="8">
                     <cursor>
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
@@ -173,19 +173,19 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                     </GridPane.margin>
                 </Button>
-                <Label id="strCurrentBlockLocally" fx:id="CurrentBlock" alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="225.0" text="Current Block locally" GridPane.rowIndex="9" />
+                <Label id="strCurrentBlockLocally" fx:id="CurrentBlock" alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="225.0" text="%mainView.lblCurrentBlockLocally" GridPane.rowIndex="9" />
                 <Label fx:id="strCurrentBlockLocally" text="5600" GridPane.rowIndex="10">
                     <font>
                         <Font name="System Bold" size="12.0" />
                     </font>
                 </Label>
-                <Label id="strCurrentBlockOnChain" fx:id="CurrentBlockChain" alignment="CENTER" text="Current Block Blockchain" GridPane.rowIndex="11" />
+                <Label id="strCurrentBlockOnChain" fx:id="CurrentBlockChain" alignment="CENTER" text="%mainView.lblCurrentBlockBlockchain" GridPane.rowIndex="11" />
                 <Label fx:id="strLastUpdate" text="5600" GridPane.rowIndex="14">
                     <font>
                         <Font name="System Bold" size="12.0" />
                     </font>
                 </Label>
-                <Label id="strCurrentBlockOnChain" fx:id="LastUpdate" text="Last update" GridPane.rowIndex="13" />
+                <Label id="strCurrentBlockOnChain" fx:id="LastUpdate" text="%mainView.lblLastUpdate" GridPane.rowIndex="13" />
                 <Label fx:id="strCurrentBlockOnBlockchain" text="5600" GridPane.rowIndex="12">
                     <font>
                         <Font name="System Bold" size="12.0" />
@@ -231,7 +231,7 @@
             <SplitPane dividerPositions="0.5702167766258247" prefHeight="639.0" prefWidth="1063.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="607.0" prefWidth="602.0">
                     <TabPane fx:id="tabPane" layoutY="-2.0" prefHeight="639.0" prefWidth="602.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0">
-                        <Tab fx:id="Portfolio" text="Portfolio">
+                        <Tab fx:id="Portfolio" text="%mainView.tabPortfolio">
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="483.0" prefWidth="628.0">
                            <SplitPane dividerPositions="0.3005" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -296,7 +296,7 @@
                                 </AnchorPane>
                             </content>
                         </Tab>
-                        <Tab fx:id="Rewards" text="Rewards">
+                        <Tab fx:id="Rewards" text="%mainView.tabRewards">
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="483.0" prefWidth="628.0">
                                     <children>
@@ -347,7 +347,7 @@
                                 </AnchorPane>
                             </content>
                         </Tab>
-                        <Tab fx:id="Commissions" text="Commissions">
+                        <Tab fx:id="Commissions" text="%mainView.tabCommissions">
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="483.0" prefWidth="628.0">
                                     <children>
@@ -424,7 +424,7 @@
                                 </AnchorPane>
                             </content>
                         </Tab>
-                        <Tab fx:id="Overview" text="Overview">
+                        <Tab fx:id="Overview" text="%mainView.tabOverview">
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="483.0" prefWidth="628.0">
                                     <children>

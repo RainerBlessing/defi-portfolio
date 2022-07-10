@@ -50,7 +50,7 @@ public class NoDataView implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.infoText.textProperty().set(settingsController.translationList.getValue().get("InfoNoData").toString());
+        this.infoText.textProperty().set(settingsController.getTranslationValue("InfoNoData").toString());
     }
 
     public void Close(MouseEvent mouseEvent) {

@@ -20,8 +20,8 @@ public class ExportErrorView implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        lblText.setText(settingsController.translationList.getValue().get("CSVExportedError").toString());
-        btnClose.setText(settingsController.translationList.getValue().get("Close").toString());
+        lblText.setText(settingsController.getTranslationValue("CSVExportedError").toString());
+        btnClose.setText(settingsController.getTranslationValue("Close").toString());
     }
 
     public void btnClose() {

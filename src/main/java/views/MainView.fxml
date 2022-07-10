@@ -31,7 +31,7 @@
                 <RowConstraints maxHeight="46.0" minHeight="10.0" prefHeight="36.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <Button fx:id="btnRawData" alignment="CENTER" cache="true" mnemonicParsing="false" onAction="#btnRawDataPressed" prefHeight="90.0" prefWidth="191.0" text="Raw Data" GridPane.rowIndex="1">
+                <Button fx:id="btnRawData" alignment="CENTER" cache="true" mnemonicParsing="false" onAction="#btnRawDataPressed" prefHeight="90.0" prefWidth="191.0" text="%mainView.btnRawData" GridPane.rowIndex="1">
                     <cursor>
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
@@ -47,7 +47,7 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                     </GridPane.margin>
                 </Button>
-                <Button fx:id="btnAnalyse" alignment="CENTER" mnemonicParsing="false" onAction="#btnAnalysePressed" prefHeight="90.0" prefWidth="191.0" text="Analyse Data" GridPane.rowIndex="2">
+                <Button fx:id="btnAnalyse" alignment="CENTER" mnemonicParsing="false" onAction="#btnAnalysePressed" prefHeight="90.0" prefWidth="191.0" text="%mainView.btnAnalyse" GridPane.rowIndex="2">
                     <cursor>
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
@@ -63,7 +63,7 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                     </GridPane.margin>
                 </Button>
-                <Button fx:id="btnSettings" alignment="CENTER" layoutX="15.0" layoutY="133.0" mnemonicParsing="false" onAction="#openSettingPressed" prefHeight="90.0" prefWidth="191.0" text="Settings" GridPane.rowIndex="3">
+                <Button fx:id="btnSettings" alignment="CENTER" layoutX="15.0" layoutY="133.0" mnemonicParsing="false" onAction="#openSettingPressed" prefHeight="90.0" prefWidth="191.0" text="%mainView.btnSettings" GridPane.rowIndex="3">
                     <cursor>
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
@@ -81,7 +81,7 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                     </GridPane.margin>
                 </Button>
-                <Button fx:id="btnHelp" alignment="CENTER" layoutX="10.0" layoutY="225.0" mnemonicParsing="false" onAction="#helpPressed" prefHeight="90.0" prefWidth="191.0" text="Help" GridPane.rowIndex="4">
+                <Button fx:id="btnHelp" alignment="CENTER" layoutX="10.0" layoutY="225.0" mnemonicParsing="false" onAction="#helpPressed" prefHeight="90.0" prefWidth="191.0" text="%mainView.btnHelp" GridPane.rowIndex="4">
                     <cursor>
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
@@ -99,7 +99,7 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                     </GridPane.margin>
                 </Button>
-                <Button fx:id="btnDonate" alignment="CENTER" layoutX="15.0" layoutY="203.0" mnemonicParsing="false" onAction="#openAccountInformation" prefHeight="90.0" prefWidth="191.0" text="Donate" GridPane.rowIndex="5">
+                <Button fx:id="btnDonate" alignment="CENTER" layoutX="15.0" layoutY="203.0" mnemonicParsing="false" onAction="#openAccountInformation" prefHeight="90.0" prefWidth="191.0" text="%mainView.btnDonate" GridPane.rowIndex="5">
                     <cursor>
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
@@ -117,7 +117,7 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                     </GridPane.margin>
                 </Button>
-                <Button fx:id="btnBuyDFI" alignment="CENTER" graphicTextGap="6.0" layoutX="15.0" layoutY="203.0" mnemonicParsing="false" onAction="#openDFXHomepage" prefHeight="90.0" prefWidth="191.0" text="Buy DFI" GridPane.rowIndex="6">
+                <Button fx:id="btnBuyDFI" alignment="CENTER" graphicTextGap="6.0" layoutX="15.0" layoutY="203.0" mnemonicParsing="false" onAction="#openDFXHomepage" prefHeight="90.0" prefWidth="191.0" text="%mainView.btnBuyDFI" GridPane.rowIndex="6">
                     <cursor>
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
@@ -135,7 +135,7 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                     </GridPane.margin>
                 </Button>
-                <Button fx:id="btnConnect" alignment="CENTER" graphicTextGap="6.0" layoutX="15.0" layoutY="203.0" mnemonicParsing="false" onAction="#btnOpenAdressConfig" prefHeight="90.0" prefWidth="191.0" text="Addressen Manager" GridPane.rowIndex="7">
+                <Button fx:id="btnConnect" alignment="CENTER" graphicTextGap="6.0" layoutX="15.0" layoutY="203.0" mnemonicParsing="false" onAction="#btnOpenAdressConfig" prefHeight="90.0" prefWidth="191.0" text="%mainView.btnAddresses" GridPane.rowIndex="7">
                     <cursor>
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
@@ -154,7 +154,7 @@
                     </GridPane.margin>
                 </Button>
 
-                <Button fx:id="btnUpdateDatabase" alignment="CENTER" cache="true" mnemonicParsing="false" prefHeight="90.0" prefWidth="191.0" text="Update Data" GridPane.rowIndex="8">
+                <Button fx:id="btnUpdateDatabase" alignment="CENTER" cache="true" mnemonicParsing="false" prefHeight="90.0" prefWidth="191.0" text="%mainView.btnUpdateData" GridPane.rowIndex="8">
                     <cursor>
                         <Cursor fx:constant="DEFAULT" />
                     </cursor>
@@ -173,19 +173,19 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                     </GridPane.margin>
                 </Button>
-                <Label id="strCurrentBlockLocally" fx:id="CurrentBlock" alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="225.0" text="Current Block locally" GridPane.rowIndex="9" />
+                <Label id="strCurrentBlockLocally" fx:id="CurrentBlock" alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="225.0" text="%mainView.lblCurrentBlockLocally" GridPane.rowIndex="9" />
                 <Label fx:id="strCurrentBlockLocally" text="5600" GridPane.rowIndex="10">
                     <font>
                         <Font name="System Bold" size="12.0" />
                     </font>
                 </Label>
-                <Label id="strCurrentBlockOnChain" fx:id="CurrentBlockChain" alignment="CENTER" text="Current Block Blockchain" GridPane.rowIndex="11" />
+                <Label id="strCurrentBlockOnChain" fx:id="CurrentBlockChain" alignment="CENTER" text="%mainView.lblCurrentBlockBlockchain" GridPane.rowIndex="11" />
                 <Label fx:id="strLastUpdate" text="5600" GridPane.rowIndex="14">
                     <font>
                         <Font name="System Bold" size="12.0" />
                     </font>
                 </Label>
-                <Label id="strCurrentBlockOnChain" fx:id="LastUpdate" text="Last update" GridPane.rowIndex="13" />
+                <Label id="strCurrentBlockOnChain" fx:id="LastUpdate" text="%mainView.lblLastUpdate" GridPane.rowIndex="13" />
                 <Label fx:id="strCurrentBlockOnBlockchain" text="5600" GridPane.rowIndex="12">
                     <font>
                         <Font name="System Bold" size="12.0" />
@@ -208,17 +208,17 @@
     <AnchorPane id="AnchorPanelRawData" fx:id="anchorPanelRawData" layoutX="194.0" layoutY="27.0" prefHeight="438.0" prefWidth="556.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <TableView fx:id="rawDataTable" prefHeight="409.0" prefWidth="550.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <columns>
-                <TableColumn fx:id="blockTimeColumn" text="Date" />
-                <TableColumn fx:id="typeColumn" text="Operation" />
-                <TableColumn fx:id="cryptoValueColumn" text="Amount" />
-                <TableColumn fx:id="cryptoCurrencyColumn" text="Cryptocurrency" />
-                <TableColumn fx:id="fiatValueColumn" text="FIAT value" />
-                <TableColumn fx:id="fiatCurrencyColumn" text="FIAT currency" />
-                <TableColumn fx:id="poolIDColumn" text="Pool Pair" />
-                <TableColumn fx:id="blockHeightColumn" text="Block Height" />
-                <TableColumn fx:id="blockHashColumn" text="Block Hash" />
-                <TableColumn fx:id="ownerColumn" text="Owner" />
-                <TableColumn fx:id="transactionColumn"  text="Transaction Hash" />
+                <TableColumn fx:id="blockTimeColumn" text="%mainView.tcDate" />
+                <TableColumn fx:id="typeColumn" text="%mainView.tcOperation" />
+                <TableColumn fx:id="cryptoValueColumn" text="%mainView.tcAmount" />
+                <TableColumn fx:id="cryptoCurrencyColumn" text="%mainView.tcCryptocurrency" />
+                <TableColumn fx:id="fiatValueColumn" text="%mainView.tcFIATvalue" />
+                <TableColumn fx:id="fiatCurrencyColumn" text="%mainView.tcFIATcurrency" />
+                <TableColumn fx:id="poolIDColumn" text="%mainView.tcPoolPair" />
+                <TableColumn fx:id="blockHeightColumn" text="%mainView.tcBlockHeight" />
+                <TableColumn fx:id="blockHashColumn" text="%mainView.tcBlockHash" />
+                <TableColumn fx:id="ownerColumn" text="%mainView.tcOwner" />
+                <TableColumn fx:id="transactionColumn"  text="%mainView.tcTransactionHash" />
             </columns>
         </TableView>
         <padding>
@@ -231,7 +231,7 @@
             <SplitPane dividerPositions="0.5702167766258247" prefHeight="639.0" prefWidth="1063.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="607.0" prefWidth="602.0">
                     <TabPane fx:id="tabPane" layoutY="-2.0" prefHeight="639.0" prefWidth="602.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0">
-                        <Tab fx:id="Portfolio" text="Portfolio">
+                        <Tab fx:id="Portfolio" text="%mainView.tabPortfolio">
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="483.0" prefWidth="628.0">
                            <SplitPane dividerPositions="0.3005" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -296,7 +296,7 @@
                                 </AnchorPane>
                             </content>
                         </Tab>
-                        <Tab fx:id="Rewards" text="Rewards">
+                        <Tab fx:id="Rewards" text="%mainView.tabRewards">
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="483.0" prefWidth="628.0">
                                     <children>
@@ -313,8 +313,8 @@
                                                 <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                             <children>
-                                                <Label fx:id="StartDate" text="Start date" />
-                                                <Label fx:id="EndDate" text="End date" GridPane.rowIndex="2" />
+                                                <Label fx:id="StartDate" text="%mainView.lblStartDate" />
+                                                <Label fx:id="EndDate" text="%mainView.lblEndDate" GridPane.rowIndex="2" />
                                                 <DatePicker fx:id="dateFrom" prefHeight="25.0" prefWidth="142.0" GridPane.columnIndex="1" />
                                                 <DatePicker fx:id="dateTo" prefHeight="25.0" prefWidth="143.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                 <ComboBox fx:id="cmbCoins" prefHeight="29.0" prefWidth="143.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
@@ -347,7 +347,7 @@
                                 </AnchorPane>
                             </content>
                         </Tab>
-                        <Tab fx:id="Commissions" text="Commissions">
+                        <Tab fx:id="Commissions" text="%mainView.tabCommissions">
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="483.0" prefWidth="628.0">
                                     <children>
@@ -382,8 +382,8 @@
                                                 <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                             <children>
-                                                <Label fx:id="StartDateCom" text="Start date" />
-                                                <Label fx:id="EndDateCom" text="End date" GridPane.rowIndex="2" />
+                                                <Label fx:id="StartDateCom" text="%mainView.lblStartDate" />
+                                                <Label fx:id="EndDateCom" text="%mainView.lblEndDate" GridPane.rowIndex="2" />
                                                 <DatePicker fx:id="dateFromCom" prefHeight="25.0" prefWidth="142.0" GridPane.columnIndex="1" />
                                                 <DatePicker fx:id="dateToCom" prefHeight="25.0" prefWidth="143.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                 <ComboBox fx:id="cmbCoinsCom" prefHeight="29.0" prefWidth="143.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
@@ -424,7 +424,7 @@
                                 </AnchorPane>
                             </content>
                         </Tab>
-                        <Tab fx:id="Overview" text="Overview">
+                        <Tab fx:id="Overview" text="%mainView.tabOverview">
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="483.0" prefWidth="628.0">
                                     <children>
@@ -442,8 +442,8 @@
                                                 <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                             <children>
-                                                <Label fx:id="StartDateOver" text="Start date" />
-                                                <Label fx:id="EndDateOver" text="End date" GridPane.rowIndex="2" />
+                                                <Label fx:id="StartDateOver" text="%mainView.lblStartDate" />
+                                                <Label fx:id="EndDateOver" text="%mainView.lblEndDate" GridPane.rowIndex="2" />
                                                 <DatePicker fx:id="dateFromOver" prefHeight="25.0" prefWidth="142.0" GridPane.columnIndex="1" />
                                                 <DatePicker fx:id="dateToOver" prefHeight="25.0" prefWidth="143.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                 <ComboBox fx:id="cmbIntervallOver" prefHeight="29.0" prefWidth="143.0" GridPane.columnIndex="2" />
@@ -466,8 +466,8 @@
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                     <TableView fx:id="plotTable" prefHeight="514.0" prefWidth="453.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                         <columns>
-                            <TableColumn fx:id="timeStampColumn" prefWidth="75.0" text="Date" />
-                            <TableColumn fx:id="poolPairColumn" prefWidth="75.0" text="Pool Pair" />
+                            <TableColumn fx:id="timeStampColumn" prefWidth="75.0" text="%mainView.tcDate" />
+                            <TableColumn fx:id="poolPairColumn" prefWidth="75.0" text="%mainView.tcPoolPair" />
                             <TableColumn fx:id="crypto1Column" prefWidth="75.0" text="Rewards" />
                             <TableColumn fx:id="crypto1FiatColumn" prefWidth="75.0" text="Rewards(Fiat)" />
                             <TableColumn fx:id="crypto2Column" prefWidth="75.0" text="Commissions" />

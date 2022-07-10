@@ -30,9 +30,9 @@ public class NoAddressesWarningView implements Initializable {
     private GuiceFXMLLoader fxmlLoader;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        lblText.setText(settingsController.translationList.getValue().get("NoAddressFoundGoToConfig").toString());
-        btnClose.setText(settingsController.translationList.getValue().get("Close").toString());
-        btnOpenConfig.setText(settingsController.translationList.getValue().get("openAddressConfig").toString());
+        lblText.setText(settingsController.getTranslationValue("NoAddressFoundGoToConfig").toString());
+        btnClose.setText(settingsController.getTranslationValue("Close").toString());
+        btnOpenConfig.setText(settingsController.getTranslationValue("openAddressConfig").toString());
     }
 
 

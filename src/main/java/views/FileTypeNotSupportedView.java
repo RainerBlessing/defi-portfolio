@@ -21,8 +21,8 @@ public class FileTypeNotSupportedView implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        lblDisclaimer.setText(settingsController.translationList.getValue().get("FileTypeNotSupported").toString());
-        btnClose.setText(settingsController.translationList.getValue().get("Close").toString());
+        lblDisclaimer.setText(settingsController.getTranslationValue("FileTypeNotSupported").toString());
+        btnClose.setText(settingsController.getTranslationValue("Close").toString());
     }
 
     public void btnClose() {

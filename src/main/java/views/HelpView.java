@@ -22,8 +22,8 @@ public class HelpView implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        btnClose.getTooltip().setText(settingsController.translationList.getValue().get("Close").toString());
-        btnClose.setText(settingsController.translationList.getValue().get("Close").toString());
+        btnClose.getTooltip().setText(settingsController.getTranslationValue("Close").toString());
+        btnClose.setText(settingsController.getTranslationValue("Close").toString());
     }
 
     public void btnMailToCallback() {

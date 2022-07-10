@@ -92,12 +92,12 @@ public class SettingsView implements Initializable {
             settingsController.logger.warning("Exception occurred: " + e);
         }
         if(result){
-            transactionController.clearTransactionList();
-            transactionController.clearPortfolioList();
-            mainViewController.poolPairList.clear();
-            mainViewController.plotUpdate(mainViewController.mainView.tabPane.getSelectionModel().getSelectedItem().getId());
-            mainViewController.strCurrentBlockLocally.set("0");
-            transactionController.clearBalanceList();
+//            transactionController.clearTransactionList();
+//            transactionController.clearPortfolioList();
+//            mainViewController.poolPairList.clear();
+//            mainViewController.plotUpdate(mainViewController.mainView.tabPane.getSelectionModel().getSelectedItem().getId());
+//            mainViewController.strCurrentBlockLocally.set("0");
+//            transactionController.clearBalanceList();
         }else{
         }
     }
@@ -106,11 +106,11 @@ public class SettingsView implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        this.labelLanguage.setText(this.settingsController.translationList.getValue().get("LanguageLabel").toString());
-      //  this.CSV.setText(this.settingsController.translationList.getValue().get("CSV").toString());
-        this.prefferedCurrency.setText(this.settingsController.translationList.getValue().get("PrefferedCurrency").toString());
-      //  this.labelDec.setText(this.settingsController.translationList.getValue().get("Decimal").toString());
-        this.lblLaunchDefid.setText(this.settingsController.translationList.getValue().get("LaunchDefid").toString());
+        this.labelLanguage.setText(settingsController.getTranslationValue("LanguageLabel").toString());
+      //  this.CSV.setText(settingsController.getTranslationValue("CSV").toString());
+        this.prefferedCurrency.setText(settingsController.getTranslationValue("PrefferedCurrency").toString());
+      //  this.labelDec.setText(settingsController.getTranslationValue("Decimal").toString());
+        this.lblLaunchDefid.setText(settingsController.getTranslationValue("LaunchDefid").toString());
         this.cmbLanguage.getItems().addAll(this.settingsController.languages);
         this.cmbLanguage.valueProperty().bindBidirectional(this.settingsController.selectedLanguage);
         this.cointrackingExportCmb.valueProperty().bindBidirectional(this.settingsController.exportCointracingVariant);
@@ -118,12 +118,12 @@ public class SettingsView implements Initializable {
         this.CSVExportcmb.valueProperty().bindBidirectional(this.settingsController.exportCSVVariant);
         this.CSVExportcmb.getItems().addAll(this.settingsController.csvExportVariants);
 
-        this.lblDeleteData.setText(this.settingsController.translationList.getValue().get("DeleteLabel").toString());
-        this.btnDeleteData.setText(this.settingsController.translationList.getValue().get("DeleteButton").toString());
-        this.labelCointrackingExport.setText(this.settingsController.translationList.getValue().get("CointrackingLabel").toString());
-        this.labelCSVExport.setText(this.settingsController.translationList.getValue().get("CSVLabel").toString());
-        this.lblFrom.setText(this.settingsController.translationList.getValue().get("ToLabel").toString());
-        this.lblTo.setText(this.settingsController.translationList.getValue().get("FromLabel").toString());
+        this.lblDeleteData.setText(settingsController.getTranslationValue("DeleteLabel").toString());
+        this.btnDeleteData.setText(settingsController.getTranslationValue("DeleteButton").toString());
+        this.labelCointrackingExport.setText(settingsController.getTranslationValue("CointrackingLabel").toString());
+        this.labelCSVExport.setText(settingsController.getTranslationValue("CSVLabel").toString());
+        this.lblFrom.setText(settingsController.getTranslationValue("ToLabel").toString());
+        this.lblTo.setText(settingsController.getTranslationValue("FromLabel").toString());
 
         this.exportFrom.valueProperty().bindBidirectional(this.settingsController.exportFrom);
         this.exportTo.valueProperty().bindBidirectional(this.settingsController.exportTo);
@@ -142,43 +142,43 @@ public class SettingsView implements Initializable {
         this.dataSourceCmb.getItems().addAll(this.settingsController.datasources);
         this.dataSourceCmb.valueProperty().bindBidirectional(this.settingsController.selectedSource);
 
-        this.lblCloseDefid.setText(this.settingsController.translationList.getValue().get("CloseDefid").toString());
-        this.lblOpenProjectFolder.setText(this.settingsController.translationList.getValue().get("OpenProjectFolder").toString());
-        this.lblOpenInstallationFolder.setText(this.settingsController.translationList.getValue().get("OpenInstallFolder").toString());
-        this.btnCloseDefid.setText(this.settingsController.translationList.getValue().get("CloseButton").toString());
-        this.btnOpenProjectFolder.setText(this.settingsController.translationList.getValue().get("Open").toString());
-        this.btnOpenInstallationFolder.setText(this.settingsController.translationList.getValue().get("Open").toString());
-        this.btnOpenAdressConfig.setText(this.settingsController.translationList.getValue().get("Open").toString());
-        this.lblOpenAdressConfig.setText(this.settingsController.translationList.getValue().get("openAddressConfig").toString());
+        this.lblCloseDefid.setText(settingsController.getTranslationValue("CloseDefid").toString());
+        this.lblOpenProjectFolder.setText(settingsController.getTranslationValue("OpenProjectFolder").toString());
+        this.lblOpenInstallationFolder.setText(settingsController.getTranslationValue("OpenInstallFolder").toString());
+        this.btnCloseDefid.setText(settingsController.getTranslationValue("CloseButton").toString());
+        this.btnOpenProjectFolder.setText(settingsController.getTranslationValue("Open").toString());
+        this.btnOpenInstallationFolder.setText(settingsController.getTranslationValue("Open").toString());
+        this.btnOpenAdressConfig.setText(settingsController.getTranslationValue("Open").toString());
+        this.lblOpenAdressConfig.setText(settingsController.getTranslationValue("openAddressConfig").toString());
 
-        this.lblDefaultDataSource.setText(this.settingsController.translationList.getValue().get("DefaultDataUpdate").toString());
+        this.lblDefaultDataSource.setText(settingsController.getTranslationValue("DefaultDataUpdate").toString());
         this.cmbDefaultDataSource.getItems().addAll(this.settingsController.defaultUpdateSource);
         this.cmbDefaultDataSource.valueProperty().bindBidirectional(this.settingsController.selectedDefaultUpdateSource);
         this.SwitchButton();
     }
 
     public void changeLanguage() {
-        this.labelLanguage.setText(this.settingsController.translationList.getValue().get("LanguageLabel").toString());
-   //     this.CSV.setText(this.settingsController.translationList.getValue().get("CSV").toString());
-        this.prefferedCurrency.setText(this.settingsController.translationList.getValue().get("PrefferedCurrency").toString());
-  //      this.labelDec.setText(this.settingsController.translationList.getValue().get("Decimal").toString());
-        this.lblLaunchDefid.setText(this.settingsController.translationList.get().get("LaunchDefid").toString());
-        this.lblDeleteData.setText(this.settingsController.translationList.getValue().get("DeleteLabel").toString());
-        this.btnDeleteData.setText(this.settingsController.translationList.getValue().get("DeleteButton").toString());
-        this.labelDataSource.setText(this.settingsController.translationList.getValue().get("DataSourceLabel").toString());
-        this.lblCloseDefid.setText(this.settingsController.translationList.getValue().get("CloseDefid").toString());
-        this.lblOpenProjectFolder.setText(this.settingsController.translationList.getValue().get("OpenProjectFolder").toString());
-        this.lblOpenInstallationFolder.setText(this.settingsController.translationList.getValue().get("OpenInstallFolder").toString());
-        this.btnCloseDefid.setText(this.settingsController.translationList.getValue().get("CloseButton").toString());
-        this.btnOpenProjectFolder.setText(this.settingsController.translationList.getValue().get("Open").toString());
-        this.btnOpenInstallationFolder.setText(this.settingsController.translationList.getValue().get("Open").toString());
-        this.labelCointrackingExport.setText(this.settingsController.translationList.getValue().get("CointrackingLabel").toString());
-        this.labelCSVExport.setText(this.settingsController.translationList.getValue().get("CSVLabel").toString());
-        this.lblFrom.setText(this.settingsController.translationList.getValue().get("ToLabel").toString());
-        this.lblTo.setText(this.settingsController.translationList.getValue().get("FromLabel").toString());
-        this.lblDefaultDataSource.setText(this.settingsController.translationList.getValue().get("DefaultDataUpdate").toString());
-        this.btnOpenAdressConfig.setText(this.settingsController.translationList.getValue().get("Open").toString());
-        this.lblOpenAdressConfig.setText(this.settingsController.translationList.getValue().get("openAddressConfig").toString());
+        this.labelLanguage.setText(settingsController.getTranslationValue("LanguageLabel").toString());
+   //     this.CSV.setText(settingsController.getTranslationValue("CSV").toString());
+        this.prefferedCurrency.setText(settingsController.getTranslationValue("PrefferedCurrency").toString());
+  //      this.labelDec.setText(settingsController.getTranslationValue("Decimal").toString());
+        this.lblLaunchDefid.setText(settingsController.getTranslationValue("LaunchDefid").toString());
+        this.lblDeleteData.setText(settingsController.getTranslationValue("DeleteLabel").toString());
+        this.btnDeleteData.setText(settingsController.getTranslationValue("DeleteButton").toString());
+        this.labelDataSource.setText(settingsController.getTranslationValue("DataSourceLabel").toString());
+        this.lblCloseDefid.setText(settingsController.getTranslationValue("CloseDefid").toString());
+        this.lblOpenProjectFolder.setText(settingsController.getTranslationValue("OpenProjectFolder").toString());
+        this.lblOpenInstallationFolder.setText(settingsController.getTranslationValue("OpenInstallFolder").toString());
+        this.btnCloseDefid.setText(settingsController.getTranslationValue("CloseButton").toString());
+        this.btnOpenProjectFolder.setText(settingsController.getTranslationValue("Open").toString());
+        this.btnOpenInstallationFolder.setText(settingsController.getTranslationValue("Open").toString());
+        this.labelCointrackingExport.setText(settingsController.getTranslationValue("CointrackingLabel").toString());
+        this.labelCSVExport.setText(settingsController.getTranslationValue("CSVLabel").toString());
+        this.lblFrom.setText(settingsController.getTranslationValue("ToLabel").toString());
+        this.lblTo.setText(settingsController.getTranslationValue("FromLabel").toString());
+        this.lblDefaultDataSource.setText(settingsController.getTranslationValue("DefaultDataUpdate").toString());
+        this.btnOpenAdressConfig.setText(settingsController.getTranslationValue("Open").toString());
+        this.lblOpenAdressConfig.setText(settingsController.getTranslationValue("openAddressConfig").toString());
     }
 
     private final Rectangle back = new Rectangle(35, 15, Color.RED);
@@ -295,7 +295,7 @@ public class SettingsView implements Initializable {
             AddressConfigStage.setY(mouseEvent.getScreenY() + dragDelta.y);
         });
         //AddressConfigStage.getIcons().add(new Image(new File(System.getProperty("user.dir").replace("\\","/") + "/defi-portfolio/src/icons/settings.png").toURI().toString()));
-        //AddressConfigStage.setTitle(this.mainViewController.settingsController.translationList.getValue().get("Settings").toString());
+        //AddressConfigStage.setTitle(this.mainViewController.settingsController.getTranslationValue("Settings").toString());
         AddressConfigStage.setScene(scene);
 
 //        ChangeListener<Number> widthListener = (observable, oldValue, newValue) -> {

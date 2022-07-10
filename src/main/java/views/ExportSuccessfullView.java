@@ -20,8 +20,8 @@ public class ExportSuccessfullView implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        lblText.setText(settingsController.translationList.getValue().get("CSVExportedSuccessfully").toString());
-        btnClose.setText(settingsController.translationList.getValue().get("Close").toString());
+        lblText.setText(settingsController.getTranslationValue("CSVExportedSuccessfully").toString());
+        btnClose.setText(settingsController.getTranslationValue("Close").toString());
     }
 
     public void btnClose() {

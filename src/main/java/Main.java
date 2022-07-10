@@ -16,6 +16,7 @@ import javafx.stage.StageStyle;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class Main extends GuiceApplication {
@@ -23,9 +24,6 @@ public class Main extends GuiceApplication {
     private SettingsController settingsController;
     @Inject
     private GuiceFXMLLoader fxmlLoader;
-    @Inject
-    @Named("i18n-resources")
-    private ResourceBundle resources;
     @Inject
     private TransactionController transactionController;
 
@@ -35,7 +33,10 @@ public class Main extends GuiceApplication {
         Parent root = null;
         // Main Window
         try {
-            root = fxmlLoader.load(getClass().getResource("views/MainView.fxml"), resources).getRoot();
+            Locale locale = new Locale("de", "DE");
+            ResourceBundle bundle = ResourceBundle.getBundle("translations/mainview", locale);
+            root = fxmlLoader.load(getClass().getResource("views/MainView.fxml"), bundle).getRoot();
+
         } catch (IOException e) {
             settingsController.logger.warning("Exception occurred: " + e);
             e.printStackTrace();
@@ -63,7 +64,10 @@ public class Main extends GuiceApplication {
 
         // Disclaimer anzeigen
         if(settingsController.showDisclaim) {
-            Parent rootDisclaimer = fxmlLoader.load(getClass().getResource("views/DisclaimerView.fxml"), resources).getRoot();
+//            fxmlLoader.load(getClass().getResource("translations/"))
+            Locale locale = new Locale("de", "DE");
+            ResourceBundle bundle = ResourceBundle.getBundle("translations/mainview", locale);
+            Parent rootDisclaimer = fxmlLoader.load(getClass().getResource("views/DisclaimerView.fxml"), bundle).getRoot();
             Scene sceneDisclaimer = new Scene(rootDisclaimer);
             Stage stageDisclaimer = new Stage();
             stageDisclaimer.setTitle("DeFi-Portfolio Disclaimer");

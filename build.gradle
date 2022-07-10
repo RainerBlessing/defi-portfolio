@@ -22,6 +22,7 @@ dependencies {
     implementation 'com.google.inject:guice:5.1.0'
     implementation 'com.cathive.fx:fx-guice:8.0.0'
 
+    implementation "org.slf4j:slf4j-simple:2.0.0-alpha7"
     testImplementation 'org.testng:testng:7.6.0'
     testImplementation 'org.mockito:mockito-all:1.10.19'
 }
@@ -38,5 +39,6 @@ javafx {
 
 test {
     useTestNG()
+//    suites 'src/test/resources/testng.xml'
 }
 mainClassName = "Main"

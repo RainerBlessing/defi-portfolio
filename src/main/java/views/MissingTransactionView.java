@@ -30,10 +30,10 @@ public class MissingTransactionView implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        lblTransaction.setText(settingsController.translationList.getValue().get("MissingTransaction").toString());
-        hCheckBox.setText(settingsController.translationList.getValue().get("DisclaimCheck").toString());
-        btnClose.setText(settingsController.translationList.getValue().get("Close").toString());
-        btnOpen.setText(settingsController.translationList.getValue().get("Open").toString());
+        lblTransaction.setText(settingsController.getTranslationValue("MissingTransaction").toString());
+        hCheckBox.setText(settingsController.getTranslationValue("DisclaimCheck").toString());
+        btnClose.setText(settingsController.getTranslationValue("Close").toString());
+        btnOpen.setText(settingsController.getTranslationValue("Open").toString());
     }
 
     public void btnClose() {

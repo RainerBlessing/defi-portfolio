@@ -49,14 +49,14 @@ public class AddAdressView implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.loadAddresses();
 
-        this.lblAddress.setText(settingsController.translationList.getValue().get("address").toString());
-        this.txtUserAddress.promptTextProperty().setValue(settingsController.translationList.getValue().get("typeYourAddress").toString());
-        this.btnAddAddress.setText(settingsController.translationList.getValue().get("add").toString());
-        this.tableAddedAddresses.setText(settingsController.translationList.getValue().get("addedAddresses").toString());
-        this.btnClearList.setText(settingsController.translationList.getValue().get("removeEntry").toString());
-        this.btnSaveAndClose.setText(settingsController.translationList.getValue().get("saveAndClose").toString());
-        this.btnClose.setText(settingsController.translationList.getValue().get("Close").toString());
-        this.lblNoValidAddress.setText(settingsController.translationList.getValue().get("noValidAddress").toString());
+        this.lblAddress.setText(settingsController.getTranslationValue("address").toString());
+        this.txtUserAddress.promptTextProperty().setValue(settingsController.getTranslationValue("typeYourAddress").toString());
+        this.btnAddAddress.setText(settingsController.getTranslationValue("add").toString());
+        this.tableAddedAddresses.setText(settingsController.getTranslationValue("addedAddresses").toString());
+        this.btnClearList.setText(settingsController.getTranslationValue("removeEntry").toString());
+        this.btnSaveAndClose.setText(settingsController.getTranslationValue("saveAndClose").toString());
+        this.btnClose.setText(settingsController.getTranslationValue("Close").toString());
+        this.lblNoValidAddress.setText(settingsController.getTranslationValue("noValidAddress").toString());
         table.setPlaceholder(new Label(""));
 
         lblNoValidAddress.setVisible(false);

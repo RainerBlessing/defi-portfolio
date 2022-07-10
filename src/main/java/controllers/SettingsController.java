@@ -47,7 +47,8 @@ public class SettingsController {
     public final ObjectProperty<LocalDate> dateTo = new SimpleObjectProperty<>();
     public final ObjectProperty<LocalDate> exportFrom = new SimpleObjectProperty<>();
     public final ObjectProperty<LocalDate> exportTo = new SimpleObjectProperty<>();
-    public final ObjectProperty<JSONObject> translationList = new SimpleObjectProperty<>();
+
+    private final ObjectProperty<JSONObject> translationList = new SimpleObjectProperty<>();
     public String selectedIntervalInt = "Daily";
     public final StringProperty selectedSource = new SimpleStringProperty("Active Wallet");
     public final StringProperty exportCointracingVariant = new SimpleStringProperty();
@@ -319,5 +320,12 @@ public class SettingsController {
             this.rpcport = configProps.getProperty("rpcport");
             this.auth = this.rpcuser + ":" + this.rpcpassword;
 
+    }
+    public String getTranslationValue(String rawData) {
+        return translationList.getValue().get(rawData).toString();
+    }
+
+    public Map<String, String> getLocalisations(String mainView) {
+        return null;
     }
 }

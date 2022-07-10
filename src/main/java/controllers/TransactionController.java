@@ -10,6 +10,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import models.*;
+import resourceprovider.Utilities;
 import views.MainView;
 
 import javax.swing.*;
@@ -38,10 +39,11 @@ import java.util.concurrent.TimeUnit;
 public class TransactionController {
 
     private final TransactionModelFactory transactionModelFactory;
+    private final Utilities utilities;
     private SettingsController settingsController;
     private CheckConnection checkConnection;
-    private MainView mainView;
-//    private CoinPriceController coinPriceController;
+//    private MainView mainView;
+    private CoinPriceController coinPriceController;
     private final String strTransactionData;
     private ObservableList<TransactionModel> transactionList;
     private int localBlockCount;
@@ -58,15 +60,15 @@ public class TransactionController {
     public Process ps;
 
     @Inject
-    public TransactionController(SettingsController settingsController, TransactionModelFactory transactionModelFactory) {
-//    public TransactionController(SettingsController settingsController,MainViewController mainViewController,CheckConnection checkConnection,MainView mainView,CoinPriceController coinPriceController,TransactionModelFactory transactionModelFactory) {
+    public TransactionController(SettingsController settingsController,CoinPriceController coinPriceController,TransactionModelFactory transactionModelFactory, Utilities utilities) {
 
         this.settingsController = settingsController;
 //        this.mainViewController = mainViewController;
 //        this.checkConnection = checkConnection;
 //        this.mainView = mainView;
-//        this.coinPriceController = coinPriceController;
+        this.coinPriceController = coinPriceController;
         this.transactionModelFactory = transactionModelFactory;
+        this.utilities = utilities;
 
         strTransactionData = settingsController.DEFI_PORTFOLIO_HOME + settingsController.strTransactionData;
         classSingleton = false;
@@ -396,7 +398,7 @@ public class TransactionController {
 
                 try {
                     FileWriter myWriter = new FileWriter(settingsController.DEFI_PORTFOLIO_HOME + "update.portfolio");
-                    myWriter.write(this.settingsController.translationList.getValue().get("UpdateData").toString() + percentage + "%");
+                    myWriter.write(this.settingsController.getTranslationValue("UpdateData").toString() + percentage + "%");
                     myWriter.close();
                 } catch (IOException e) {
                     this.settingsController.logger.warning("Could not write to update.portfolio.");
@@ -464,10 +466,10 @@ public class TransactionController {
         this.frameUpdate.setLayout(null);
         this.frameUpdate.setIconImage(new ImageIcon(System.getProperty("user.dir").replace("\\", "/") + "/defi-portfolio/src/icons/DefiIcon.png").getImage());
         if (this.settingsController.getPlatform().equals("mac")) {
-            this.jl = new JLabel(this.settingsController.translationList.getValue().get("InitializingData").toString(), JLabel.CENTER);
+            this.jl = new JLabel(this.settingsController.getTranslationValue("InitializingData").toString(), JLabel.CENTER);
         } else {
             ImageIcon icon = new ImageIcon(System.getProperty("user.dir").replace("\\", "/") + "/defi-portfolio/src/icons/ajaxloader.gif");
-            this.jl = new JLabel(this.settingsController.translationList.getValue().get("InitializingData").toString(), icon, JLabel.CENTER);
+            this.jl = new JLabel(this.settingsController.getTranslationValue("InitializingData").toString(), icon, JLabel.CENTER);
         }
         this.jl.setSize(400, 100);
         this.jl.setLocation(0, 0);
@@ -587,18 +589,18 @@ public class TransactionController {
                 reader = new BufferedReader(new FileReader(
                         strPortfolioData));
                 String line = reader.readLine();
-
-                while (line != null) {
-                    String[] transactionSplit = line.split(";");
-                    TransactionModel transAction = createTransactionModel(Long.parseLong(transactionSplit[0]), transactionSplit[1], transactionSplit[2], transactionSplit[3], transactionSplit[4], Integer.parseInt(transactionSplit[5]), transactionSplit[6], transactionSplit[7], transactionSplit[8]);
-                    transactionList.add(transAction);
-
-                    if (transAction.typeProperty.getValue().equals("Rewards") | transAction.typeProperty.getValue().equals("Commission")) {
-                        addToPortfolioModel(transAction);
-                    }
-
-                    line = reader.readLine();
-                }
+//TODO
+//                while (line != null) {
+//                    String[] transactionSplit = line.split(";");
+//                    TransactionModel transAction = createTransactionModel(Long.parseLong(transactionSplit[0]), transactionSplit[1], transactionSplit[2], transactionSplit[3], transactionSplit[4], Integer.parseInt(transactionSplit[5]), transactionSplit[6], transactionSplit[7], transactionSplit[8]);
+//                    transactionList.add(transAction);
+//
+//                    if (transAction.typeProperty.getValue().equals("Rewards") | transAction.typeProperty.getValue().equals("Commission")) {
+//                        addToPortfolioModel(transAction);
+//                    }
+//
+//                    line = reader.readLine();
+//                }
 
                 reader.close();
                 return transactionList;
@@ -735,7 +737,7 @@ public class TransactionController {
         int day = cal.get(Calendar.DAY_OF_MONTH);
         String date = "";
 
-        if (settingsController.translationList.getValue().get("Daily").equals(intervall) | intervall.equals("Daily")) {
+        if (settingsController.getTranslationValue("Daily").equals(intervall) | intervall.equals("Daily")) {
             String monthAdapted = Integer.toString(month);
             if (month < 10) {
                 monthAdapted = "0" + month;
@@ -747,7 +749,7 @@ public class TransactionController {
             }
         }
 
-        if (settingsController.translationList.getValue().get("Weekly").equals(intervall) | intervall.equals("Weekly")) {
+        if (settingsController.getTranslationValue("Weekly").equals(intervall) | intervall.equals("Weekly")) {
             int correct = 0;
             if (month == 1 && (day == 1 || day == 2 || day == 3)) {
                 correct = 1;
@@ -759,7 +761,7 @@ public class TransactionController {
             }
         }
 
-        if (settingsController.translationList.getValue().get("Monthly").equals(intervall) | intervall.equals("Monthly")) {
+        if (settingsController.getTranslationValue("Monthly").equals(intervall) | intervall.equals("Monthly")) {
             if (month < 10) {
                 date = year + "-0" + month;
             } else {
@@ -767,7 +769,7 @@ public class TransactionController {
             }
         }
 
-        if (settingsController.translationList.getValue().get("Yearly").equals(intervall) | intervall.equals("Yearly")) {
+        if (settingsController.getTranslationValue("Yearly").equals(intervall) | intervall.equals("Yearly")) {
 
             date = Integer.toString(year);
         }
@@ -935,7 +937,7 @@ public class TransactionController {
     public List<BalanceModel> getCoinAndTokenBalances() {
         TreeMap<String, Double> balanceTreeMap = new TreeMap<>();
         List<BalanceModel> balanceModelList = new ArrayList<>();
-        JSONArray jsonArray = new JSONArray();
+        JSONArray jsonArray;
         for (String address :
                 settingsController.listAddresses) {
             jsonArray = getAddressTokenBalance(address);
@@ -972,15 +974,14 @@ public class TransactionController {
                 double token1 = Math.sqrt(poolRatio * entry.getValue() * entry.getValue());
                 double token2 = Math.sqrt(entry.getValue() * entry.getValue() / poolRatio);
                 try {
-//                        balanceModelList.add(new BalanceModel(entry.getKey().split("-")[0], coinPriceController.getPriceFromTimeStamp(entry.getKey().contains("DUSD"),entry.getKey().split("-")[0] + settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis()) * token1, token1, entry.getKey().split("-")[1], coinPriceController.getPriceFromTimeStamp(entry.getKey().split("-")[1].contains("DUSD"),entry.getKey().split("-")[1] + settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis()) * token2, token2, entry.getValue()));
+                        balanceModelList.add(new BalanceModel(entry.getKey().split("-")[0], coinPriceController.getPriceFromTimeStamp(entry.getKey().contains("DUSD"),entry.getKey().split("-")[0] + settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis()) * token1, token1, entry.getKey().split("-")[1], coinPriceController.getPriceFromTimeStamp(entry.getKey().split("-")[1].contains("DUSD"),entry.getKey().split("-")[1] + settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis()) * token2, token2, entry.getValue()));
                 } catch (Exception e) {
                     this.settingsController.logger.warning("Exception occurred: " + e);
                 }
             } else {
                 if (entry.getValue() > 0) {
-                    //TODO
-//                        balanceModelList.add(new BalanceModel(entry.getKey(), coinPriceController.getPriceFromTimeStamp(entry.getKey().contains("DUSD") ,entry.getKey() + settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis()) * entry.getValue(), entry.getValue() ,
-//                                "-", 0.0, 0.0, 0.0));
+                        balanceModelList.add(new BalanceModel(entry.getKey(), coinPriceController.getPriceFromTimeStamp(entry.getKey().contains("DUSD") ,entry.getKey() + settingsController.selectedFiatCurrency.getValue(), System.currentTimeMillis()) * entry.getValue(), entry.getValue() ,
+                                "-", 0.0, 0.0, 0.0));
                 }
             }
         }
@@ -1117,7 +1118,7 @@ public class TransactionController {
 
         try {
             FileWriter myWriter = new FileWriter(settingsController.DEFI_PORTFOLIO_HOME + "update.portfolio");
-            myWriter.write(settingsController.translationList.getValue().get("ConnectNode").toString());
+            myWriter.write(settingsController.getTranslationValue("ConnectNode").toString());
             myWriter.close();
 
             if (settingsController.getPlatform().contains("mac")) {
@@ -1176,16 +1177,16 @@ public class TransactionController {
             this.settingsController.lastWalletCSVImportPath = list.get(0).getParent().toString().replace("\\", "/");
             this.settingsController.saveSettings();
             // import csv data
-            getLocalWalletCSVList(list);
-            //updateBalanceList();
-            //getLocalBalanceList();
-            //calcImpermanentLoss();
-            //MainViewController.getInstance().plotUpdate(MainViewController.getInstance().mainView.tabPane.getSelectionModel().getSelectedItem().getId());
+            GetLocalWalletCSVListResult localWalletCSVListResult = getLocalWalletCSVList(list);
+//            updateBalanceList();
+//            getLocalBalanceList();
+//            calcImpermanentLoss();
+//            MainViewController.getInstance().plotUpdate(MainViewController.getInstance().mainView.tabPane.getSelectionModel().getSelectedItem().getId());
         }
     }
 
     //public ObservableList<TransactionModel> getLocalWalletCSVList(String filePath) {
-    public void getLocalWalletCSVList(List<File> files) {
+    public GetLocalWalletCSVListResult getLocalWalletCSVList(List<File> files) {
         int iFile = 1;
         //this.frameUpdate.setAlwaysOnTop(true);
         for (File strPortfolioData : files) {
@@ -1207,9 +1208,7 @@ public class TransactionController {
                             defidProcess = Runtime.getRuntime().exec("/usr/bin/open -a Terminal " + pathMac + settingsController.DEFI_PORTFOLIO_HOME + "transactionData.portfolio " + strPortfolioData.getAbsolutePath());
                             break;
                         case "win":
-                            String path = System.getProperty("user.dir") + "\\defi-portfolio\\src\\portfolio\\libraries\\main.exe";
-                            String[] commands = {"cmd", "/c", "start", "\"Merging data\"", path, settingsController.DEFI_PORTFOLIO_HOME.replace("/", "\\") + "transactionData.portfolio", strPortfolioData.getAbsolutePath()};
-                            defidProcess = Runtime.getRuntime().exec(commands);
+                            defidProcess = utilities.main(strPortfolioData.getAbsolutePath());
                             break;
                         case "linux":
                             String pathlinux = System.getProperty("user.dir") + "/defi-portfolio/src/portfolio/libraries/main ";
@@ -1243,13 +1242,21 @@ public class TransactionController {
         }
 
         File f = new File(settingsController.DEFI_PORTFOLIO_HOME.replace("/", "\\") + "MergingErroroccurred.txt");
+
+        GetLocalWalletCSVListResult getLocalWalletCSVListResult = new GetLocalWalletCSVListResult();
         if (f.exists()) {
             f.delete();
-            mainView.showFileTypeNotSupported();
+            getLocalWalletCSVListResult.showFileTypeNotSupported=true;
         } else {
-            mainView.showRestartWindow();
+            getLocalWalletCSVListResult.showRestartWindow=true;
         }
 
+        return getLocalWalletCSVListResult;
+    }
+
+    public class GetLocalWalletCSVListResult{
+     boolean showFileTypeNotSupported;
+        boolean showRestartWindow;
     }
 
     public String convertWalletDateToTimeStamp(String input) {

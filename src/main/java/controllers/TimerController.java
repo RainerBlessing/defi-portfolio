@@ -47,8 +47,6 @@ public class TimerController extends TimerTask {
                         } catch (IOException e) {
                             settingsController.logger.warning("Exception occurred: " + e);
                         }
-
-
                     }
                 }
         );

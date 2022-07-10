@@ -8,15 +8,13 @@ import java.io.IOException;
 import java.util.TimerTask;
 
 public class CheckConnection extends TimerTask {
-    private final TransactionController transactionController;
     private final SettingsController settingsController;
     private final MainViewController mainViewController;
 
     @Inject
-    public CheckConnection(MainViewController mainViewController,SettingsController settingsController, TransactionController transactionController) {
+    public CheckConnection(MainViewController mainViewController,SettingsController settingsController) {
         this.mainViewController = mainViewController;
         this.settingsController = settingsController;
-        this.transactionController = transactionController;
     }
 
     @Override
@@ -47,7 +45,7 @@ public class CheckConnection extends TimerTask {
                                 if(currentBlockCount>maxBlockCount)currentBlockCount=maxBlockCount;
                                 try {
                                     FileWriter myWriter = new FileWriter(settingsController.DEFI_PORTFOLIO_HOME + "update.portfolio");
-                                    myWriter.write("<html><body>"+settingsController.translationList.getValue().get("SyncData").toString() + progress+ "% <br>("+currentBlockCount+"/"+maxBlockCount+")</body></html>");
+                                    myWriter.write("<html><body>"+settingsController.getTranslationValue("SyncData") + progress+ "% <br>("+currentBlockCount+"/"+maxBlockCount+")</body></html>");
                                     myWriter.close();
                                 } catch (IOException e) {
                                     settingsController.logger.warning("Could not write to update.portfolio."); }
@@ -65,12 +63,11 @@ public class CheckConnection extends TimerTask {
                             }
                         }
                     }else if(settingsController.updatePython){
-                        this.mainViewController.plotUpdate(this.mainViewController.mainView.tabPane.getSelectionModel().getSelectedItem().getId());
+//                        this.mainViewController.plotUpdate(this.mainViewController.mainView.tabPane.getSelectionModel().getSelectedItem().getId());
                         File file = new File(settingsController.DEFI_PORTFOLIO_HOME + "pythonUpdate.portfolio");
                         if (!file.exists()){
                             settingsController.updatePython = false;
                             mainViewController.finishedUpdate();
-                            transactionController.stopServer();
                         }
                     }
                 }
