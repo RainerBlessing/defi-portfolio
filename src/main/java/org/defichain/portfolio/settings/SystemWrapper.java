@@ -3,7 +3,7 @@ package org.defichain.portfolio.settings;
 import java.io.IOException;
 import java.nio.file.Path;
 
-interface SystemWrapper {
+public interface SystemWrapper {
     String getUserDir();
 
     String getAppData();
