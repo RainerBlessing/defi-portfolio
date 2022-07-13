@@ -7,10 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -57,7 +54,11 @@ fun DefiPortfolio() {
     MaterialTheme {
         Box(modifier = Modifier.fillMaxSize()) {
             Scaffold(
-
+                topBar = {
+                    TopAppBar(
+                        title = { Text("DeFi Addresses") }
+                    )
+                }
             ) {
                 Column(
                     modifier = Modifier.fillMaxSize()
