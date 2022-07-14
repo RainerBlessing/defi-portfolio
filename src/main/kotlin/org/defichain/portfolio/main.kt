@@ -1,15 +1,19 @@
 package org.defichain.portfolio
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.singleWindowApplication
@@ -29,18 +33,46 @@ fun main() = singleWindowApplication(
 }
 
 @Composable
+fun RowScope.TableCell(
+    text: String,
+    weight: Float
+) {
+    Text(
+        text = text,
+        Modifier
+            .border(1.dp, Color.Black)
+            .weight(weight)
+            .padding(8.dp)
+    )
+}
+
+@Composable
 fun AddressBox(defiAddresses: Set<DefiAddress>) {
+    // Each cell of a column must have the same weight.
+    val column1Weight = .3f // 30%
+    val column2Weight = .7f // 70%
+
     val listState = rememberLazyListState()
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         state = listState,
     ) {
-        defiAddresses.forEach { defiAddress ->
-            item {
-                Text(text = defiAddress.address + " " + defiAddress.comment)
+        item {
+            Row(Modifier.background(Color.Gray)) {
+                TableCell(text = "Name", weight = column1Weight)
+                TableCell(text = "Addresse", weight = column2Weight)
             }
         }
+        item(defiAddresses) {
+            defiAddresses.forEach { defiAddress ->
+                Row(Modifier.fillMaxWidth()) {
+                    TableCell(text = defiAddress.comment, weight = column1Weight)
+                    TableCell(text = defiAddress.address, weight = column2Weight)
+                }
+            }
+        }
+
     }
 }
 
@@ -56,28 +88,52 @@ fun DefiPortfolio() {
             Scaffold(
                 topBar = {
                     TopAppBar(
-                        title = { Text("DeFi Addresses") }
+                        title = { Text("DeFi Addresses") },
+                        navigationIcon = {
+                            IconButton(onClick = { /* doSomething() */ }) {
+                                Icon(Icons.Filled.Menu, contentDescription = null)
+                            }
+                        },
                     )
                 }
             ) {
                 Column(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    Box(Modifier.weight(1f)) {
-                        AddressBox(defiAddressHandler.addresses)
+                    Column(
+                        modifier = Modifier.fillMaxWidth().weight(1f)
+                    ) {
+                        Box(Modifier.weight(1f)) {
+                            AddressBox(defiAddressHandler.addresses)
+                        }
+
+
                     }
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Button(
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            onClick = {
 
-                    Button(
-                        onClick = {
+                            }) {
+                            Text("Add Address")
+                            Icon(
+                                imageVector = Icons.Filled.Add,
+                                contentDescription = "Add Address"
+                            )
+                        }
+                        Button(
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            onClick = {
 
-                        }) {
-                        Text("Add Address")
-                    }
-                    Button(
-                        onClick = {
-
-                        }) {
-                        Text("Remove Address")
+                            }) {
+                            Text("Remove Address")
+                            Icon(
+                                imageVector = Icons.Filled.Delete,
+                                contentDescription = "Remove Address"
+                            )
+                        }
                     }
                 }
             }
