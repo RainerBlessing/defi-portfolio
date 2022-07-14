@@ -26,7 +26,8 @@ plugins {
     id("net.ltgt.errorprone") version "2.0.2"
     id("org.openjfx.javafxplugin") version "0.0.13"
 
-    kotlin("jvm") version "1.6.10"
+    kotlin("jvm") version "1.6.21"
+    kotlin("plugin.serialization") version "1.6.21"
     id("org.jetbrains.compose")
 
     id("info.solidsoft.pitest") version "1.7.4"
@@ -43,6 +44,10 @@ dependencies {
     implementation ("org.slf4j:slf4j-simple:2.0.0-alpha7")
     implementation ("com.opencsv:opencsv:5.6")
 
+    implementation ("org.apache.commons:commons-lang3:3.0")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
 
     testImplementation ("org.testng:testng:7.6.0")
     testImplementation ("org.mockito:mockito-all:1.10.19")
