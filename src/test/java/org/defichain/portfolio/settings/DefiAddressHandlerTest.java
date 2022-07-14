@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Set;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.internal.matchers.IsCollectionContaining.hasItems;
 
@@ -19,13 +19,15 @@ public class DefiAddressHandlerTest {
 
     @Test
     public void saveAddresses_loadAddresses() throws CsvRequiredFieldEmptyException, CsvDataTypeMismatchException, IOException {
-        DefiAddressHandler defiAddressHandler = new DefiAddressHandler(tmpdir);
-
         DefiAddress address1 = new DefiAddress("xyz","test address 1");
         DefiAddress address2 = new DefiAddress("abc","test address 2");
+        DefiAddress address3 = new DefiAddress("","");
+
+        DefiAddressHandler defiAddressHandler = new DefiAddressHandler(tmpdir);
 
         defiAddressHandler.addAddress(address1);
         defiAddressHandler.addAddress(address2);
+        defiAddressHandler.addAddress(address3);
 
         defiAddressHandler.saveAddresses();
         defiAddressHandler.loadAddresses();
@@ -34,6 +36,21 @@ public class DefiAddressHandlerTest {
 
         //noinspection unchecked
         assertThat(addresses, hasItems(equalTo(address1),equalTo(address2)));
+        assertThat(addresses, not(hasItems(equalTo(address3))));
+    }
+
+    @Test
+    public void  doNotAddEmptyAddress(){
+        DefiAddress address1 = new DefiAddress("","");
+
+        DefiAddressHandler defiAddressHandler = new DefiAddressHandler(tmpdir);
+
+        defiAddressHandler.addAddress(address1);
+
+        Set<DefiAddress> addresses = defiAddressHandler.getAddresses();
+
+        assertThat(addresses.size(), is(0));
+
     }
 
     @BeforeTest

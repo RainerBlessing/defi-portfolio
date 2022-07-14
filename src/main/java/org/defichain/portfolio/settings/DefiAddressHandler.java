@@ -5,6 +5,7 @@ import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+import org.apache.commons.lang3.StringUtils;
 import org.defichain.portfolio.settings.properties.DefiAddress;
 
 import java.io.*;
@@ -18,16 +19,17 @@ public class DefiAddressHandler {
     private Set<DefiAddress> addresses = new HashSet<>();
 
     public DefiAddressHandler(String defiPortFolioHome) {
-        this.defiPortFolioAddressCsv = defiPortFolioHome+"/"+ DEFI_ADDRESSES_CSV;
+        this.defiPortFolioAddressCsv = defiPortFolioHome + "/" + DEFI_ADDRESSES_CSV;
     }
 
     public void saveAddresses() throws CsvRequiredFieldEmptyException, CsvDataTypeMismatchException, IOException {
 
         Writer writer = new FileWriter(defiPortFolioAddressCsv);
         StatefulBeanToCsv<DefiAddress> beanToCsv = new StatefulBeanToCsvBuilder<DefiAddress>(writer).build();
-        beanToCsv.write(List.copyOf(addresses));
+        beanToCsv.write(List.copyOf(addresses).stream().filter(DefiAddress::isNotBlank));
         writer.close();
     }
+
     public void loadAddresses() throws FileNotFoundException {
         this.addresses.clear();
         addresses = new HashSet<>(new CsvToBeanBuilder<DefiAddress>(new FileReader(defiPortFolioAddressCsv)).withType(DefiAddress.class).build().parse());
@@ -42,6 +44,6 @@ public class DefiAddressHandler {
     }
 
     public void addAddress(DefiAddress address) {
-        this.addresses.add(address);
+         this.addresses.add(address);
     }
 }

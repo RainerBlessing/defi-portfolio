@@ -1,6 +1,7 @@
 package org.defichain.portfolio.settings.properties;
 
 import com.opencsv.bean.CsvBindByName;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Objects;
 
@@ -45,5 +46,9 @@ public class DefiAddress {
     @Override
     public int hashCode() {
         return Objects.hash(address, comment);
+    }
+
+    public boolean isNotBlank() {
+        return StringUtils.isNotBlank(address) && StringUtils.isNotBlank(comment);
     }
 }
